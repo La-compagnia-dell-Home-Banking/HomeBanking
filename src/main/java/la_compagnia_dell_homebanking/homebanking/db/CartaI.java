@@ -1,4 +1,4 @@
-package project.homeBanking;
+package la_compagnia_dell_homebanking.homebanking.db;
 
 import java.time.LocalDate;
 
