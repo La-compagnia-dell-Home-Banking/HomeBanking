@@ -7,8 +7,8 @@ public class PersGiuridica extends Persona{
 
 
 	public PersGiuridica(String nome, String telefono, String email, String codice_fiscale, String ragione_sociale, long p_iva,
-						 String sede, String passaporto) {
-		super(nome, telefono, email, codice_fiscale, sede, passaporto);
+						 String sede, String document, String cap) {
+		super(nome, telefono, email, codice_fiscale, sede, document, cap);
 		this.p_iva = p_iva;
 		this.ragione_sociale = ragione_sociale;
 		this.getDocs().setP_iva(p_iva);

@@ -1,26 +1,26 @@
 package la_compagnia_dell_homebanking.homebanking.db;
 
 public class Documents {
-    private String passaporto = null;
+    private String document = null;
     private String codice_fiscale = null;
     private long p_iva;
 
-    public Documents(String passaporto) {
-        this.passaporto = passaporto;
+    public Documents(String document) {
+        this.document = document;
     }
 
-    public Documents(String passaporto, String codice_fiscale) {
-        this.passaporto = passaporto;
+    public Documents(String document, String codice_fiscale) {
+        this.document = document;
         this.codice_fiscale = codice_fiscale;
     }
 
-    public Documents(String passaporto, long p_iva) {
-        this.passaporto = passaporto;
+    public Documents(String document, long p_iva) {
+        this.document = document;
         this.p_iva = p_iva;
     }
 
-    public String getPassaporto() {
-        return passaporto;
+    public String getDocument() {
+        return document;
     }
 
     public String getCodice_fiscale() {

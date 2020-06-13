@@ -24,7 +24,7 @@ public class MySQLConnection {
         return this.STMT;
     }
 
-    public Connection connect() {
+    public Connection getMyConnection() {
         return this.CONN;
     }
 

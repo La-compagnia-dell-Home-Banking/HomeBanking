@@ -1,5 +1,5 @@
 CREATE TABLE persona_fisica(
-persona_id VARCHAR (10) PRIMARY KEY NOT NULL,
+persona_id VARCHAR(10) PRIMARY KEY NOT NULL,
 nome VARCHAR(20) NOT NULL,
 cognome VARCHAR(20) NOT NULL,
 codice_fiscale VARCHAR(16) NOT NULL,
@@ -44,7 +44,7 @@ FOREIGN KEY (account_id) REFERENCES account(account_id)
 );
 
 CREATE TABLE carta_di_credito(
-conto VARCHAR (10) NOT NULL,
+conto VARCHAR (25) NOT NULL,
 account_id VARCHAR (20) NOT NULL,
 numero VARCHAR (16) PRIMARY KEY NOT NULL,
 scadenza DATE NOT NULL,
