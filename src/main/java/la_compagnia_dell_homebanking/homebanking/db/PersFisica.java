@@ -13,6 +13,8 @@ public class PersFisica extends Persona{
 		this.dataDiNascita = dataDiNascita;
 		this.luogoDiNascita = luogoDiNascita;
 		this.getDocs().setCodice_fiscale(cf);
+
+
 	}
 
 	public String getCognome() {
