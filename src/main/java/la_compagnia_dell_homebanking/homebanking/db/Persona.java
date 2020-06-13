@@ -1,6 +1,6 @@
 package la_compagnia_dell_homebanking.homebanking.db;
 
-public class Persona implements Cliente {
+public abstract class Persona implements Cliente {
 
 	private String nome;
 	private String telefono;
