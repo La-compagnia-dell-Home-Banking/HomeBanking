@@ -7,21 +7,27 @@ public class Account {
 	private final Persona persona;
 	private String password="";
 	
-	private Account(Persona persona) {
+	public Account(Persona persona) {
 		accountID++;
 		this.persona=persona;
+		this.setPassword();
 	}
 	
-	public static void createAccount(Persona persona) {
-		Account account=new Account(persona);
-		account.setPassword();
-	}
+
 	
 	private void setPassword() {
 		System.out.println("Imposta la password");
 		Scanner in= new Scanner(System.in);
 		password=in.next();
-		in.close();
+	
+	}
+	
+	public String getPassword() {
+		return this.password;
+	}
+	
+	public int getAccountID() {
+		return accountID;
 	}
 	
 }

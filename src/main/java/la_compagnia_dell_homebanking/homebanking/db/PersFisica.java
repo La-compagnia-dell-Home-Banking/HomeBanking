@@ -7,12 +7,11 @@ public class PersFisica extends Persona{
 	
 	public PersFisica(String nome, String cognome, String telefono, String email,
 					  String codice_fiscale, String dataDiNascita, String luogoDiNascita, String indirizzo,
-					  String passaporto, String cf) {
+					  String passaporto) {
 		super(nome, telefono, email, codice_fiscale, indirizzo, passaporto);
 		this.cognome = cognome;
 		this.dataDiNascita = dataDiNascita;
 		this.luogoDiNascita = luogoDiNascita;
-		this.getDocs().setCodice_fiscale(cf);
 	}
 
 	public String getCognome() {
@@ -26,4 +25,6 @@ public class PersFisica extends Persona{
 	public String getLuogoDiNascita() {
 		return luogoDiNascita;
 	}
+	
+	
 }
