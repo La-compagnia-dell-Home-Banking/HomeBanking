@@ -12,12 +12,12 @@ public class PersFisica extends Persona {
 	
 	public PersFisica(String nome, String cognome, String telefono, String email,
 					  String codice_fiscale, String dataDiNascita, String luogoDiNascita, String indirizzo,
-					  String document, String cf, String residenza, String cap) throws SQLException {
-		super(nome, telefono, email, codice_fiscale, indirizzo, document, cap);
+					  String document, String residenza, String cap) throws SQLException {
+		super(nome, telefono, email, indirizzo, document, cap);
 		this.cognome = cognome;
 		this.dataDiNascita = dataDiNascita;
 		this.luogoDiNascita = luogoDiNascita;
-		this.getDocs().setCodice_fiscale(cf);
+		this.getDocs().setCodice_fiscale(codice_fiscale);
 		this.residenza = residenza;
 		insertPersonToDb(this);
 	}
@@ -49,6 +49,7 @@ public class PersFisica extends Persona {
 	}
 
 	public static String generateRandom() {
+
 		Random random = new Random(10);
 		return Integer.toString(Math.abs(random.nextInt()));
 	}

@@ -13,4 +13,8 @@ public interface Cliente extends Comparable<Cliente> {
 	public String getTelefono();
 	public String getNome();
 	public Documents getDocs();
+	public String getIndirizzo();
+	public String getCap();
+	public boolean equals(Object o);
+	public int hashCode();
 }
