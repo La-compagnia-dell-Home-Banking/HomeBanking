@@ -19,9 +19,11 @@ public class Account {
 	private boolean insertAccountToDb() throws SQLException {
 		MySQLConnection connection = new MySQLConnection();
 		String query = "INSERT INTO account VALUES (?,?,?)";
+
 		PreparedStatement prstmt = connection.getMyConnection().prepareStatement(query);
-		prstmt.setString(1, accountID);
-		prstmt.setString(2, personaFisica.getNome());
+		prstmt.setString(1, Integer.toString(accountID));
+		if 
+		prstmt.setString(2, this.persona.getPersona_id());
 		prstmt.setString(3, personaFisica.getCognome());
 		prstmt.setString(4, personaFisica.getDocs().getCodice_fiscale());
 		prstmt.setString(5, personaFisica.getdataDiNascita());
@@ -50,8 +52,6 @@ public class Account {
 		return this.password;
 	}
 	
-	public int getAccountID() {
-		return accountID;
-	}
+
 	
 }

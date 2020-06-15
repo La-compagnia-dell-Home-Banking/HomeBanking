@@ -18,8 +18,6 @@ public class ContoCorrente {
 	
 	}
 	
-
-	
 	
 	private static String addZeros(String num,int length) {
 		int numlength=num.length();
