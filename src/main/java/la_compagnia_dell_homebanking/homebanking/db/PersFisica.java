@@ -64,4 +64,8 @@ public class PersFisica extends Persona {
 		System.out.println(NumberGenerator.generateRandom());
 	}
 
+<<<<<<< HEAD
 }
+=======
+}
+>>>>>>> 85532201de68576ab242b07d6047f8b96a9a7705
