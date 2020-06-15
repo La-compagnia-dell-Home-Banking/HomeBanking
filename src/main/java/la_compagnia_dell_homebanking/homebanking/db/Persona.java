@@ -8,15 +8,17 @@ public class Persona implements Cliente {
 	private String indirizzo;
 	private Documents docs;
 	private String cap;
+	private String persona_id;
 
 	public Persona(String nome, String telefono, String email,
-				   String indirizzo, String document, String cap) {
+				   String indirizzo, String document, String cap, String persona_id) {
 		this.nome = nome;
 		this.telefono = telefono;
 		this.email = email;
 		this.indirizzo = indirizzo;
 		this.docs = new Documents(document);
 		this.cap = cap;
+		this.persona_id = persona_id;
 	}
 
 	public String getNome() {
@@ -25,6 +27,10 @@ public class Persona implements Cliente {
 
 	public String getTelefono() {
 		return telefono;
+	}
+
+	public String getPersona_id() {
+		return persona_id;
 	}
 
 	public String getEmail() {

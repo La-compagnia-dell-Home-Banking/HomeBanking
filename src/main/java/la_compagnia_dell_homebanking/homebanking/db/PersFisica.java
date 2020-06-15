@@ -1,7 +1,5 @@
 package la_compagnia_dell_homebanking.homebanking.db;
 
-import java.sql.PreparedStatement;
-import java.sql.SQLException;
 import java.time.LocalDate;
 import java.time.format.DateTimeParseException;
 
@@ -14,7 +12,7 @@ public class PersFisica extends Persona {
 	public PersFisica(String nome, String cognome, String telefono, String email,
 					  String codice_fiscale, String dataDiNascita, String luogoDiNascita, String indirizzo,
 					  String document, String residenza, String cap) throws DateTimeParseException {
-		super(nome, telefono, email, indirizzo, document, cap);
+		super(nome, telefono, email, indirizzo, document, cap, NumberGenerator.generateRandom());
 		if((this.dataDiNascita = isValidFormat(dataDiNascita)) == null) {
 			super.removeValues();
 			return;
@@ -23,50 +21,10 @@ public class PersFisica extends Persona {
 		this.luogoDiNascita = luogoDiNascita;
 		this.getDocs().setCodice_fiscale(codice_fiscale);
 		this.residenza = residenza;
-		insertPersonToDb(this);
+		PersonaQueries.insertPersonToDb(this, getPersona_id());
 		System.out.println(this.dataDiNascita);
 	}
 
-	private static boolean insertPersonToDb(PersFisica personaFisica) {
-		Boolean status = null;
-		MySQLConnection connection = new MySQLConnection();
-		String query = "INSERT INTO persona_fisica VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
-		try {
-			PreparedStatement prstmt = connection.getMyConnection().prepareStatement(query);
-			prstmt.setString(1, generateRandom());
-			prstmt.setString(2, personaFisica.getNome());
-			prstmt.setString(3, personaFisica.getCognome());
-			prstmt.setString(4, personaFisica.getDocs().getCodice_fiscale());
-			prstmt.setString(5, personaFisica.getdataDiNascita());
-			prstmt.setString(6, personaFisica.getLuogoDiNascita());
-			prstmt.setString(7, personaFisica.getResidenza());
-			prstmt.setString(8, personaFisica.getIndirizzo());
-			prstmt.setString(9, personaFisica.getCap());
-			prstmt.setString(10, personaFisica.getEmail());
-			prstmt.setString(11, personaFisica.getTelefono());
-			prstmt.setString(12, personaFisica.getDocs().getDocument());
-			status = prstmt.execute();
-		} catch (SQLException e) {
-			System.out.println(new StringBuilder().append("SQLException: ").append(e.getMessage()));
-			System.out.println(new StringBuilder().append("SQLState: ").append(e.getSQLState()));
-			System.out.println(new StringBuilder().append("VendorError: ").append(e.getErrorCode()));
-		} finally {
-			try {
-				connection.getMyConnection().close();
-			} catch (SQLException e) {
-				System.out.println(new StringBuilder().append("SQLException: ").append(e.getMessage()));
-				System.out.println(new StringBuilder().append("SQLState: ").append(e.getSQLState()));
-				System.out.println(new StringBuilder().append("VendorError: ").append(e.getErrorCode()));
-			}
-
-		}
-		if(status != null && status) {
-			StringBuilder stringBuilder = new StringBuilder().append("Success. ").append(personaFisica.toString()).
-					append(" was created.");
-			System.out.println(stringBuilder);
-		}
-		return status;
-	}
 
 	private static LocalDate isValidFormat(String date) {
 		LocalDate localDate = null;
@@ -77,18 +35,6 @@ public class PersFisica extends Persona {
 			System.out.println(new StringBuilder().append("Error message:").append(e.getMessage()));
 		}
 		return localDate;
-	}
-
-	public static String generateRandom(long minNumber, long maxNumber) {
-		long random_int = (long)(Math.random() * (maxNumber - minNumber) + minNumber);
-		return Long.toString(random_int);
-	}
-
-	public static String generateRandom() {
-		long min = 1000000000L;
-		long max = 9999999999L;
-		long random_int = (long)(Math.random() * (max-min) + min);
-		return Long.toString(random_int);
 	}
 
 	public String getCognome() {
@@ -112,6 +58,10 @@ public class PersFisica extends Persona {
 		StringBuilder stringBuilder = new StringBuilder();
 		stringBuilder.append(this.getNome()).append(" ").append(this.getCognome());
 		return stringBuilder.toString();
+	}
+
+	public static void main(String[] args) {
+		System.out.println(NumberGenerator.generateRandom());
 	}
 
 }
