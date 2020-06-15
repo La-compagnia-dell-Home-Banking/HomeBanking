@@ -26,14 +26,7 @@ public class DatabaseTest {
 
     @Test
     void test_getDatabaseName() throws SQLException {
-        MySQLConnection connection = null;
-        try {
-            connection = new MySQLConnection();
-        } catch (SQLException e) {
-            System.out.println("SQLException: " + e.getMessage());
-            System.out.println("SQLState: " + e.getSQLState());
-            System.out.println("VendorError: " + e.getErrorCode());
-        }
+        MySQLConnection connection = new MySQLConnection();
         ResultSet rs = connection.getSTMT().executeQuery("SHOW DATABASES;");
         //then
         String actual = null;
@@ -56,14 +49,8 @@ public class DatabaseTest {
     @DisplayName("Connection status: isClose()")
     void test_getConnection() throws SQLException {
         // given
-        MySQLConnection connection = null;
-        try {
-            connection = new MySQLConnection();
-        } catch (SQLException e) {
-            System.out.println("SQLException: " + e.getMessage());
-            System.out.println("SQLState: " + e.getSQLState());
-            System.out.println("VendorError: " + e.getErrorCode());
-        }
+        MySQLConnection connection = new MySQLConnection();
+
         //then
         Boolean actual = connection.getSTMT().isClosed();
         //expect

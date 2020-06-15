@@ -43,6 +43,14 @@ public class Persona implements Cliente {
 		return docs;
 	}
 
+	protected void removeValues() {
+		this.nome = null;
+		this.telefono = null;
+		this.email = null;
+		this.indirizzo = null;
+		this.docs.setDocument(null);
+	}
+
 	@Override
 	public int compareTo(Cliente o) {
 		return 0;
@@ -68,4 +76,5 @@ public class Persona implements Cliente {
 		res += this.getDocs().hashCode() * pr;
 		return Math.abs(res);
 	}
+
 }

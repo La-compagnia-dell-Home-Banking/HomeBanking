@@ -1,7 +1,7 @@
 package la_compagnia_dell_homebanking.homebanking.db;
 
 public class Documents {
-    private String document = null;
+    private String document;
     private String codice_fiscale = null;
     private long p_iva;
 
@@ -37,5 +37,9 @@ public class Documents {
 
     public void setP_iva(long p_iva) {
         this.p_iva = p_iva;
+    }
+
+    public void setDocument(String document) {
+        this.document = document;
     }
 }

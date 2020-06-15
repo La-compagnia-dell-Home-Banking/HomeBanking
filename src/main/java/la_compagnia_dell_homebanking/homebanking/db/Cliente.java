@@ -5,8 +5,8 @@ public interface Cliente extends Comparable<Cliente> {
 		return PersFisica.generateRandom();
 	}
 
-	public static String generateRandom(int lunghezza) {
-		return PersFisica.generateRandom(lunghezza);
+	public static String generateRandom(long minNumber, long maxNumber) {
+		return PersFisica.generateRandom(minNumber, maxNumber);
 	}
 
 	public String getEmail();
