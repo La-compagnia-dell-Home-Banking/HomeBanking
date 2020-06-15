@@ -18,17 +18,8 @@ public class ContoCorrente {
 	
 	}
 	
-	public static String generateRandom(long minNumber, long maxNumber) {
-		long random_int = (long)(Math.random() * (maxNumber - minNumber) + minNumber);
-		return Long.toString(random_int);
-	}
 
-	public static String generateRandom() {
-		long min = 1000000000L;
-		long max = 9999999999L;
-		long random_int = (long)(Math.random() * (max-min) + min);
-		return Long.toString(random_int);
-	}
+	
 	
 	private static String addZeros(String num,int length) {
 		int numlength=num.length();
@@ -47,7 +38,7 @@ public class ContoCorrente {
 	
 	private void generateIBAN() {
 		iban_final++;
-		this.iban= "IT"+addZeros(generateRandom(1,99),2)+rndChar()+Integer.toString(ABI)+
+		this.iban= "IT"+NumberGenerator.generateRandom(1, 99)+rndChar()+Integer.toString(ABI)+
 				Integer.toString(CAB)+addZeros(Integer.toString(iban_final),12);
 	}
 	

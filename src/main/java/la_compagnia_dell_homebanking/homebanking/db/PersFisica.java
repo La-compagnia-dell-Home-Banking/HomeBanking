@@ -1,5 +1,6 @@
 package la_compagnia_dell_homebanking.homebanking.db;
 
+import java.sql.SQLException;
 import java.time.LocalDate;
 import java.time.format.DateTimeParseException;
 
@@ -11,7 +12,7 @@ public class PersFisica extends Persona {
 	
 	public PersFisica(String nome, String cognome, String telefono, String email,
 					  String codice_fiscale, String dataDiNascita, String luogoDiNascita, String indirizzo,
-					  String document, String residenza, String cap) throws DateTimeParseException {
+					  String document, String residenza, String cap) throws DateTimeParseException, SQLException {
 		super(nome, telefono, email, indirizzo, document, cap, NumberGenerator.generateRandom());
 		if((this.dataDiNascita = isValidFormat(dataDiNascita)) == null) {
 			super.removeValues();
@@ -60,8 +61,6 @@ public class PersFisica extends Persona {
 		return stringBuilder.toString();
 	}
 
-	public static void main(String[] args) {
-		System.out.println(NumberGenerator.generateRandom());
-	}
+
 
 }
