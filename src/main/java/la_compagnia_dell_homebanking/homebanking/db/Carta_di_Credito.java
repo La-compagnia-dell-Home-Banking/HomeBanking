@@ -70,11 +70,11 @@ public class Carta_di_Credito implements CartaI {
 	}
 	
 	public void pagaConCarta(double amount) {
-//		String query;
-//		
-//		query="INSERT INTO movimenti_conto(iban, nuovo_saldo, somma, is_accredito) VALUES"
-//				+ "('"+numeroCarta+"','"+nuovo_credito+"','"+amount+"','"+0+"')";
-//		Transazione.creaTransazione(query);
+		String query;
+
+		query="INSERT INTO movimenti_conto(iban, nuovo_saldo, somma, is_accredito) VALUES"
+				+ "('"+numeroCarta+"','"+nuovo_credito+"','"+amount+"','"+0+"')";
+		Transazione.creaTransazione(query);
 		
 	}
 	

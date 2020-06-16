@@ -8,115 +8,163 @@ import java.util.List;
 
 public class PersonaQueries {
 
-    static boolean insertPersonToDb(PersFisica personaFisica) {
-        Boolean status = null;
-        MySQLConnection connection = new MySQLConnection();
-        String query = "INSERT INTO persona_fisica VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
-        try {
-            PreparedStatement prstmt = connection.getMyConnection().prepareStatement(query);
-            prstmt.setString(1, personaFisica.getPersona_id());
-            prstmt.setString(2, personaFisica.getNome());
-            prstmt.setString(3, personaFisica.getCognome());
-            prstmt.setString(4, personaFisica.getDocs().getCodice_fiscale());
-            prstmt.setString(5, personaFisica.getdataDiNascita());
-            prstmt.setString(6, personaFisica.getLuogoDiNascita());
-            prstmt.setString(7, personaFisica.getResidenza());
-            prstmt.setString(8, personaFisica.getIndirizzo());
-            prstmt.setString(9, personaFisica.getCap());
-            prstmt.setString(10, personaFisica.getEmail());
-            prstmt.setString(11, personaFisica.getTelefono());
-            prstmt.setString(12, personaFisica.getDocs().getDocument());
-            status = prstmt.execute();
-        } catch (SQLException e) {
-            System.out.println(new StringBuilder().append("SQLException: ").append(e.getMessage()));
-            System.out.println(new StringBuilder().append("SQLState: ").append(e.getSQLState()));
-            System.out.println(new StringBuilder().append("VendorError: ").append(e.getErrorCode()));
-        } finally {
-            try {
-                connection.getMyConnection().close();
-            } catch (SQLException e) {
-                System.out.println(new StringBuilder().append("SQLException: ").append(e.getMessage()));
-                System.out.println(new StringBuilder().append("SQLState: ").append(e.getSQLState()));
-                System.out.println(new StringBuilder().append("VendorError: ").append(e.getErrorCode()));
-            }
-
-        }
-        if(status != null && status) {
-            StringBuilder stringBuilder = new StringBuilder().append("Success. ").append(personaFisica.toString()).
-                    append(" was created.");
-            System.out.println(stringBuilder);
-        }
-        return status;
-    }
-
-    static boolean insertPersonToDb(PersGiuridica persona) {
-        Boolean status = null;
-        MySQLConnection connection = new MySQLConnection();
-        String query = "INSERT INTO persona_giuridica VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
-        try {
-            PreparedStatement prstmt = connection.getMyConnection().prepareStatement(query);
-            prstmt.setString(1, persona.getPersona_id());
-            prstmt.setString(2, persona.getNome());
-            prstmt.setString(3, persona.getRagione_sociale());
-            prstmt.setString(4, Long.toString(persona.getDocs().getP_iva()));
-            prstmt.setString(5, persona.getNomeRappresentante());
-            prstmt.setString(6, persona.getCognomeRappresentante());
-            prstmt.setString(7, persona.getSedeLegale());
-            prstmt.setString(8, persona.getIndirizzo());
-            prstmt.setString(9, persona.getCap());
-            prstmt.setString(10, persona.getEmail());
-            prstmt.setString(11, persona.getTelefono());
-            prstmt.setString(12, persona.getDocs().getDocument());
-            status = prstmt.execute();
-        } catch (SQLException e) {
-            System.out.println(new StringBuilder().append("SQLException: ").append(e.getMessage()));
-            System.out.println(new StringBuilder().append("SQLState: ").append(e.getSQLState()));
-            System.out.println(new StringBuilder().append("VendorError: ").append(e.getErrorCode()));
-        } finally {
-            try {
-                connection.getMyConnection().close();
-            } catch (SQLException e) {
-                System.out.println(new StringBuilder().append("SQLException: ").append(e.getMessage()));
-                System.out.println(new StringBuilder().append("SQLState: ").append(e.getSQLState()));
-                System.out.println(new StringBuilder().append("VendorError: ").append(e.getErrorCode()));
-            }
-
-        }
-        if(status != null && status) {
-            StringBuilder stringBuilder = new StringBuilder().append("Success. ").append(persona.toString()).
-                    append(" was created.");
-            System.out.println(stringBuilder);
-        }
-        return status;
-    }
-
-
     public List<Persona> getAllPerson() throws SQLException {
-        List<Persona> persone = new ArrayList<Persona>();
+        List<Persona> persone = new ArrayList<>();
         MySQLConnection connection = new MySQLConnection();
-        ResultSet resultSet = connection.getSTMT().executeQuery("SELECT * from persona_fisica");
-
-        while(resultSet.next()) {
-            persone.add(populatePerson(resultSet));
+        try {
+            ResultSet resultSet = connection.getStmt().executeQuery("SELECT * from persona_fisica");
+            while(resultSet.next()) {
+                persone.add(populatePersonaFisica(resultSet));
+            }
+            resultSet = connection.getStmt().executeQuery("SELECT * from persona_giuridica");
+            while(resultSet.next()) {
+                persone.add(populatePersonaGiuridica(resultSet));
+            }
+        } catch (SQLException e) {
+            printExceptions(e);
+        } finally {
+            try {
+                connection.getMyConnection().close();
+            } catch (SQLException e) {
+                printExceptions(e);
+            }
         }
         return persone;
     }
 
-    private Persona populatePerson(ResultSet resultSet) throws SQLException {
+    private PersFisica populatePersonaFisica(ResultSet resultSet) throws SQLException {
         String person_id = resultSet.getString("persona_id");
         String nome = resultSet.getString("nome");
-        String email = resultSet.getString("email");
-        String telefono = resultSet.getString("telefono");
-        String indirizzo = resultSet.getString("indirizzo");
-        String cap = resultSet.getString("cap");
         String cognome = resultSet.getString("cognome");
         String cf = resultSet.getString("codice_fiscale");
         String dataDiNascita = resultSet.getString("data_nascita");
         String luogoNascita = resultSet.getString("luogo_nascita");
         String residenza = resultSet.getString("residenza");
+        String indirizzo = resultSet.getString("indirizzo");
+        String cap = resultSet.getString("cap");
+        String email = resultSet.getString("email");
+        String telefono = resultSet.getString("telefono");
         String documento = resultSet.getString("documento");
-        return new PersFisica(nome,cognome,telefono,email,cf,dataDiNascita,
-                luogoNascita,indirizzo,documento,residenza,cap, person_id);
+        return new PersFisica(nome,cognome,telefono,email,cf,dataDiNascita,luogoNascita,
+                indirizzo,documento,residenza,cap,person_id,true);
     }
 
+    private Persona populatePersonaGiuridica(ResultSet resultSet) throws SQLException {
+        String azienda_id = resultSet.getString("azienda_id");
+        String ragione_sociale = resultSet.getString("ragione_sociale");
+        String email = resultSet.getString("email");
+        String telefono = resultSet.getString("telefono");
+        String indirizzo = resultSet.getString("indirizzo");
+        String cap = resultSet.getString("cap");
+        String cognome_rappresentante = resultSet.getString("cognome_rappresentante");
+        String nome_rappresentante = resultSet.getString("nome_rappresentante");
+        String sede_legale = resultSet.getString("sede_legale");
+        String partita_iva = resultSet.getString("partita_iva");
+        String documento_rappresentante = resultSet.getString("documento_rappresentante");
+        return new PersGiuridica(telefono,email,ragione_sociale,partita_iva,indirizzo,documento_rappresentante,
+                cap,nome_rappresentante,cognome_rappresentante,sede_legale,azienda_id, true);
+    }
+
+
+    public Persona getPersonaById(String id) {
+        MySQLConnection connection = new MySQLConnection();
+        try {
+            PreparedStatement prstmt = connection.getMyConnection().prepareStatement("SELECT * from persona_fisica" +
+                    " WHERE persona_id =?");
+            prstmt.setString(1, id);
+            ResultSet rs = prstmt.executeQuery();
+                if(rs.next()) {
+                    System.out.println("ID: '" + id + "'. One person found: " + rs.getString("nome"));
+                    return populatePersonaFisica(rs);
+                }
+                prstmt = connection.getMyConnection().prepareStatement("SELECT * from persona_giuridica" +
+                    " WHERE azienda_id =?");
+            prstmt.setString(1, id);
+            rs = prstmt.executeQuery();
+            if(rs.next()) {
+                System.out.println("ID: '" + id + "'. One company found: " + rs.getString("ragione_sociale"));
+                return populatePersonaGiuridica(rs);
+            }
+        } catch (SQLException e) {
+            printExceptions(e);
+        } finally {
+            try {
+                connection.getMyConnection().close();
+            } catch (SQLException e) {
+                printExceptions(e);
+            }
+        }
+        System.out.println("ID: '" + id + "' doesn't exist" );
+        return null;
+    }
+
+    public List<PersFisica> getPersonaByCognome(String cognome) {
+        List<PersFisica> listCognome = new ArrayList<>();
+        MySQLConnection connection = new MySQLConnection();
+        try {
+            PreparedStatement prstmt = connection.getMyConnection().prepareStatement("SELECT * FROM persona_fisica WHERE " +
+                    "cognome=?");
+            prstmt.setString(1, cognome);
+            ResultSet rs = prstmt.executeQuery();
+
+            while(rs.next()) {
+                PersFisica persFisica = populatePersonaFisica(rs);
+                System.out.println(persFisica);
+                listCognome.add(persFisica);
+            }
+            if(listCognome == null) {
+                System.out.println("Person with the last name '" + cognome + "' not found.");
+            } else {
+                return listCognome;
+            }
+        } catch (SQLException e) {
+            printExceptions(e);
+        } finally {
+            try {
+                connection.getMyConnection().close();
+            } catch (SQLException e) {
+                printExceptions(e);
+            }
+        }
+        return null;
+    }
+    public List<PersFisica> getPersonByBirthDate(String data) {
+        PersFisica.isValidFormat(data);
+        List<PersFisica> listCognome = new ArrayList<>();
+        MySQLConnection connection = new MySQLConnection();
+        try {
+            PreparedStatement prstmt = connection.getMyConnection().prepareStatement("SELECT * FROM persona_fisica WHERE " +
+                    "data_nascita = ?");
+            prstmt.setString(1, data);
+            ResultSet rs = prstmt.executeQuery();
+
+            while(rs.next()) {
+                PersFisica persFisica = populatePersonaFisica(rs);
+                System.out.println(persFisica);
+                listCognome.add(persFisica);
+            }
+            if(listCognome == null) {
+                System.out.println("Person born on "  + data +  " not found.");
+            } else {
+                return listCognome;
+            }
+        } catch (SQLException e) {
+            printExceptions(e);
+        } finally {
+            try {
+                connection.getMyConnection().close();
+            } catch (SQLException e) {
+                printExceptions(e);
+            }
+        }
+        return null;
+    }
+
+
+
+    public static void printExceptions(SQLException e) {
+        System.out.println(new StringBuilder().append("SQLException: ").append(e.getMessage()));
+        System.out.println(new StringBuilder().append("SQLState: ").append(e.getSQLState()));
+        System.out.println(new StringBuilder().append("VendorError: ").append(e.getErrorCode()));
+    }
 }

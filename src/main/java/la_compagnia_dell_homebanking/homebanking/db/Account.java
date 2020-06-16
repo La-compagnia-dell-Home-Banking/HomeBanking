@@ -2,13 +2,12 @@ package la_compagnia_dell_homebanking.homebanking.db;
 
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
-import java.util.*;
 
 public class Account {
 	private static int accountID=0;
 	private final Persona persona;
 	private String password="";
-	
+
 	public Account(Persona persona) throws SQLException {
 		accountID++;
 		this.persona=persona;
@@ -22,7 +21,7 @@ public class Account {
 
 		PreparedStatement prstmt = connection.getMyConnection().prepareStatement(query);
 		prstmt.setString(1, Integer.toString(accountID));
-		if 
+		if
 		prstmt.setString(2, this.persona.getPersona_id());
 		prstmt.setString(3, personaFisica.getCognome());
 		prstmt.setString(4, personaFisica.getDocs().getCodice_fiscale());
@@ -45,13 +44,13 @@ public class Account {
 		System.out.println("Imposta la password");
 		Scanner in= new Scanner(System.in);
 		password=in.next();
-	
+
 	}
-	
+
 	public String getPassword() {
 		return this.password;
 	}
-	
 
-	
+
+
 }

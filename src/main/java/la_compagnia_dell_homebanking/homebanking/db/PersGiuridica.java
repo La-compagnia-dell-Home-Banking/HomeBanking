@@ -1,23 +1,62 @@
 package la_compagnia_dell_homebanking.homebanking.db;
 
+import java.sql.PreparedStatement;
+import java.sql.SQLException;
+
 public class PersGiuridica extends Persona {
 
 	private String ragione_sociale;
-	private long p_iva;
 	private String nomeRappresentante;
 	private String cognomeRappresentante;
 	private String sedeLegale;
 
 
-	public PersGiuridica(String nome, String telefono, String email, String codice_fiscale, String ragione_sociale, long p_iva,
-						 String sede, String document, String cap, String nomeRappresentante, String cognomeRappresentante,
-						 String sedeLegale) {
-		super(nome, telefono, email, sede, document, cap, NumberGenerator.generateRandom());
-		this.p_iva = p_iva;
+	public PersGiuridica(String telefono, String email, String ragione_sociale, String p_iva,
+						 String indirizzo, String documento, String cap, String nomeRappresentante, String cognomeRappresentante,
+						 String sedeLegale, String azienda_id, Boolean isInDb) {
+		super(ragione_sociale, telefono, email, indirizzo, documento, cap, azienda_id);
 		this.ragione_sociale = ragione_sociale;
 		this.nomeRappresentante = nomeRappresentante;
 		this.cognomeRappresentante = cognomeRappresentante;
+		this.sedeLegale = sedeLegale;
 		this.getDocs().setP_iva(p_iva);
+		if(!isInDb) {
+			insertPersonToDb(this);
+		}
+	}
+
+	private void insertPersonToDb(PersGiuridica persona) {
+		Boolean status = null;
+		MySQLConnection connection = new MySQLConnection();
+		String query = "INSERT INTO persona_giuridica VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+		try {
+			PreparedStatement prstmt = connection.getMyConnection().prepareStatement(query);
+			prstmt.setString(1, persona.getPersona_id());
+			prstmt.setString(2, persona.getRagione_sociale());
+			prstmt.setString(3, persona.getDocs().getP_iva());
+			prstmt.setString(4, persona.getNomeRappresentante());
+			prstmt.setString(5, persona.getCognomeRappresentante());
+			prstmt.setString(6, persona.getSedeLegale());
+			prstmt.setString(7, persona.getIndirizzo());
+			prstmt.setString(8, persona.getCap());
+			prstmt.setString(9, persona.getEmail());
+			prstmt.setString(10, persona.getTelefono());
+			prstmt.setString(11, persona.getDocs().getDocument());
+			status = prstmt.execute();
+		} catch (SQLException e) {
+			PersonaQueries.printExceptions(e);
+		} finally {
+			try {
+				connection.getMyConnection().close();
+			} catch (SQLException e) {
+				PersonaQueries.printExceptions(e);
+			}
+		}
+		if(status != null && status) {
+			StringBuilder stringBuilder = new StringBuilder().append("Success. ").append(persona.toString()).
+					append(" was created.");
+			System.out.println(stringBuilder);
+		}
 	}
 
 	public String getNomeRappresentante() {
@@ -36,7 +75,12 @@ public class PersGiuridica extends Persona {
 		return ragione_sociale;
 	}
 
-	public long getP_iva() {
-		return p_iva;
+	public String getP_iva() {
+		return this.getDocs().getP_iva();
+	}
+
+	@Override
+	public String toString() {
+		return "ID: " + this.getPersona_id() + " Ragione Sociale: " + this.getRagione_sociale();
 	}
 }
