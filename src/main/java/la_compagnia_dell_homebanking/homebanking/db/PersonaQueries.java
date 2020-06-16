@@ -57,9 +57,6 @@ public class PersonaQueries {
             prstmt.setString(3, persona.getRagione_sociale());
             prstmt.setString(4, Long.toString(persona.getDocs().getP_iva()));
 
-            prstmt.setString(5, persona.getdataDiNascita());
-            prstmt.setString(6, persona.getLuogoDiNascita());
-            prstmt.setString(7, persona.getResidenza());
             prstmt.setString(8, persona.getIndirizzo());
             prstmt.setString(9, persona.getCap());
             prstmt.setString(10, persona.getEmail());
