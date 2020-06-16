@@ -47,7 +47,6 @@ public class Account {
 			s=Integer.parseInt(rs.getString("account_id"));
 			if (id<s)
 				id=s;
-			System.out.println(id);
 
 		}
 		return id;
