@@ -38,6 +38,7 @@ public class Carta_di_Credito implements CartaI {
 		stmt.close();
 		rs.close();
 		connection.close();
+		
 	}
 	
 
