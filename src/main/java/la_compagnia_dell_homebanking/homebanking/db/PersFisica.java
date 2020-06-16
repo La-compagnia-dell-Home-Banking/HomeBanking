@@ -11,8 +11,8 @@ public class PersFisica extends Persona {
 	
 	public PersFisica(String nome, String cognome, String telefono, String email,
 					  String codice_fiscale, String dataDiNascita, String luogoDiNascita, String indirizzo,
-					  String document, String residenza, String cap) throws DateTimeParseException {
-		super(nome, telefono, email, indirizzo, document, cap, NumberGenerator.generateRandom());
+					  String document, String residenza, String cap, String persona_id) throws DateTimeParseException {
+		super(nome, telefono, email, indirizzo, document, cap, persona_id);
 		if((this.dataDiNascita = isValidFormat(dataDiNascita)) == null) {
 			super.removeValues();
 			return;
