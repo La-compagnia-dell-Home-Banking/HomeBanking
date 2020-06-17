@@ -27,7 +27,7 @@ public class DatabaseTest {
     @Test
     void test_getDatabaseName() throws SQLException {
         MySQLConnection connection = new MySQLConnection();
-        ResultSet rs = connection.getSTMT().executeQuery("SHOW DATABASES;");
+        ResultSet rs = connection.getStmt().executeQuery("SHOW DATABASES;");
         //then
         String actual = null;
         while (rs.next()) {
@@ -36,7 +36,7 @@ public class DatabaseTest {
         //expect
         String expected = "sql7347764";
         assertEquals(expected, actual, "deve essere uguale al nome del nostro db");
-        connection.getSTMT().close();
+        connection.getStmt().close();
     }
 
     /**
@@ -52,11 +52,11 @@ public class DatabaseTest {
         MySQLConnection connection = new MySQLConnection();
 
         //then
-        Boolean actual = connection.getSTMT().isClosed();
+        Boolean actual = connection.getStmt().isClosed();
         //expect
         Boolean expected = false;
         assertEquals(expected, actual, "la connessione deve essere aperta");
-        connection.getSTMT().close();
+        connection.getStmt().close();
     }
 
     /**

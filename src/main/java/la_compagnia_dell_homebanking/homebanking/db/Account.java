@@ -1,13 +1,17 @@
 package la_compagnia_dell_homebanking.homebanking.db;
 
+
 import java.sql.*;
 import java.util.*;
+
 
 public class Account {
 	private ArrayList<ContoCorrente> lista_conti;
 	private static int accountID;
 	private final Persona persona;
+
 	private String password = "";
+
 
 	public Account(Persona persona) throws SQLException {
 		accountID = controlAccount_id() + 1;
@@ -69,16 +73,42 @@ public class Account {
 
 	}
 
+
+//	private boolean insertAccountToDb() throws SQLException {
+//		MySQLConnection connection = new MySQLConnection();
+//		String query = "INSERT INTO account VALUES (?,?,?)";
+//
+//		PreparedStatement prstmt = connection.getMyConnection().prepareStatement(query);
+//		prstmt.setString(1, Integer.toString(accountID));
+//		prstmt.setString(2, this.persona.getPersona_id());
+//		prstmt.setString(3, personaFisica.getCognome());
+//		prstmt.setString(4, personaFisica.getDocs().getCodice_fiscale());
+//		prstmt.setString(5, personaFisica.getdataDiNascita());
+//		prstmt.setString(6, personaFisica.getLuogoDiNascita());
+//		prstmt.setString(7, personaFisica.getResidenza());
+//		prstmt.setString(8, personaFisica.getIndirizzo());
+//		prstmt.setString(9, personaFisica.getCap());
+//		prstmt.setString(10, personaFisica.getEmail());
+//		prstmt.setString(11, personaFisica.getTelefono());
+//		prstmt.setString(12, personaFisica.getDocs().getDocument());
+//		Boolean status = prstmt.execute();
+//		connection.getMyConnection().close();
+//		return status;
+//	}
+	
 	private void setPassword() {
 		System.out.println("Imposta la password");
-		Scanner in = new Scanner(System.in);
-		password = in.next();
+		Scanner in= new Scanner(System.in);
+		password=in.next();
+
 
 	}
 
 	public String getPassword() {
 		return this.password;
 	}
+
+
 
 	public int getAccountID() {
 		return this.accountID;
@@ -120,7 +150,5 @@ public class Account {
 				rs.getString("cap"), rs.getString("nome_rappresentante"));
 		return persona;
 	}
-	
-
 
 }

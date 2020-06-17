@@ -19,6 +19,7 @@ public class ContoCorrente {
 	private double saldo_disponibile;
 	private double saldo_contabile;
 
+
 	public ContoCorrente(Account account) throws SQLException {
 
 		this.account = account;
@@ -57,13 +58,16 @@ public class ContoCorrente {
 		String s = num;
 		for (int i = 0; i < length - numlength; i++)
 			s = '0' + s;
+
 		return s;
 
 	}
 
+
 	private static char rndChar() {
 		int rnd = (int) (Math.random() * 52); // or use Random or whatever
 		return (char) ('A' + rnd % 26);
+
 
 	}
 
@@ -73,9 +77,11 @@ public class ContoCorrente {
 				+ Integer.toString(CAB) + addZeros(Integer.toString(iban_final), 12);
 	}
 
+
 	public String getIBAN() {
 		return this.iban;
 	}
+
 
 	private boolean insertCCToDb() throws SQLException {
 		MySQLConnection connection = new MySQLConnection();

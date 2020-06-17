@@ -71,7 +71,7 @@ public class Carta_di_Credito implements CartaI {
 	public String getConto_corrente() {
 		return conto_corrente;
 	}
-	
+
 	public void pagaConCarta(double amount) throws SQLException {
 		
 		Connection connection = new MySQLConnection().getMyConnection();
@@ -90,7 +90,6 @@ public class Carta_di_Credito implements CartaI {
 		Transazione.creaTransazione(query);
 		stmt.close();
 		connection.close();
-		
 	}
 	
 	public void rinnovaCarta() {
