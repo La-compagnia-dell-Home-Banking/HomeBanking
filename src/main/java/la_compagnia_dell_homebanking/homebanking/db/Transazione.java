@@ -1,11 +1,15 @@
 package la_compagnia_dell_homebanking.homebanking.db;
 
 import java.sql.Connection;
+import java.sql.Date;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.sql.Time;
 import java.time.LocalDate;
 import java.time.LocalTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -29,12 +33,19 @@ public class Transazione {
 		this.accredito = accredito;
 	}
 
-	public static void creaTransazione(String query) throws SQLException {
+	public void creaTransazione(String query) throws SQLException {
 		
 		Connection connection = new MySQLConnection().getMyConnection();
-		Statement stmt = connection.createStatement();
-		stmt.execute(query);
-		stmt.close();
+		PreparedStatement pstmt = connection.prepareStatement(query);
+		//(data_transazione, orario_transazione, numero, nuovo_saldo, somma, is_accredito)
+		pstmt.setDate(1, Date.valueOf(data));
+		pstmt.setTime(2, Time.valueOf(orario));
+		pstmt.setString(3, numero);
+		pstmt.setDouble(4, saldo);
+		pstmt.setDouble(5, movimento);
+		pstmt.setBoolean(6, accredito);
+		pstmt.execute();
+		pstmt.close();
 		connection.close();
 		
 	}

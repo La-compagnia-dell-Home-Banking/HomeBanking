@@ -87,7 +87,7 @@ public class Carta_di_Credito implements CartaI {
 		stmt.execute(query);
 		query="INSERT INTO movimenti_conto_corrente(data_transazione, orario_transazione, numero, nuovo_saldo, somma, is_accredito) VALUES"
 				+ "('"+DT+"','"+TM+"','"+conto_corrente+"','"+nuovo_credito+"','"+-amount+"','"+0+"')";
-		Transazione.creaTransazione(query);
+		//Transazione.creaTransazione(query);
 		stmt.close();
 		connection.close();
 		
