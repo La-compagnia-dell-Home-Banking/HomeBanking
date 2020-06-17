@@ -7,6 +7,7 @@ import java.util.*;
 
 public class Account {
 	private ArrayList<ContoCorrente> lista_conti;
+	private ArrayList<Carta_Prepagata> lista_carte;
 	private static int accountID;
 	private final Persona persona;
 
@@ -18,7 +19,8 @@ public class Account {
 		this.persona = persona;
 		this.setPassword();
 		this.insertAccountToDb();
-		lista_conti = ContoCorrente.readConti();
+		lista_conti = ContoCorrente.readConti(Integer.toString(accountID));
+		lista_carte = Carta_Prepagata.readCarte(Integer.toString(accountID));
 	}
 
 	public Account(String account_id) throws SQLException {
