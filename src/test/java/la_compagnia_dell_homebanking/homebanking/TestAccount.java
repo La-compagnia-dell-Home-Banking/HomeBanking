@@ -1,5 +1,8 @@
 
-package la_compagnia_dell_homebanking.homebanking.db;
+package la_compagnia_dell_homebanking.homebanking;
+
+import la_compagnia_dell_homebanking.homebanking.cliente.PersFisica;
+import la_compagnia_dell_homebanking.homebanking.cliente.Persona;
 
 import java.sql.SQLException;
 

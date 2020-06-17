@@ -1,4 +1,4 @@
-package la_compagnia_dell_homebanking.homebanking.db;
+package la_compagnia_dell_homebanking.homebanking.cliente;
 
 public class Persona implements Cliente {
 
@@ -73,15 +73,15 @@ public class Persona implements Cliente {
 			if(this.getDocs() != null)
 				return false;
 		}
-		return this.getDocs().equals(p.getDocs());
+		return this.getDocs().getDocument().equals(p.getDocs().getDocument());
 	}
 
 	@Override
 	public int hashCode() {
-		int res = 0;
+		int res = 1;
 		int pr = 31;
-		res += this.getDocs().hashCode() * pr;
-		return Math.abs(res);
+		res += this.getDocs().getDocument().hashCode() * pr;
+		return res;
 	}
 
 }

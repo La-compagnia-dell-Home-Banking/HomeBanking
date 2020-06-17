@@ -1,4 +1,4 @@
-package la_compagnia_dell_homebanking.homebanking.db;
+package la_compagnia_dell_homebanking.homebanking.carta;
 
 import java.sql.SQLException;
 import java.time.LocalDate;

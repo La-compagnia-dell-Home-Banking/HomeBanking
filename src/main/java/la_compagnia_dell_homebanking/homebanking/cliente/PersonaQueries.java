@@ -1,4 +1,6 @@
-package la_compagnia_dell_homebanking.homebanking.db;
+package la_compagnia_dell_homebanking.homebanking.cliente;
+
+import la_compagnia_dell_homebanking.homebanking.db.MySQLConnection;
 
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -8,7 +10,7 @@ import java.util.List;
 
 public class PersonaQueries {
 
-    public static List<Persona> getAllPerson() throws SQLException {
+    public static List<Persona> getAllPerson() {
         List<Persona> persone = new ArrayList<>();
         MySQLConnection connection = new MySQLConnection();
         try {
@@ -139,7 +141,6 @@ public class PersonaQueries {
 
             while(rs.next()) {
                 PersFisica persFisica = populatePersonaFisica(rs);
-                System.out.println(persFisica);
                 listCognome.add(persFisica);
             }
             if(listCognome == null) {
@@ -159,7 +160,7 @@ public class PersonaQueries {
         return null;
     }
 
-    public static void updatePersonF(String personId, String indirizzo, String residenza, String cap, String email,
+    public static PersFisica updatePersonF(String personId, String indirizzo, String residenza, String cap, String email,
                                    String telefono) {
         MySQLConnection connection = new MySQLConnection();
         try {
@@ -173,6 +174,12 @@ public class PersonaQueries {
             prstmt.setString(6, personId);
             prstmt.execute();
             System.out.println("Person with ID: '" + personId + "' was successfully updated.");
+            prstmt = connection.getMyConnection().prepareStatement("SELECT * FROM persona_fisica " +
+                    "WHERE persona_id=?");
+            prstmt.setString(1, personId);
+            ResultSet rs = prstmt.executeQuery();
+            rs.next();
+            return populatePersonaFisica(rs);
 
         } catch (SQLException e) {
             printExceptions(e);
@@ -184,9 +191,10 @@ public class PersonaQueries {
             }
         }
         System.out.println("Errore. Person does not exist.");
+        return null;
     }
 
-    public static void updatePersonG(String personId, String nome_rappresentante, String cognome_rappresentante,
+    public static PersGiuridica updatePersonG(String personId, String nome_rappresentante, String cognome_rappresentante,
                                      String sede_legale, String indirizzo, String cap, String email,
                                      String telefono) {
         MySQLConnection connection = new MySQLConnection();
@@ -204,7 +212,13 @@ public class PersonaQueries {
             prstmt.setString(8, personId);
             prstmt.execute();
             System.out.println("Person with ID: '" + personId + "' was successfully updated.");
-            return;
+            prstmt = connection.getMyConnection().prepareStatement("SELECT * FROM persona_giuridica " +
+                    "WHERE azienda_id=?");
+            prstmt.setString(1, personId);
+            ResultSet rs = prstmt.executeQuery();
+            rs.next();
+            return populatePersonaGiuridica(rs);
+
         } catch (SQLException e) {
             printExceptions(e);
         } finally {
@@ -215,9 +229,55 @@ public class PersonaQueries {
             }
         }
         System.out.println("Errore. Person does not exist.");
+        return null;
     }
 
+    public static String removePersonById(String id) {
+        MySQLConnection connection = new MySQLConnection();
+        try {
+            PreparedStatement prstmt = connection.getMyConnection().
+                    prepareStatement("DELETE from persona_fisica WHERE persona_id =?");
+            prstmt.setString(1, id);
+            int status = prstmt.executeUpdate();
+            System.out.println(status);
+            if(status == 1) {
+                return "One person deleted successfully. ID: '" + id + "'.";
+            }
 
+        } catch (SQLException e) {
+            printExceptions(e);
+        } finally {
+            try {
+                connection.getMyConnection().close();
+            } catch (SQLException e) {
+                printExceptions(e);
+            }
+        }
+        return  "ID: '" + id + "' doesn't exist";
+    }
+
+    public static String removeCompanyById(String id) {
+        MySQLConnection connection = new MySQLConnection();
+        try {
+            PreparedStatement prstmt = connection.getMyConnection().prepareStatement("DELETE from persona_giuridica" +
+                    " WHERE azienda_id =?");
+            prstmt.setString(1, id);
+            int status = prstmt.executeUpdate();
+            System.out.println(status);
+            if(status == 1) {
+                return "One company deleted successfully. ID: '" + id + "'.";
+            }
+        } catch (SQLException e) {
+            printExceptions(e);
+        } finally {
+            try {
+                connection.getMyConnection().close();
+            } catch (SQLException e) {
+                printExceptions(e);
+            }
+        }
+        return  "ID: '" + id + "' doesn't exist";
+    }
 
     public static void printExceptions(SQLException e) {
         System.out.println(new StringBuilder().append("SQLException: ").append(e.getMessage()));

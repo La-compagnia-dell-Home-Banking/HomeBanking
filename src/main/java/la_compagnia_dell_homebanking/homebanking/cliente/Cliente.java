@@ -1,4 +1,7 @@
-package la_compagnia_dell_homebanking.homebanking.db;
+package la_compagnia_dell_homebanking.homebanking.cliente;
+
+import la_compagnia_dell_homebanking.homebanking.NumberGenerator;
+
 public interface Cliente extends Comparable<Cliente> {
 
 	public static String generateRandom() {

@@ -1,4 +1,4 @@
-package la_compagnia_dell_homebanking.homebanking.db;
+package la_compagnia_dell_homebanking.homebanking.cliente;
 
 public class Documents {
     private String document;
