@@ -7,6 +7,7 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.sql.Connection;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
@@ -33,7 +34,9 @@ public class TokenServlet extends HttpServlet{
 		try {
 			Connection connection = new MySQLConnection().getMyConnection();
 			Statement stmt = connection.createStatement();
-			ResultSet rs = stmt.executeQuery("SELECT * FROM token WHERE account_id='"+account_id+"'");
+			PreparedStatement pstmt = connection.prepareStatement("SELECT * FROM token WHERE account_id=?");
+			pstmt.setString(1, account_id);
+			ResultSet rs = pstmt.executeQuery();
 
 			rs.next();
 			data_ultimo=rs.getDate("data_transazione").toLocalDate();

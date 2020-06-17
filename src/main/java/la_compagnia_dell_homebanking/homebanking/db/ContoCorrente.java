@@ -106,13 +106,15 @@ public class ContoCorrente {
 		return insertCCToDb();
 	}
 
-	public static ArrayList<ContoCorrente> readConti() throws SQLException {
+	public static ArrayList<ContoCorrente> readConti(String account_id) throws SQLException {
 
 		ArrayList<ContoCorrente> lista = new ArrayList<ContoCorrente>();
 		ResultSet rs;
 		MySQLConnection connection = new MySQLConnection();
-		String query = "SELECT * FROM conto_corrente";
+		String query = "SELECT * FROM conto_corrente WHERE account_id=?";
+		
 		PreparedStatement prstmt = connection.getMyConnection().prepareStatement(query);
+		prstmt.setString(1, account_id);
 
 			 rs = prstmt.executeQuery();
 
