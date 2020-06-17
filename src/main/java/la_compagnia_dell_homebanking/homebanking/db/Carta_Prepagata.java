@@ -69,24 +69,55 @@ public class Carta_Prepagata implements CartaI {
 		return dataScadenza;
 	}
 
+	public void addCartaToDB() {
+		
+	}
+	
 	public void pagaConCarta(double amount, String numero_carta) throws SQLException {
 		
 		Connection connection = new MySQLConnection().getMyConnection();
-		
-		Statement stmt = connection.createStatement();
-		ResultSet rs = stmt.executeQuery("SELECT * FROM carta_prepagata WHERE numero='"+numeroCarta+"'");
+		PreparedStatement pstmt = connection.prepareStatement("SELECT * FROM carta_prepagata WHERE numero=?");
+		pstmt.setString(1, numeroCarta);
+		ResultSet rs = pstmt.executeQuery();
 		rs.next();
 		
+		if(TokenServlet.chiedi_codice(accountId)) System.out.println("Codice ok!");
+		
+		
 		double nuovo_credito=rs.getDouble("credito_residuo")-amount;
+		
 		String DT=LocalDate.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd"));
 		String TM=LocalTime.now().format(DateTimeFormatter.ofPattern("HH:mm"));
-		String query = "UPDATE carta_prepagata SET credito_residuo ="+nuovo_credito+" WHERE numero="+numero_carta;
-		stmt.execute(query);
-		query="INSERT INTO movimenti_carta_prepagata(data_transazione, orario_transazione, numero, nuovo_saldo, somma, is_accredito) VALUES"
-				+ "('"+DT+"','"+TM+"','"+numero_carta+"','"+nuovo_credito+"','"+-amount+"','"+0+"')";
+		
+		pstmt = connection.prepareStatement("UPDATE carta_prepagata SET credito_residuo =? WHERE numero=?");
+		pstmt.setDouble(1, creditoResiduo);
+		pstmt.setString(2, numeroCarta);
+		Boolean status = pstmt.execute();
+		
+		
+		String query=("INSERT INTO movimenti_carta_prepagata(data_transazione, orario_transazione, numero, nuovo_saldo, somma, is_accredito) VALUES"
+				+ "(?, ?, ?, ?, ?, ?)");
 		Transazione.creaTransazione(query);
-		stmt.close();
+		pstmt.close();
 		connection.close();
+		
+//		Connection connection = new MySQLConnection().getMyConnection();
+//		
+//		Statement stmt = connection.createStatement();
+//		ResultSet rs = stmt.executeQuery("SELECT * FROM carta_prepagata WHERE numero='"+numeroCarta+"'");
+//		rs.next();
+//		if(TokenServlet.chiedi_codice(accountId)) System.out.println("Codice ok!");
+//		double nuovo_credito=rs.getDouble("credito_residuo")-amount;
+//		String DT=LocalDate.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd"));
+//		String TM=LocalTime.now().format(DateTimeFormatter.ofPattern("HH:mm"));
+//		String query = "UPDATE carta_prepagata SET credito_residuo ="+nuovo_credito+" WHERE numero="+numero_carta;
+//		stmt.execute(query);
+//		query="INSERT INTO movimenti_carta_prepagata(data_transazione, orario_transazione, numero, nuovo_saldo, somma, is_accredito) VALUES"
+//				+ "('"+DT+"','"+TM+"','"+numero_carta+"','"+nuovo_credito+"','"+-amount+"','"+0+"')";
+//		Transazione.creaTransazione(query);
+//		stmt.close();
+//		connection.close();
+		
 
 	}
 	
@@ -113,12 +144,24 @@ public class Carta_Prepagata implements CartaI {
 	}
 	
 	
-	public void rinnovaCarta(String numero_carta) {
+	public Carta_Prepagata rinnovaCarta(String nuovoNumero, String nuovoCvv) {
 		
-//		if(ChronoUnit.MONTHS.between(dataScadenza, temporal2Exclusive))
+		Carta_Prepagata rinnovata=new Carta_Prepagata(this.accountId, nuovoNumero, nuovoCvv, dataScadenza.plusYears(4), this.creditoResiduo);
 		
+		return rinnovata;
 	}
 
+	public void eliminaCarta() {
+		
+	}
+	
+	public boolean isScaduta() {
+		
+		if(dataScadenza.isAfter(LocalDate.now())) return true;
+		else return false;
+		
+	}
+	
 	@Override
 	public String toString() {
 		return "Carta_Prepagata [accountId=" + accountId + ", numeroCarta=" + numeroCarta + ", cvv=" + cvv

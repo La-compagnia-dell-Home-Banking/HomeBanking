@@ -8,7 +8,7 @@ public class MySQLConnection {
     private Connection CONN = null;
 
     public MySQLConnection() {
-        String password = "SLMMhsNp3G";//System.getenv("passhomebanking");
+        String password = System.getenv("passhomebanking");
         try {
             this.CONN = DriverManager.getConnection("jdbc:mysql://sql7.freemysqlhosting.net:3306/sql7347764?" +
                     "user=sql7347764&password=" + password);

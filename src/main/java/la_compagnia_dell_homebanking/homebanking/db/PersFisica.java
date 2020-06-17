@@ -11,8 +11,8 @@ public class PersFisica extends Persona {
 	
 	public PersFisica(String nome, String cognome, String telefono, String email,
 					  String codice_fiscale, String dataDiNascita, String luogoDiNascita, String indirizzo,
-					  String document, String residenza, String cap,String persona_id) throws DateTimeParseException {
-		super(nome, telefono, email, indirizzo, document, cap, persona_id);
+					  String document, String residenza, String cap) throws DateTimeParseException {
+		super(nome, telefono, email, indirizzo, document, cap, NumberGenerator.generateRandom());
 		if((this.dataDiNascita = isValidFormat(dataDiNascita)) == null) {
 			super.removeValues();
 			return;
@@ -21,7 +21,6 @@ public class PersFisica extends Persona {
 		this.luogoDiNascita = luogoDiNascita;
 		this.getDocs().setCodice_fiscale(codice_fiscale);
 		this.residenza = residenza;
-		
 		PersonaQueries.insertPersonToDb(this, getPersona_id());
 		System.out.println(this.dataDiNascita);
 	}
@@ -61,5 +60,7 @@ public class PersFisica extends Persona {
 		return stringBuilder.toString();
 	}
 
-	
+	public static void main(String[] args) {
+		System.out.println(NumberGenerator.generateRandom());
+	}
 }
