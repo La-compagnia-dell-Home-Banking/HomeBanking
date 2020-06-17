@@ -60,7 +60,4 @@ public class PersFisica extends Persona {
 		return stringBuilder.toString();
 	}
 
-	public static void main(String[] args) {
-		System.out.println(NumberGenerator.generateRandom());
-	}
 }
