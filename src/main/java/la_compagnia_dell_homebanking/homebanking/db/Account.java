@@ -35,6 +35,7 @@ public class Account {
 		else
 			this.persona = getPersonaGiuridicaFromDb(persGiur);
 		this.setPassword();
+		connection.getMyConnection().close();
 
 	}
 
@@ -69,6 +70,7 @@ public class Account {
 				id = s;
 
 		}
+		connection.getMyConnection().close();
 		return id;
 
 	}
@@ -135,6 +137,7 @@ public class Account {
 				rs.getString("email"), rs.getString("codice_fiscale"), rs.getString("data_nascita"),
 				rs.getString("luogo_nascita"), rs.getString("indirizzo"), rs.getString("documento"),
 				rs.getString("residenza"), rs.getString("cap"));
+		connection.getMyConnection().close();
 		return persona;
 	}
 
@@ -148,6 +151,7 @@ public class Account {
 				rs.getString("codice_fiscale"), rs.getString("ragione_sociale"),
 				Long.parseLong(rs.getString("partita_iva")), rs.getString("sede_legale"), rs.getString("documento"),
 				rs.getString("cap"), rs.getString("nome_rappresentante"));
+		connection.getMyConnection().close();
 		return persona;
 	}
 

@@ -36,8 +36,9 @@ public class ContoCorrente {
 	public ContoCorrente(String iban) throws SQLException {
 		this.iban = iban;
 		MySQLConnection connection = new MySQLConnection();
-		String query = "SELECT * from conto_corrente WHERE iban=" + iban;
+		String query = "SELECT * from conto_corrente WHERE iban=?";
 		PreparedStatement prstmt = connection.getMyConnection().prepareStatement(query);
+		prstmt.setString(1, iban);
 		ResultSet rs = prstmt.executeQuery();
 		rs.next();
 		account = getAccountFromDb(rs.getString("account_id"));
@@ -50,6 +51,7 @@ public class ContoCorrente {
 		saldo_disponibile = rs.getDouble("saldo_disponibile");
 		saldo_contabile = rs.getDouble("saldo_contabile");
 		account.aggiungiConto(this);
+		connection.getMyConnection().close();
 
 	}
 
@@ -119,6 +121,7 @@ public class ContoCorrente {
 				ContoCorrente conto = new ContoCorrente(rs.getString("iban"));
 				lista.add(conto);
 			}
+			connection.getMyConnection().close();
 		return lista;
 	}
 
@@ -128,26 +131,31 @@ public class ContoCorrente {
 
 	private static Account getAccountFromDb(String acc) throws SQLException {
 		MySQLConnection connection = new MySQLConnection();
-		String query = "SELECT * FROM account WHERE account_id=" + acc;
+		String query = "SELECT * FROM account WHERE account_id=?";
 		PreparedStatement prstmt = connection.getMyConnection().prepareStatement(query);
+		prstmt.setString(1, acc);
 		ResultSet rs = prstmt.executeQuery();
 		rs.next();
 		Account acco = new Account(rs.getString("account_id"));
+		connection.getMyConnection().close();
 		return acco;
 
 	}
 
 	private boolean findCartaAssociata() throws SQLException {
 		MySQLConnection connection = new MySQLConnection();
-		String query = "SELECT * FROM carta_di_credito WHERE conto=" + this.iban;
+		String query = "SELECT * FROM carta_di_credito WHERE conto=?";
 		PreparedStatement prstmt = connection.getMyConnection().prepareStatement(query);
+		prstmt.setString(1, this.iban);
 		ResultSet rs = prstmt.executeQuery();
 		rs.next();
 		if (rs.getString("numero") != null) {
 			carta = new Carta_di_Credito(rs.getString("account_id"));
+			connection.getMyConnection().close();
 			return true;
-		} else
-			return false;
+		} else {
+			connection.getMyConnection().close();
+			return false;}
 
 	}
 
