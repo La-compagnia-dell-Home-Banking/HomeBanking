@@ -1,17 +1,9 @@
 package la_compagnia_dell_homebanking.homebanking.db;
 
-import java.sql.Connection;
-import java.sql.Date;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Statement;
-import java.sql.Time;
+import java.sql.*;
 import java.time.LocalDate;
 import java.time.LocalTime;
-import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
-import java.util.List;
 
 public class Transazione {
 
@@ -64,7 +56,6 @@ public class Transazione {
 		connection.close();
 		
 		return transazioni;
-		
 	}
 	
 	public static ArrayList<Transazione> estrattoConto(String query) throws SQLException{
