@@ -104,7 +104,7 @@ public class Account {
 		PersFisica persona = new PersFisica(rs.getString("nome"), rs.getString("cognome"), rs.getString("telefono"),
 				rs.getString("email"), rs.getString("codice_fiscale"), rs.getString("data_nascita"),
 				rs.getString("luogo_nascita"), rs.getString("indirizzo"), rs.getString("documento"),
-				rs.getString("residenza"), rs.getString("cap"), pers);
+				rs.getString("residenza"), rs.getString("cap"));
 		return persona;
 	}
 
