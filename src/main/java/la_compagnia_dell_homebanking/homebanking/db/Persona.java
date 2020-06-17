@@ -10,6 +10,7 @@ public class Persona implements Cliente {
 	private String cap;
 	private String persona_id;
 
+
 	public Persona(String nome, String telefono, String email,
 				   String indirizzo, String document, String cap, String persona_id) {
 		this.nome = nome;

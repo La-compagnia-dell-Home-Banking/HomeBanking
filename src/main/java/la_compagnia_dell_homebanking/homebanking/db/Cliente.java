@@ -2,13 +2,12 @@ package la_compagnia_dell_homebanking.homebanking.db;
 public interface Cliente extends Comparable<Cliente> {
 
 	public static String generateRandom() {
-//		return PersFisica.generateRandom();
-		return null;
+
+		return NumberGenerator.generateRandom();
 	}
 
 	public static String generateRandom(long minNumber, long maxNumber) {
-//		return PersFisica.generateRandom(minNumber, maxNumber);
-		return null;
+		return NumberGenerator.generateRandom(minNumber, maxNumber);
 	}
 
 	public String getEmail();

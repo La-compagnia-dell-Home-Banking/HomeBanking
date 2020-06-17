@@ -101,23 +101,6 @@ public class Carta_Prepagata implements CartaI {
 		pstmt.close();
 		connection.close();
 		
-		
-//		Connection connection = new MySQLConnection().getMyConnection();
-//		
-//		Statement stmt = connection.createStatement();
-//		ResultSet rs = stmt.executeQuery("SELECT * FROM carta_prepagata WHERE numero='"+numeroCarta+"'");
-//		rs.next();
-//		if(TokenServlet.chiedi_codice(accountId)) System.out.println("Codice ok!");
-//		double nuovo_credito=rs.getDouble("credito_residuo")-amount;
-//		String DT=LocalDate.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd"));
-//		String TM=LocalTime.now().format(DateTimeFormatter.ofPattern("HH:mm"));
-//		String query = "UPDATE carta_prepagata SET credito_residuo ="+nuovo_credito+" WHERE numero="+numero_carta;
-//		stmt.execute(query);
-//		query="INSERT INTO movimenti_carta_prepagata(data_transazione, orario_transazione, numero, nuovo_saldo, somma, is_accredito) VALUES"
-//				+ "('"+DT+"','"+TM+"','"+numero_carta+"','"+nuovo_credito+"','"+-amount+"','"+0+"')";
-//		Transazione.creaTransazione(query);
-//		stmt.close();
-//		connection.close();
 
 	}
 	
@@ -147,23 +130,6 @@ public class Carta_Prepagata implements CartaI {
 		new Transazione(LocalDate.now(), LocalTime.now(), numeroCarta, nuovo_credito, +amount, true).creaTransazione(query);
 		pstmt.close();
 		connection.close();
-//		Connection connection = new MySQLConnection().getMyConnection();
-//
-//		Statement stmt = connection.createStatement();
-//		ResultSet rs = stmt.executeQuery("SELECT * FROM carta_prepagata WHERE numero='"+numeroCarta+"'");
-//		rs.next();
-//		
-//		double nuovo_credito=rs.getDouble("credito_residuo")+amount;
-//		String DT=LocalDate.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd"));
-//		String TM=LocalTime.now().format(DateTimeFormatter.ofPattern("HH:mm"));
-//		
-//		String query = "UPDATE carta_prepagata SET credito_residuo ="+nuovo_credito+" WHERE numero="+numero_carta;
-//		stmt.execute(query);
-//
-//		new Transazione(LocalDate.now(), LocalTime.now(), numeroCarta, nuovo_credito, amount, true).creaTransazione(query);
-//
-//		stmt.close();
-//		connection.close();
 		
 	}
 	
