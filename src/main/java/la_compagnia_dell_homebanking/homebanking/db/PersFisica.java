@@ -99,4 +99,6 @@ public class PersFisica extends Persona {
 		return stringBuilder.toString();
 	}
 
+
 }
+
