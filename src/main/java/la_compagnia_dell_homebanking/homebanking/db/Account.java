@@ -8,6 +8,7 @@ public class Account {
 	private static int accountID=0;
 	private final Persona persona;
 	private String password="";
+	private ArrayList<Carta_Prepagata> carte_disponibili = new ArrayList<Carta_Prepagata>();
 	
 	public Account(Persona persona) throws SQLException {
 		accountID++;
