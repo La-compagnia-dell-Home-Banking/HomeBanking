@@ -1,3 +1,4 @@
+
 CREATE TABLE persona_fisica(
 persona_id VARCHAR(10) PRIMARY KEY NOT NULL,
 nome VARCHAR(20) NOT NULL,
@@ -43,6 +44,7 @@ saldo_contabile FLOAT(10, 2) NOT NULL,
 FOREIGN KEY (account_id) REFERENCES account(account_id) ON DELETE CASCADE
 );
 
+
 CREATE TABLE carta_di_credito(
 conto VARCHAR (25) NOT NULL,
 account_id VARCHAR (20) NOT NULL,
@@ -64,18 +66,32 @@ FOREIGN KEY (account_id) REFERENCES account(account_id) ON DELETE CASCADE
 
 CREATE TABLE movimenti_conto(
 numero_transazione INT NOT NULL PRIMARY KEY,
+data_transazione DATE NOT NULL,
+orario_transazione TIME NOT NULL,
 iban VARCHAR(25) NOT NULL,
 nuovo_saldo FLOAT(10, 2) NOT NULL,
 somma FLOAT(10, 2) NOT NULL,
 is_accredito BOOLEAN NOT NULL,
 FOREIGN KEY (iban) REFERENCES conto_corrente(iban) ON DELETE CASCADE
 );
-
 CREATE TABLE movimenti_carta_prepagata(
 numero_transazione INT NOT NULL PRIMARY KEY,
+data_transazione DATE NOT NULL,
+orario_transazione TIME NOT NULL,
 numero VARCHAR(16) NOT NULL,
 nuovo_saldo FLOAT(10, 2) NOT NULL,
 somma FLOAT(10, 2) NOT NULL,
 is_accredito BOOLEAN NOT NULL,
 FOREIGN KEY (numero) REFERENCES carta_prepagata(numero) ON DELETE CASCADE
+<<<<<<< HEAD
+=======
+);
+
+CREATE TABLE token(
+account_id VARCHAR(20) NOT NULL PRIMARY KEY,
+data_transazione DATE NOT NULL,
+orario_transazione TIME NOT NULL,
+generated_token VARCHAR(6) NOT NULL,
+FOREIGN KEY (account_id) REFERENCES account(account_id) ON DELETE CASCADE
+>>>>>>> 6bc07a6f90db79bad29477ee77c30e3d11470e67
 );

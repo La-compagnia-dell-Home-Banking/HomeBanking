@@ -106,7 +106,6 @@ public class PersonaQueries {
                     "cognome=?");
             prstmt.setString(1, cognome);
             ResultSet rs = prstmt.executeQuery();
-
             while(rs.next()) {
                 PersFisica persFisica = populatePersonaFisica(rs);
                 System.out.println(persFisica);

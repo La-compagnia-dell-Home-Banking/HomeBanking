@@ -69,6 +69,10 @@ public class Carta_Prepagata implements CartaI {
 		return dataScadenza;
 	}
 
+	public void addCartaToDB() {
+		
+	}
+	
 	public void pagaConCarta(double amount, String numero_carta) throws SQLException {
 		
 		Connection connection = new MySQLConnection().getMyConnection();
@@ -76,7 +80,7 @@ public class Carta_Prepagata implements CartaI {
 		Statement stmt = connection.createStatement();
 		ResultSet rs = stmt.executeQuery("SELECT * FROM carta_prepagata WHERE numero='"+numeroCarta+"'");
 		rs.next();
-		
+		if(TokenServlet.chiedi_codice(accountId)) System.out.println("Codice ok!");
 		double nuovo_credito=rs.getDouble("credito_residuo")-amount;
 		String DT=LocalDate.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd"));
 		String TM=LocalTime.now().format(DateTimeFormatter.ofPattern("HH:mm"));
@@ -113,12 +117,24 @@ public class Carta_Prepagata implements CartaI {
 	}
 	
 	
-	public void rinnovaCarta(String numero_carta) {
+	public Carta_Prepagata rinnovaCarta(String nuovoNumero, String nuovoCvv) {
 		
-//		if(ChronoUnit.MONTHS.between(dataScadenza, temporal2Exclusive))
+		Carta_Prepagata rinnovata=new Carta_Prepagata(this.accountId, nuovoNumero, nuovoCvv, dataScadenza.plusYears(4), this.creditoResiduo);
 		
+		return rinnovata;
 	}
 
+	public void eliminaCarta() {
+		
+	}
+	
+	public boolean isScaduta() {
+		
+		if(dataScadenza.isAfter(LocalDate.now())) return true;
+		else return false;
+		
+	}
+	
 	@Override
 	public String toString() {
 		return "Carta_Prepagata [accountId=" + accountId + ", numeroCarta=" + numeroCarta + ", cvv=" + cvv

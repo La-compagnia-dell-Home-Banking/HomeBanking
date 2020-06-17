@@ -1,7 +1,4 @@
-package com.javacourse;
-
-import la_compagnia_dell_homebanking.homebanking.db.MySQLConnection;
-
+package la_compagnia_dell_homebanking.homebanking.db;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
@@ -21,7 +18,7 @@ import java.util.Scanner;
 
 
 @WebServlet(urlPatterns = {"/token"})
-public class HelloServlet extends HttpServlet{
+public class TokenServlet extends HttpServlet{
 
 	private static final long serialVersionUID = 10L;
 
@@ -110,9 +107,7 @@ public class HelloServlet extends HttpServlet{
 			if(t>=60) t=-1;
 			boolean valid=((data_ultimo.equals(LocalDate.now())&&(t>=0 && t<=60)));
 			if(!valid) {
-
-				HelloServlet.generate(account_id);
-
+				TokenServlet.generate(account_id);
 			}
 			rs = stmt.executeQuery("SELECT * FROM token WHERE account_id='"+account_id+"'");
 			rs.next();
