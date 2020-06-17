@@ -8,7 +8,7 @@ import java.util.List;
 
 public class PersonaQueries {
 
-    public List<Persona> getAllPerson() throws SQLException {
+    public static List<Persona> getAllPerson() throws SQLException {
         List<Persona> persone = new ArrayList<>();
         MySQLConnection connection = new MySQLConnection();
         try {
@@ -32,7 +32,7 @@ public class PersonaQueries {
         return persone;
     }
 
-    private PersFisica populatePersonaFisica(ResultSet resultSet) throws SQLException {
+    private static PersFisica populatePersonaFisica(ResultSet resultSet) throws SQLException {
         String person_id = resultSet.getString("persona_id");
         String nome = resultSet.getString("nome");
         String cognome = resultSet.getString("cognome");
@@ -49,7 +49,7 @@ public class PersonaQueries {
                 indirizzo,documento,residenza,cap,person_id,true);
     }
 
-    private Persona populatePersonaGiuridica(ResultSet resultSet) throws SQLException {
+    private static PersGiuridica populatePersonaGiuridica(ResultSet resultSet) throws SQLException {
         String azienda_id = resultSet.getString("azienda_id");
         String ragione_sociale = resultSet.getString("ragione_sociale");
         String email = resultSet.getString("email");
@@ -66,7 +66,7 @@ public class PersonaQueries {
     }
 
 
-    public Persona getPersonaById(String id) {
+    public static Persona getPersonaById(String id) {
         MySQLConnection connection = new MySQLConnection();
         try {
             PreparedStatement prstmt = connection.getMyConnection().prepareStatement("SELECT * from persona_fisica" +
@@ -98,7 +98,7 @@ public class PersonaQueries {
         return null;
     }
 
-    public List<PersFisica> getPersonaByCognome(String cognome) {
+    public static List<PersFisica> getPersonaByCognome(String cognome) {
         List<PersFisica> listCognome = new ArrayList<>();
         MySQLConnection connection = new MySQLConnection();
         try {
@@ -127,7 +127,7 @@ public class PersonaQueries {
         }
         return null;
     }
-    public List<PersFisica> getPersonByBirthDate(String data) {
+    public static List<PersFisica> getPersonByBirthDate(String data) {
         PersFisica.isValidFormat(data);
         List<PersFisica> listCognome = new ArrayList<>();
         MySQLConnection connection = new MySQLConnection();
@@ -159,6 +159,64 @@ public class PersonaQueries {
         return null;
     }
 
+    public static void updatePersonF(String personId, String indirizzo, String residenza, String cap, String email,
+                                   String telefono) {
+        MySQLConnection connection = new MySQLConnection();
+        try {
+            PreparedStatement prstmt = connection.getMyConnection().prepareStatement("UPDATE persona_fisica" +
+                    " SET indirizzo=?, residenza=?, cap=?, email=?, telefono=?  WHERE persona_id=?");
+            prstmt.setString(1, indirizzo);
+            prstmt.setString(2, residenza);
+            prstmt.setString(3, cap);
+            prstmt.setString(4, email);
+            prstmt.setString(5, telefono);
+            prstmt.setString(6, personId);
+            prstmt.execute();
+            System.out.println("Person with ID: '" + personId + "' was successfully updated.");
+
+        } catch (SQLException e) {
+            printExceptions(e);
+        } finally {
+            try {
+                connection.getMyConnection().close();
+            } catch (SQLException e) {
+                printExceptions(e);
+            }
+        }
+        System.out.println("Errore. Person does not exist.");
+    }
+
+    public static void updatePersonG(String personId, String nome_rappresentante, String cognome_rappresentante,
+                                     String sede_legale, String indirizzo, String cap, String email,
+                                     String telefono) {
+        MySQLConnection connection = new MySQLConnection();
+        try {
+            PreparedStatement prstmt = connection.getMyConnection().prepareStatement("UPDATE persona_giuridica" +
+                    " SET nome_rappresentante=?, cognome_rappresentante=?," +
+                    " sede_legale=?, indirizzo=?, cap=?, email=?, telefono=?  WHERE azienda_id=?");
+            prstmt.setString(1, nome_rappresentante);
+            prstmt.setString(2, cognome_rappresentante);
+            prstmt.setString(3, sede_legale);
+            prstmt.setString(4, indirizzo);
+            prstmt.setString(5, cap);
+            prstmt.setString(6, email);
+            prstmt.setString(7, telefono);
+            prstmt.setString(8, personId);
+            prstmt.execute();
+            System.out.println("Person with ID: '" + personId + "' was successfully updated.");
+            return;
+        } catch (SQLException e) {
+            printExceptions(e);
+        } finally {
+            try {
+                connection.getMyConnection().close();
+            } catch (SQLException e) {
+                printExceptions(e);
+            }
+        }
+        System.out.println("Errore. Person does not exist.");
+    }
+
 
 
     public static void printExceptions(SQLException e) {
@@ -166,4 +224,5 @@ public class PersonaQueries {
         System.out.println(new StringBuilder().append("SQLState: ").append(e.getSQLState()));
         System.out.println(new StringBuilder().append("VendorError: ").append(e.getErrorCode()));
     }
+
 }

@@ -7,10 +7,10 @@ codice_fiscale VARCHAR(16) NOT NULL UNIQUE,
 data_nascita DATE NOT NULL ,
 luogo_nascita VARCHAR (20) NOT NULL,
 residenza VARCHAR (20) NOT NULL,
-indirizzo VARCHAR (30) NOT NULL UNIQUE,
+indirizzo VARCHAR (30) NOT NULL,
 cap VARCHAR (6) NOT NULL,
-email VARCHAR (30) NOT NULL UNIQUE,
-telefono VARCHAR (13) NOT NULL UNIQUE,
+email VARCHAR (30) NOT NULL,
+telefono VARCHAR (13) NOT NULL,
 documento VARCHAR (10) NOT NULL UNIQUE
 );
 
@@ -83,8 +83,6 @@ nuovo_saldo FLOAT(10, 2) NOT NULL,
 somma FLOAT(10, 2) NOT NULL,
 is_accredito BOOLEAN NOT NULL,
 FOREIGN KEY (numero) REFERENCES carta_prepagata(numero) ON DELETE CASCADE
-<<<<<<< HEAD
-=======
 );
 
 CREATE TABLE token(
@@ -93,5 +91,4 @@ data_transazione DATE NOT NULL,
 orario_transazione TIME NOT NULL,
 generated_token VARCHAR(6) NOT NULL,
 FOREIGN KEY (account_id) REFERENCES account(account_id) ON DELETE CASCADE
->>>>>>> 6bc07a6f90db79bad29477ee77c30e3d11470e67
 );

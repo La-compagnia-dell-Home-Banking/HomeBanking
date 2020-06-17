@@ -31,9 +31,9 @@ public class Account {
 		String persFis = rs.getString("persona_id");
 		String persGiur = rs.getString("azienda_id");
 		if (persFis != null)
-			this.persona = getPersonaFisicaFromDb(persFis);
+			this.persona = PersonaQueries.getPersonaById(persFis);
 		else
-			this.persona = getPersonaGiuridicaFromDb(persGiur);
+			this.persona = PersonaQueries.getPersonaById(persGiur);
 		this.setPassword();
 		connection.getMyConnection().close();
 
@@ -75,29 +75,6 @@ public class Account {
 
 	}
 
-
-//	private boolean insertAccountToDb() throws SQLException {
-//		MySQLConnection connection = new MySQLConnection();
-//		String query = "INSERT INTO account VALUES (?,?,?)";
-//
-//		PreparedStatement prstmt = connection.getMyConnection().prepareStatement(query);
-//		prstmt.setString(1, Integer.toString(accountID));
-//		prstmt.setString(2, this.persona.getPersona_id());
-//		prstmt.setString(3, personaFisica.getCognome());
-//		prstmt.setString(4, personaFisica.getDocs().getCodice_fiscale());
-//		prstmt.setString(5, personaFisica.getdataDiNascita());
-//		prstmt.setString(6, personaFisica.getLuogoDiNascita());
-//		prstmt.setString(7, personaFisica.getResidenza());
-//		prstmt.setString(8, personaFisica.getIndirizzo());
-//		prstmt.setString(9, personaFisica.getCap());
-//		prstmt.setString(10, personaFisica.getEmail());
-//		prstmt.setString(11, personaFisica.getTelefono());
-//		prstmt.setString(12, personaFisica.getDocs().getDocument());
-//		Boolean status = prstmt.execute();
-//		connection.getMyConnection().close();
-//		return status;
-//	}
-	
 	private void setPassword() {
 		System.out.println("Imposta la password");
 		Scanner in= new Scanner(System.in);
@@ -124,35 +101,6 @@ public class Account {
 		boolean s = conto.insertCCToDb(this);
 		return lista_conti.add(conto);
 
-	}
-
-	private Persona getPersonaFisicaFromDb(String pers) throws SQLException {
-
-		MySQLConnection connection = new MySQLConnection();
-		String query = "SELECT * FROM persona_fisica WHERE persona_id=" + pers;
-		PreparedStatement prstmt = connection.getMyConnection().prepareStatement(query);
-		ResultSet rs = prstmt.executeQuery();
-		rs.next();
-		PersFisica persona = new PersFisica(rs.getString("nome"), rs.getString("cognome"), rs.getString("telefono"),
-				rs.getString("email"), rs.getString("codice_fiscale"), rs.getString("data_nascita"),
-				rs.getString("luogo_nascita"), rs.getString("indirizzo"), rs.getString("documento"),
-				rs.getString("residenza"), rs.getString("cap"));
-		connection.getMyConnection().close();
-		return persona;
-	}
-
-	private Persona getPersonaGiuridicaFromDb(String pers) throws SQLException {
-		MySQLConnection connection = new MySQLConnection();
-		String query = "SELECT * FROM persona_giuridica WHERE azienda_id=" + pers;
-		PreparedStatement prstmt = connection.getMyConnection().prepareStatement(query);
-		ResultSet rs = prstmt.executeQuery();
-		rs.next();
-		PersGiuridica persona = new PersGiuridica(rs.getString("nome"), rs.getString("telefono"), rs.getString("email"),
-				rs.getString("codice_fiscale"), rs.getString("ragione_sociale"),
-				Long.parseLong(rs.getString("partita_iva")), rs.getString("sede_legale"), rs.getString("documento"),
-				rs.getString("cap"), rs.getString("nome_rappresentante"));
-		connection.getMyConnection().close();
-		return persona;
 	}
 
 }
