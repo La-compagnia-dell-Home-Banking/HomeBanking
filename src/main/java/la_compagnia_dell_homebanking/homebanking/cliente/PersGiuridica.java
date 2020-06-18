@@ -47,12 +47,12 @@ public class PersGiuridica extends Persona {
 			prstmt.setString(11, persona.getDocs().getDocument());
 			status = prstmt.execute();
 		} catch (SQLException e) {
-			PersonaDao.printExceptions(e);
+			PersonaDao.printexceptions(e);
 		} finally {
 			try {
 				connection.getMyConnection().close();
 			} catch (SQLException e) {
-				PersonaDao.printExceptions(e);
+				PersonaDao.printexceptions(e);
 			}
 		}
 		System.out.println(new StringBuilder().append("Success. ").append(persona.toString()).

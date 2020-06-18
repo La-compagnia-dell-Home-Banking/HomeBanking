@@ -111,4 +111,8 @@ public class Account {
 
 	}
 
+	public boolean bloccareCarta() {
+		return false;
+	}
+
 }

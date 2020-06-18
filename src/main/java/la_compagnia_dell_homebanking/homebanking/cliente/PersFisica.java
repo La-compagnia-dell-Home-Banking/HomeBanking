@@ -66,12 +66,12 @@ public class PersFisica extends Persona {
 			prstmt.setString(12, personaFisica.getDocs().getDocument());
 			status = prstmt.execute();
 		} catch (SQLException e) {
-			PersonaDao.printExceptions(e);
+			PersonaDao.printexceptions(e);
 		} finally {
 			try {
 				connection.getMyConnection().close();
 			} catch (SQLException e) {
-				PersonaDao.printExceptions(e);
+				PersonaDao.printexceptions(e);
 			}
 		}
 		System.out.println(new StringBuilder().append("Success. Client ").append(personaFisica.toString()).

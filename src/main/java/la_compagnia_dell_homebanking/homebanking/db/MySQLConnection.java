@@ -45,4 +45,15 @@ public class MySQLConnection {
     public SQLException getException() {
         return exception;
     }
+    public static void closeAllConnections(MySQLConnection connection, ResultSet resultSet) {
+        if (connection.getMyConnection() != null) try { connection.getMyConnection().close(); } catch (SQLException e) { printExceptions(e); }
+        if (resultSet != null) try { resultSet.close(); } catch (SQLException e) { printExceptions(e); }
+        if (connection.getStmt() != null) try { connection.getStmt().close(); } catch (SQLException e) { printExceptions(e); }
+    }
+
+    public static void printExceptions(SQLException e) {
+        System.out.println(new StringBuilder().append("SQLException: ").append(e.getMessage()));
+        System.out.println(new StringBuilder().append("SQLState: ").append(e.getSQLState()));
+        System.out.println(new StringBuilder().append("VendorError: ").append(e.getErrorCode()));
+    }
 }
