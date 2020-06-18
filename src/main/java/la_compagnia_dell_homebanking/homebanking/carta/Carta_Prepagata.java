@@ -4,6 +4,10 @@ import la_compagnia_dell_homebanking.homebanking.db.MySQLConnection;
 import la_compagnia_dell_homebanking.homebanking.TokenServlet;
 import la_compagnia_dell_homebanking.homebanking.Transazione;
 
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.sql.Connection;
 import java.sql.Date;
 import java.sql.PreparedStatement;
@@ -12,6 +16,7 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.time.LocalDate;
 import java.time.LocalTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 
 public class Carta_Prepagata implements CartaI {
@@ -19,7 +24,7 @@ public class Carta_Prepagata implements CartaI {
 	private String accountId, numeroCarta, cvv;
 	private double creditoResiduo;
 	private LocalDate dataScadenza;
-	ArrayList<Transazione> transazioni;
+	private ArrayList<Transazione> transazioni;
 	
 	public Carta_Prepagata(String accountId, String numeroCarta, String cvv, LocalDate dataScadenza, double creditoResiduo) {
 		this.accountId = accountId;
@@ -45,6 +50,12 @@ public class Carta_Prepagata implements CartaI {
 		conn.close();
 	}
 	
+	/**
+	 * @author Gianmarco Polichetti
+	 * @param account_id: l'account del quale si vogliono conoscere le carte prepagate collegate
+	 * @version 0.0.1
+	 * @return lista: la lista delle carte collegate all'account
+	 * Legge le carte prepagate collegate all'account dal DB e le salva in un ArrayList*/
 	public static ArrayList<Carta_Prepagata> readCarte(String account_id) throws SQLException {
 
 			Connection connection=new MySQLConnection().getMyConnection();
@@ -63,6 +74,8 @@ public class Carta_Prepagata implements CartaI {
 			connection.close();
 			return lista;
 	}
+	
+	
 	/**
 	 * @author Gianmarco Polichetti
 	 * @param amount: La somma da pagare
@@ -97,10 +110,12 @@ public class Carta_Prepagata implements CartaI {
 		new Transazione(LocalDate.now(), LocalTime.now(), numeroCarta, nuovo_credito, -amount, false).creaTransazione(query);
 		
 		//chiudo le connessioni al DB
+		rs.close();
 		pstmt.close();
 		connection.close();
 		
 	}
+	
 	/**
 	 * @author Gianmarco Polichetti
 	 * @param amount: La somma da ricaricare
@@ -135,6 +150,7 @@ public class Carta_Prepagata implements CartaI {
 		new Transazione(LocalDate.now(), LocalTime.now(), numeroCarta, nuovo_credito, +amount, true).creaTransazione(query);
 		
 		//chiudo le connessioni al DB
+		rs.close();
 		pstmt.close();
 		connection.close();
 		
@@ -185,10 +201,9 @@ public class Carta_Prepagata implements CartaI {
 	
 	/**
 	 * @author Gianmarco Polichetti
-	 * @param numero: Il numero di una carta da eliminare 
 	 * @version 0.0.1
 	 * @return flag: Indica se l'operazione è riuscita o fallita
-	 * Metodo per eliminare una carta dal DB*/
+	 * Metodo per eliminare una carta dal DB in base al numero della carta*/
 	public boolean eliminaCartaFromDb() throws SQLException {
 
 		//connetto al DB
@@ -209,45 +224,90 @@ public class Carta_Prepagata implements CartaI {
 	
 	/**
 	 * @author Gianmarco Polichetti
-	 * @param numero: Il numero di una carta da eliminare 
 	 * @version 0.0.1
-	 * @return flag: Indica se l'operazione è riuscita o fallita
-	 * Metodo per eliminare una carta dal DB*/
+	 * @return True se la data di scadenza è superata rispetto alla data attuale, false altrimenti
+	 * Metodo per controllare se una carta è scaduta*/
 	public boolean isScaduta() {
 		
-		if(dataScadenza.isAfter(LocalDate.now())) return true;
+		if(dataScadenza.isBefore(LocalDate.now())) return true;
 		else return false;
 		
 	}
 	
+	/**
+	 * @author Gianmarco Polichetti
+	 * @version 0.0.1
+	 * Metodo che salva tutti i movimenti di una carta su di un ArrayList "transazioni"*/
 	public void transazioniCarta() throws SQLException {
 		String q="SELECT * FROM movimenti_carta_prepagata WHERE numero='"+numeroCarta+"'";
 		transazioni=Transazione.estrattoContoCarta(q);
 	}
 	
-	public void getEstrattoConto() throws SQLException {		
+	/**
+	 * @author Gianmarco Polichetti
+	 * @version 0.0.1
+	 * Metodo che scrive e restituisce un file contenente l'estratto conto di una carta*/
+	public File getEstrattoConto() throws SQLException {		
 		transazioniCarta();
-		System.out.println("Estratto conto carta numero: "+numeroCarta);
-		for(Transazione t:transazioni) {
-			System.out.println(t.getData()+", "+t.getOrario()+"   "+t.getMovimento()+"   "+t.getSaldo());
+		
+		try(BufferedWriter out = new BufferedWriter(new FileWriter("C:\\Users\\"+System.getProperty("user.name")+"\\Documents\\HomeBanking\\Estratto conto "+numeroCarta+".txt", true));) {
+			out.write("Estratto conto carta numero: "+numeroCarta+"\n"+LocalDate.now()+" "+LocalTime.now().format(DateTimeFormatter.ofPattern("HH:mm:ss"))+"\n\n");			
+			for(Transazione t:transazioni) {
+				out.write(t.getData()+", "+t.getOrario()+"   "+t.getMovimento()+"   "+t.getSaldo()+"\n\n");
+			}
+			
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
 		}
-				
+
+		File res=new File("C:\\Users\\"+System.getProperty("user.name")+"\\Documents\\HomeBanking\\Estratto conto "+numeroCarta+".txt");
+		return res;
 	}
 	
-	public void getEntrate() throws SQLException {
+	/**
+	 * @author Gianmarco Polichetti
+	 * @version 0.0.1
+	 * Metodo che scrive e restituisce un file contenente le entrate di una carta*/
+	public File getEntrate() throws SQLException {
 		transazioniCarta();
-		System.out.println("Entrate carta numero: "+numeroCarta);
-		for(Transazione t:transazioni) {
-			if(t.isAccredito())	System.out.println(t.getData()+", "+t.getOrario()+"   "+t.getMovimento()+"   "+t.getSaldo());
+		
+		try(BufferedWriter out = new BufferedWriter(new FileWriter("C:\\Users\\"+System.getProperty("user.name")+"\\Documents\\HomeBanking\\Entrate "+numeroCarta+".txt", true));) {
+			out.write("Entrate carta numero: "+numeroCarta+"\n"+LocalDate.now()+" "+LocalTime.now().format(DateTimeFormatter.ofPattern("HH:mm:ss"))+"\n\n");			
+			for(Transazione t:transazioni) {
+				if(t.isAccredito()) out.write(t.getData()+", "+t.getOrario()+"   "+t.getMovimento()+"   "+t.getSaldo()+"\n\n");
+			}
+			
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
 		}
+
+		File res=new File("C:\\Users\\"+System.getProperty("user.name")+"\\Documents\\HomeBanking\\Entrate "+numeroCarta+".txt");
+		return res;
 	}
 	
-	public void getUscite() throws SQLException {
+	/**
+	 * @author Gianmarco Polichetti
+	 * @version 0.0.1
+	 * Metodo che scrive e restituisce un file contenente le uscite di una carta*/
+	public File getUscite() throws SQLException {
 		transazioniCarta();
-		System.out.println("Uscite carta numero: "+numeroCarta);
-		for(Transazione t:transazioni) {
-			if(!t.isAccredito()) System.out.println(t.getData()+", "+t.getOrario()+"   "+t.getMovimento()+"   "+t.getSaldo());
+		
+		try(BufferedWriter out = new BufferedWriter(new FileWriter("C:\\Users\\"+System.getProperty("user.name")+"\\Documents\\HomeBanking\\Uscite "+numeroCarta+".txt", true));) {
+			out.write("Uscite carta numero: "+numeroCarta+"\n"+LocalDate.now()+" "+LocalTime.now().format(DateTimeFormatter.ofPattern("HH:mm:ss"))+"\n\n");
+			for(Transazione t:transazioni) {
+				if(!t.isAccredito()) out.write(t.getData()+", "+t.getOrario()+"   "+t.getMovimento()+"   "+t.getSaldo()+"\n\n");
+			}
+			
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
 		}
+		
+		File res=new File("C:\\Users\\"+System.getProperty("user.name")+"\\Documents\\HomeBanking\\Uscite "+numeroCarta+".txt");
+		return res;
+
 	}
 	
 	

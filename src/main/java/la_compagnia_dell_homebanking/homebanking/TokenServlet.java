@@ -35,7 +35,6 @@ public class TokenServlet extends HttpServlet{
 		String codice_attuale = null;
 		try {
 			Connection connection = new MySQLConnection().getMyConnection();
-			Statement stmt = connection.createStatement();
 			PreparedStatement pstmt = connection.prepareStatement("SELECT * FROM token WHERE account_id=?");
 			pstmt.setString(1, account_id);
 			ResultSet rs = pstmt.executeQuery();
@@ -95,16 +94,19 @@ public class TokenServlet extends HttpServlet{
 
 	public static boolean chiedi_codice(String account_id) throws SQLException {
 		Connection connection = new MySQLConnection().getMyConnection();
-		Statement stmt = connection.createStatement();
+		PreparedStatement pstmt = null;
 		Scanner in=new Scanner(System.in);
 		String code_in = null;
 		String gen=null;
 
 
+
 		do {
 			System.out.println("Inserisci codice token generato");
 			code_in=in.nextLine();
-			ResultSet rs = stmt.executeQuery("SELECT * FROM token WHERE account_id='"+account_id+"'");
+			pstmt = connection.prepareStatement("SELECT * FROM token WHERE account_id=?");
+			pstmt.setString(1, account_id);
+			ResultSet rs = pstmt.executeQuery();
 			rs.next();
 			LocalDate data_ultimo=rs.getDate("data_transazione").toLocalDate();
 			LocalTime orario_ultimo=rs.getTime("orario_transazione").toLocalTime();
@@ -114,7 +116,7 @@ public class TokenServlet extends HttpServlet{
 			if(!valid) {
 				TokenServlet.generate(account_id);
 			}
-			rs = stmt.executeQuery("SELECT * FROM token WHERE account_id='"+account_id+"'");
+			rs = pstmt.executeQuery();
 			rs.next();
 			gen=rs.getString("generated_token");
 
@@ -123,7 +125,7 @@ public class TokenServlet extends HttpServlet{
 		}while(!(code_in.equals(gen)));
 
 		connection.close();
-		stmt.close();
+		pstmt.close();
 
 
 		return true;

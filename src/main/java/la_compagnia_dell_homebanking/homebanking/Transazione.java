@@ -26,7 +26,12 @@ public class Transazione {
 		this.movimento = movimento;
 		this.accredito = accredito;
 	}
-
+	
+	/**
+	 * @author Gianmarco Polichetti
+	 * @param query: la query lanciata dai metodi per creare una transazione in entrata o in uscita
+	 * @version 0.0.1
+	 * Prende in input una query e genera una transazione che viene salvata nel DB*/
 	public void creaTransazione(String query) throws SQLException {
 		
 		Connection connection = new MySQLConnection().getMyConnection();
@@ -54,6 +59,7 @@ public class Transazione {
 			transazioni.add(new Transazione(rs.getDate("data_transazione").toLocalDate(), rs.getTime("orario_transazione").toLocalTime(),
 					rs.getString("numero"), rs.getDouble("nuovo_saldo"), rs.getDouble("somma"), rs.getBoolean("is_accredito")));
 		}
+		rs.close();
 		stmt.close();
 		connection.close();
 		
@@ -70,6 +76,7 @@ public class Transazione {
 			transazioni.add(new Transazione(rs.getDate("data_transazione").toLocalDate(), rs.getTime("orario_transazione").toLocalTime(),
 					rs.getString("iban"), rs.getDouble("nuovo_saldo"), rs.getDouble("somma"), rs.getBoolean("is_accredito")));
 		}
+		rs.close();
 		stmt.close();
 		connection.close();
 		
