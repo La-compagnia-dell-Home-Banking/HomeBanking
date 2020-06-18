@@ -1,4 +1,6 @@
-package la_compagnia_dell_homebanking.homebanking.db;
+package la_compagnia_dell_homebanking.homebanking.cliente;
+
+import la_compagnia_dell_homebanking.homebanking.db.MySQLConnection;
 
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
@@ -52,11 +54,8 @@ public class PersGiuridica extends Persona {
 				PersonaQueries.printExceptions(e);
 			}
 		}
-		if(status != null && status) {
-			StringBuilder stringBuilder = new StringBuilder().append("Success. ").append(persona.toString()).
-					append(" was created.");
-			System.out.println(stringBuilder);
-		}
+		System.out.println(new StringBuilder().append("Success. ").append(persona.toString()).
+					append(" was created.").toString());
 	}
 
 	public String getNomeRappresentante() {

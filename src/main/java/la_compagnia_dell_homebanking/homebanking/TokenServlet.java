@@ -1,4 +1,6 @@
-package la_compagnia_dell_homebanking.homebanking.db;
+package la_compagnia_dell_homebanking.homebanking;
+import la_compagnia_dell_homebanking.homebanking.db.MySQLConnection;
+
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;

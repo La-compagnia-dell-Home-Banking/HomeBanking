@@ -1,4 +1,6 @@
-package la_compagnia_dell_homebanking.homebanking.db;
+package la_compagnia_dell_homebanking.homebanking;
+
+import la_compagnia_dell_homebanking.homebanking.db.MySQLConnection;
 
 import java.sql.*;
 import java.time.LocalDate;

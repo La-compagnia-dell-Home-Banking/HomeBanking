@@ -6,6 +6,7 @@ public class MySQLConnection {
 
     private Statement stmt = null;
     private Connection conn = null;
+    private SQLException exception;
 
     public MySQLConnection() {
         String password = System.getenv("passhomebanking");
@@ -26,6 +27,7 @@ public class MySQLConnection {
                     + db_name + "?user=" + username + "&password=" + password);
             stmt = conn.createStatement();
         } catch (SQLException e) {
+            this.exception = e;
             System.out.println(new StringBuilder().append("SQLException: ").append(e.getMessage()));
             System.out.println(new StringBuilder().append("SQLState: ").append(e.getSQLState()));
             System.out.println(new StringBuilder().append("VendorError: ").append(e.getErrorCode()));
@@ -40,4 +42,7 @@ public class MySQLConnection {
         return this.conn;
     }
 
+    public SQLException getException() {
+        return exception;
+    }
 }

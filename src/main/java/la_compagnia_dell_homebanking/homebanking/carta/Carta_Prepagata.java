@@ -1,4 +1,8 @@
-package la_compagnia_dell_homebanking.homebanking.db;
+package la_compagnia_dell_homebanking.homebanking.carta;
+
+import la_compagnia_dell_homebanking.homebanking.db.MySQLConnection;
+import la_compagnia_dell_homebanking.homebanking.TokenServlet;
+import la_compagnia_dell_homebanking.homebanking.Transazione;
 
 import java.io.BufferedWriter;
 import java.io.File;
@@ -12,8 +16,6 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.time.LocalDate;
 import java.time.LocalTime;
-import java.time.format.DateTimeFormatter;
-import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 
 public class Carta_Prepagata implements CartaI {

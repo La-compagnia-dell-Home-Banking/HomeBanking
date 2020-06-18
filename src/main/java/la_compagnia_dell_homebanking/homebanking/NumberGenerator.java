@@ -1,4 +1,4 @@
-package la_compagnia_dell_homebanking.homebanking.db;
+package la_compagnia_dell_homebanking.homebanking;
 
 /**
  * @author oleskiy OS, Alessio d'Inverno

@@ -1,12 +1,13 @@
-package la_compagnia_dell_homebanking.homebanking.db;
+package la_compagnia_dell_homebanking.homebanking;
 
-import java.sql.Connection;
+import la_compagnia_dell_homebanking.homebanking.carta.Carta_di_Credito;
+import la_compagnia_dell_homebanking.homebanking.db.MySQLConnection;
+
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.util.*;
 
 import java.sql.SQLException;
-import java.sql.Statement;
 import java.time.LocalDate;
 
 public class ContoCorrente {
