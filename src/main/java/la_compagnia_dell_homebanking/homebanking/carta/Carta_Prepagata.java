@@ -16,6 +16,7 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.time.LocalDate;
 import java.time.LocalTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 
 public class Carta_Prepagata implements CartaI {
@@ -23,7 +24,7 @@ public class Carta_Prepagata implements CartaI {
 	private String accountId, numeroCarta, cvv;
 	private double creditoResiduo;
 	private LocalDate dataScadenza;
-	ArrayList<Transazione> transazioni;
+	private ArrayList<Transazione> transazioni;
 	
 	public Carta_Prepagata(String accountId, String numeroCarta, String cvv, LocalDate dataScadenza, double creditoResiduo) {
 		this.accountId = accountId;
@@ -109,10 +110,12 @@ public class Carta_Prepagata implements CartaI {
 		new Transazione(LocalDate.now(), LocalTime.now(), numeroCarta, nuovo_credito, -amount, false).creaTransazione(query);
 		
 		//chiudo le connessioni al DB
+		rs.close();
 		pstmt.close();
 		connection.close();
 		
 	}
+	
 	/**
 	 * @author Gianmarco Polichetti
 	 * @param amount: La somma da ricaricare
@@ -147,6 +150,7 @@ public class Carta_Prepagata implements CartaI {
 		new Transazione(LocalDate.now(), LocalTime.now(), numeroCarta, nuovo_credito, +amount, true).creaTransazione(query);
 		
 		//chiudo le connessioni al DB
+		rs.close();
 		pstmt.close();
 		connection.close();
 		

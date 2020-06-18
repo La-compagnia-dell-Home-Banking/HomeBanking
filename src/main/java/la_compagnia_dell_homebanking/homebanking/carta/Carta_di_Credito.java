@@ -2,6 +2,7 @@ package la_compagnia_dell_homebanking.homebanking.carta;
 
 import la_compagnia_dell_homebanking.homebanking.db.MySQLConnection;
 import la_compagnia_dell_homebanking.homebanking.TokenServlet;
+import la_compagnia_dell_homebanking.homebanking.Transazione;
 
 import java.sql.Connection;
 import java.sql.Date;
@@ -30,14 +31,14 @@ public class Carta_di_Credito implements CartaI {
 		this.dataScadenza = dataScadenza;
 	}
 
-	public Carta_di_Credito(String accountId) throws SQLException {
+	public Carta_di_Credito(String numeroCarta) throws SQLException {
 		
 		Connection connection=new MySQLConnection().getMyConnection();
 		Statement stmt = connection.createStatement();
-		ResultSet rs = stmt.executeQuery("SELECT * FROM carta_di_credito WHERE account_id='"+accountId+"'");
+		ResultSet rs = stmt.executeQuery("SELECT * FROM carta_di_credito WHERE numero='"+numeroCarta+"'");
 		rs.next();
-		this.accountId=accountId;
-		numeroCarta=rs.getString("numero");
+		accountId=rs.getString("account_id");
+		this.numeroCarta=numeroCarta;
 		cvv=rs.getString("cvv");
 		conto_corrente=rs.getString("conto");
 		dataScadenza=rs.getDate("scadenza").toLocalDate();
@@ -47,48 +48,17 @@ public class Carta_di_Credito implements CartaI {
 		
 	}
 	
-
-
-
-	@Override
-	public String getAccountId() {
-		return accountId;
-	}
-
-
-	@Override
-	public String getNumeroCarta() {
-		return numeroCarta;
-	}
-
-
-	@Override
-	public LocalDate getDataScadenza() {
-		return dataScadenza;
-	}
-
-
-	@Override
-	public String getCvv() {
-		return cvv;
-	}
-
-
-	public String getConto_corrente() {
-		return conto_corrente;
-	}
-
 	/**
 	 * @author Gianmarco Polichetti
-	 * @param account_id: l'account del quale si vogliono conoscere le carte prepagate collegate
+	 * @param account_id: l'account del quale si vuole conoscere la carta di credito collegata
 	 * @version 0.0.1
-	 * @return lista: la lista delle carte collegate all'account
-	 * Legge le carte prepagate collegate all'account dal DB e le salva in un ArrayList*/
-	public static ArrayList<Carta_Prepagata> readCarte(String account_id) throws SQLException {
+	 * @return carta: la carta collegata all'account
+	 * Legge la carta di credito collegata all'account dal DB e la restituisce*/
+	public static Carta_di_Credito readCarta(String account_id) throws SQLException {
 
 			Connection connection=new MySQLConnection().getMyConnection();
-			ArrayList<Carta_Prepagata> lista = new ArrayList<Carta_Prepagata>();
-			String query = "SELECT * FROM carta_prepagata WHERE account_id=?";
+			Carta_di_Credito carta = null;
+			String query = "SELECT * FROM carta_di_credito WHERE account_id=?";
 			PreparedStatement prstmt = connection.prepareStatement(query);
 			prstmt.setString(1, account_id);
 			
@@ -96,11 +66,13 @@ public class Carta_di_Credito implements CartaI {
 
 			while (rs.next()) { // Leggiamo i risultati
 
-				Carta_Prepagata carta = new Carta_Prepagata(rs.getString("numero"));
-				lista.add(carta);
+				carta = new Carta_di_Credito(rs.getString("numero"));
+
 			}
+			rs.close();
+			prstmt.close();
 			connection.close();
-			return lista;
+			return carta;
 	}
 	
 	/**
@@ -134,10 +106,11 @@ public class Carta_di_Credito implements CartaI {
 		Boolean status = pstmt.execute();
 		
 		//creo la nuova transazione in uscita sul DB
-		String query=("INSERT INTO movimenti_conto_corrente(data_transazione, orario_transazione, numero, nuovo_saldo, somma, is_accredito) VALUES(?,?,?,?,?,?)");
-		new Transazione(LocalDate.now(), LocalTime.now(), numeroCarta, nuovo_credito, -amount, false).creaTransazione(query);
+		String query=("INSERT INTO movimenti_conto(data_transazione, orario_transazione, iban, nuovo_saldo, somma, is_accredito) VALUES(?,?,?,?,?,?)");
+		new Transazione(LocalDate.now(), LocalTime.now(), conto_corrente, nuovo_credito, -amount, false).creaTransazione(query);
 		
 		//chiudo le connessioni al DB
+		rs.close();
 		pstmt.close();
 		connection.close();
 		
@@ -226,6 +199,32 @@ public class Carta_di_Credito implements CartaI {
 				+ ", conto_corrente=" + conto_corrente + ", dataScadenza=" + dataScadenza + "]";
 	}
 	
-	
+	@Override
+	public String getAccountId() {
+		return accountId;
+	}
+
+
+	@Override
+	public String getNumeroCarta() {
+		return numeroCarta;
+	}
+
+
+	@Override
+	public LocalDate getDataScadenza() {
+		return dataScadenza;
+	}
+
+
+	@Override
+	public String getCvv() {
+		return cvv;
+	}
+
+
+	public String getConto_corrente() {
+		return conto_corrente;
+	}
 
 }
