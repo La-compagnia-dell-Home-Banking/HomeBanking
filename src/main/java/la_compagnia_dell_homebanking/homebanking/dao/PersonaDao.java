@@ -1,5 +1,8 @@
-package la_compagnia_dell_homebanking.homebanking.cliente;
+package la_compagnia_dell_homebanking.homebanking.dao;
 
+import la_compagnia_dell_homebanking.homebanking.cliente.PersFisica;
+import la_compagnia_dell_homebanking.homebanking.cliente.PersGiuridica;
+import la_compagnia_dell_homebanking.homebanking.cliente.Persona;
 import la_compagnia_dell_homebanking.homebanking.db.MySQLConnection;
 
 import java.sql.PreparedStatement;
@@ -8,13 +11,14 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
-public class PersonaQueries {
+public class PersonaDao implements PersonaDaoI {
 
     public static List<Persona> getAllPerson() {
         List<Persona> persone = new ArrayList<>();
         MySQLConnection connection = new MySQLConnection();
+        ResultSet resultSet = null;
         try {
-            ResultSet resultSet = connection.getStmt().executeQuery("SELECT * from persona_fisica");
+            resultSet = connection.getStmt().executeQuery("SELECT * from persona_fisica");
             while(resultSet.next()) {
                 persone.add(populatePersonaFisica(resultSet));
             }
@@ -25,11 +29,7 @@ public class PersonaQueries {
         } catch (SQLException e) {
             printExceptions(e);
         } finally {
-            try {
-                connection.getMyConnection().close();
-            } catch (SQLException e) {
-                printExceptions(e);
-            }
+            closeAllConnections(connection, resultSet);
         }
         return persone;
     }
@@ -67,34 +67,30 @@ public class PersonaQueries {
                 cap,nome_rappresentante,cognome_rappresentante,sede_legale,azienda_id, true);
     }
 
-
     public static Persona getPersonaById(String id) {
         MySQLConnection connection = new MySQLConnection();
+        ResultSet resultSet =null;
         try {
             PreparedStatement prstmt = connection.getMyConnection().prepareStatement("SELECT * from persona_fisica" +
                     " WHERE persona_id =?");
             prstmt.setString(1, id);
-            ResultSet rs = prstmt.executeQuery();
-                if(rs.next()) {
-                    System.out.println("ID: '" + id + "'. One person found: " + rs.getString("nome"));
-                    return populatePersonaFisica(rs);
+            resultSet = prstmt.executeQuery();
+                if(resultSet.next()) {
+                    System.out.println("ID: '" + id + "'. One person found: " + resultSet.getString("nome"));
+                    return populatePersonaFisica(resultSet);
                 }
                 prstmt = connection.getMyConnection().prepareStatement("SELECT * from persona_giuridica" +
                     " WHERE azienda_id =?");
             prstmt.setString(1, id);
-            rs = prstmt.executeQuery();
-            if(rs.next()) {
-                System.out.println("ID: '" + id + "'. One company found: " + rs.getString("ragione_sociale"));
-                return populatePersonaGiuridica(rs);
+            resultSet = prstmt.executeQuery();
+            if(resultSet.next()) {
+                System.out.println("ID: '" + id + "'. One company found: " + resultSet.getString("ragione_sociale"));
+                return populatePersonaGiuridica(resultSet);
             }
         } catch (SQLException e) {
             printExceptions(e);
         } finally {
-            try {
-                connection.getMyConnection().close();
-            } catch (SQLException e) {
-                printExceptions(e);
-            }
+            closeAllConnections(connection, resultSet);
         }
         System.out.println("ID: '" + id + "' doesn't exist" );
         return null;
@@ -103,13 +99,14 @@ public class PersonaQueries {
     public static List<PersFisica> getPersonaByCognome(String cognome) {
         List<PersFisica> listCognome = new ArrayList<>();
         MySQLConnection connection = new MySQLConnection();
+        ResultSet resultSet = null;
         try {
             PreparedStatement prstmt = connection.getMyConnection().prepareStatement("SELECT * FROM persona_fisica WHERE " +
                     "cognome=?");
             prstmt.setString(1, cognome);
-            ResultSet rs = prstmt.executeQuery();
-            while(rs.next()) {
-                PersFisica persFisica = populatePersonaFisica(rs);
+            resultSet = prstmt.executeQuery();
+            while(resultSet.next()) {
+                PersFisica persFisica = populatePersonaFisica(resultSet);
                 System.out.println(persFisica);
                 listCognome.add(persFisica);
             }
@@ -121,11 +118,7 @@ public class PersonaQueries {
         } catch (SQLException e) {
             printExceptions(e);
         } finally {
-            try {
-                connection.getMyConnection().close();
-            } catch (SQLException e) {
-                printExceptions(e);
-            }
+            closeAllConnections(connection, resultSet);
         }
         return null;
     }
@@ -133,14 +126,15 @@ public class PersonaQueries {
         PersFisica.isValidFormat(data);
         List<PersFisica> listCognome = new ArrayList<>();
         MySQLConnection connection = new MySQLConnection();
+        ResultSet resultSet = null;
         try {
             PreparedStatement prstmt = connection.getMyConnection().prepareStatement("SELECT * FROM persona_fisica WHERE " +
                     "data_nascita = ?");
             prstmt.setString(1, data);
-            ResultSet rs = prstmt.executeQuery();
+            resultSet = prstmt.executeQuery();
 
-            while(rs.next()) {
-                PersFisica persFisica = populatePersonaFisica(rs);
+            while(resultSet.next()) {
+                PersFisica persFisica = populatePersonaFisica(resultSet);
                 listCognome.add(persFisica);
             }
             if(listCognome == null) {
@@ -151,11 +145,7 @@ public class PersonaQueries {
         } catch (SQLException e) {
             printExceptions(e);
         } finally {
-            try {
-                connection.getMyConnection().close();
-            } catch (SQLException e) {
-                printExceptions(e);
-            }
+            closeAllConnections(connection, resultSet);
         }
         return null;
     }
@@ -163,6 +153,7 @@ public class PersonaQueries {
     public static PersFisica updatePersonF(String personId, String indirizzo, String residenza, String cap, String email,
                                    String telefono) {
         MySQLConnection connection = new MySQLConnection();
+        ResultSet resultSet = null;
         try {
             PreparedStatement prstmt = connection.getMyConnection().prepareStatement("UPDATE persona_fisica" +
                     " SET indirizzo=?, residenza=?, cap=?, email=?, telefono=?  WHERE persona_id=?");
@@ -177,18 +168,14 @@ public class PersonaQueries {
             prstmt = connection.getMyConnection().prepareStatement("SELECT * FROM persona_fisica " +
                     "WHERE persona_id=?");
             prstmt.setString(1, personId);
-            ResultSet rs = prstmt.executeQuery();
-            rs.next();
-            return populatePersonaFisica(rs);
+            resultSet = prstmt.executeQuery();
+            resultSet.next();
+            return populatePersonaFisica(resultSet);
 
         } catch (SQLException e) {
             printExceptions(e);
         } finally {
-            try {
-                connection.getMyConnection().close();
-            } catch (SQLException e) {
-                printExceptions(e);
-            }
+            closeAllConnections(connection, resultSet);
         }
         System.out.println("Errore. Person does not exist.");
         return null;
@@ -285,4 +272,10 @@ public class PersonaQueries {
         System.out.println(new StringBuilder().append("VendorError: ").append(e.getErrorCode()));
     }
 
+    private static void closeAllConnections(MySQLConnection connection, ResultSet resultSet) {
+        if (connection.getMyConnection() != null) try { connection.getMyConnection().close(); } catch (SQLException e) { printExceptions(e); }
+        if (resultSet != null) try { resultSet.close(); } catch (SQLException e) { printExceptions(e); }
+        if (connection.getStmt() != null) try { connection.getStmt().close(); } catch (SQLException e) { printExceptions(e); }
+    }
+    
 }

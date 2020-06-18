@@ -2,7 +2,7 @@ package la_compagnia_dell_homebanking.homebanking;
 
 import la_compagnia_dell_homebanking.homebanking.cliente.PersFisica;
 import la_compagnia_dell_homebanking.homebanking.cliente.PersGiuridica;
-import la_compagnia_dell_homebanking.homebanking.cliente.PersonaQueries;
+import la_compagnia_dell_homebanking.homebanking.dao.PersonaDao;
 import la_compagnia_dell_homebanking.homebanking.db.MySQLConnection;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -73,7 +73,7 @@ public class DatabaseTest {
                 "SCSVSSVSD", "0950-01-02", "Visantia", "via",
                 "non c'è", "Costantinopoli", "?", "5555555555", false);
         //then
-        boolean isTheSamePerson = PersonaQueries.getPersonaById("5555555555").equals(persFisica);
+        boolean isTheSamePerson = PersonaDao.getPersonaById("5555555555").equals(persFisica);
         //expect
         boolean expected = true;
         assertEquals(expected, isTheSamePerson, "person should be the same");
@@ -94,7 +94,7 @@ public class DatabaseTest {
                 "via del Pippo", "dsf23124", "02345", "Edgar",
                 "Alan Po", "USA", "1111111111", false);
         //then
-        boolean isTheSameCompany = PersonaQueries.getPersonaById("1111111111").equals(persGiuridica);
+        boolean isTheSameCompany = PersonaDao.getPersonaById("1111111111").equals(persGiuridica);
         //expect
         boolean expected = true;
         assertEquals(expected, isTheSameCompany, "company should be the same.");
@@ -115,7 +115,7 @@ public class DatabaseTest {
                 "ACASDASD1241", "0923-02-01", "Australia", "via a",
                 "asd34512", "Australia", "444356", "2222222222", false);
         //then
-        List<PersFisica> persons = PersonaQueries.getPersonaByCognome(cognome);
+        List<PersFisica> persons = PersonaDao.getPersonaByCognome(cognome);
         boolean isTheSame = false;
         for (PersFisica persona : persons) {
             if(!persona.getCognome().equals(cognome)) {
@@ -140,7 +140,7 @@ public class DatabaseTest {
                 "FHSDLA!@#!", "1991-01-02", "Torino", "via T",
                 "FG31242", "Italia", "12019", "3333333333", false);
         //then
-        PersFisica modificatedPerson = PersonaQueries.updatePersonF("3333333333", "via Nuova",
+        PersFisica modificatedPerson = PersonaDao.updatePersonF("3333333333", "via Nuova",
                 "Nuova", "nuovo", "nuova_email", "nuovo_t");
 
         boolean actual = modificatedPerson.getResidenza().equals("Nuova") &&
@@ -161,7 +161,7 @@ public class DatabaseTest {
                 "via del Pippo", "FRE43453", "02345", "Edgar",
                 "Alan Po", "USA", "4444444444", false);
 
-        String actual = PersonaQueries.removeCompanyById("4444444444");
+        String actual = PersonaDao.removeCompanyById("4444444444");
         //expect
         String expected = "One company deleted successfully. ID: '4444444444'.";
         assertEquals(expected, actual, "person should be the same");
@@ -178,7 +178,7 @@ public class DatabaseTest {
                 "via del Pippo", "ASDFASD123", "02345", "Edgar",
                 "Alan Po", "USA", "2222222222", false);
 
-        String actual = PersonaQueries.removeCompanyById("1231325231");
+        String actual = PersonaDao.removeCompanyById("1231325231");
         //expect
         String expected = "ID: '1231325231' doesn't exist";
         assertEquals(expected, actual, "person should be the same");
