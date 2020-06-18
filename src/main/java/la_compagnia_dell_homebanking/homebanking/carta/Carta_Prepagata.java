@@ -57,7 +57,6 @@ public class Carta_Prepagata implements CartaI {
 	 * @return lista: la lista delle carte collegate all'account
 	 * Legge le carte prepagate collegate all'account dal DB e le salva in un ArrayList*/
 	public static ArrayList<Carta_Prepagata> readCarte(String account_id) throws SQLException {
-
 			Connection connection=new MySQLConnection().getMyConnection();
 			ArrayList<Carta_Prepagata> lista = new ArrayList<Carta_Prepagata>();
 			String query = "SELECT * FROM carta_prepagata WHERE account_id=?";

@@ -38,6 +38,6 @@ public interface PersonaDaoI {
         return PersonaDao.removeCompanyById(id);
     }
     static void printexceptions(SQLException e) {
-        PersonaDao.printexceptions(e);
+        printexceptions(e);
     }
 }

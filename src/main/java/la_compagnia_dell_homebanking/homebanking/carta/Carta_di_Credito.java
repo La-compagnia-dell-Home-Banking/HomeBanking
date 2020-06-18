@@ -1,19 +1,12 @@
 package la_compagnia_dell_homebanking.homebanking.carta;
 
-import la_compagnia_dell_homebanking.homebanking.db.MySQLConnection;
 import la_compagnia_dell_homebanking.homebanking.TokenServlet;
 import la_compagnia_dell_homebanking.homebanking.Transazione;
+import la_compagnia_dell_homebanking.homebanking.db.MySQLConnection;
 
-import java.sql.Connection;
-import java.sql.Date;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Statement;
+import java.sql.*;
 import java.time.LocalDate;
 import java.time.LocalTime;
-import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
 
 
 public class Carta_di_Credito implements CartaI {
@@ -50,22 +43,23 @@ public class Carta_di_Credito implements CartaI {
 	
 	/**
 	 * @author Gianmarco Polichetti
-	 * @param account_id: l'account del quale si vuole conoscere la carta di credito collegata
+	 * @param iban: l'iban del conto del quale si vuole conoscere la carta di credito collegata
 	 * @version 0.0.1
-	 * @return carta: la carta collegata all'account
-	 * Legge la carta di credito collegata all'account dal DB e la restituisce*/
-	public static Carta_di_Credito readCarta(String account_id) throws SQLException {
+	 * @return carta: la carta collegata al conto
+	 * Legge la carta di credito collegata al conto dal DB e la restituisce*/
+	public static Carta_di_Credito readCarta(String iban) throws SQLException {
 
 			Connection connection=new MySQLConnection().getMyConnection();
 			Carta_di_Credito carta = null;
-			String query = "SELECT * FROM carta_di_credito WHERE account_id=?";
+			String query = "SELECT * FROM carta_di_credito WHERE iban=?";
 			PreparedStatement prstmt = connection.prepareStatement(query);
-			prstmt.setString(1, account_id);
+			prstmt.setString(1, iban);
 			
 			ResultSet rs = prstmt.executeQuery();
 
 			while (rs.next()) { // Leggiamo i risultati
-
+				Carta_di_Credito x= null;
+				x.readCarta("iban");
 				carta = new Carta_di_Credito(rs.getString("numero"));
 
 			}
@@ -191,6 +185,32 @@ public class Carta_di_Credito implements CartaI {
 		if(dataScadenza.isBefore(LocalDate.now())) return true;
 		else return false;
 		
+	}
+
+	/**
+	 * @author oleskiy.OS
+	 * @param iban = conto (in DB)
+	 * @return boolean - true if card was blocked properly, false if wasn't.
+	 * This method blocks a credit card.
+	 */
+	public static boolean bloccareCarta(String iban) {
+		MySQLConnection connection = new MySQLConnection();
+		String query = "UPDATE carta_di_credito SET isBlocked=true WHERE conto =?";
+		try {
+			PreparedStatement prstmt = connection.getMyConnection().prepareStatement(query);
+			prstmt.setString(1, iban);
+			int status = prstmt.executeUpdate();
+			if(status == 1) {
+				System.out.println(new StringBuilder().append("Credit card IBAN ").append(iban).append(" was blocked."));
+				return true;
+			}
+		} catch (SQLException e) {
+			MySQLConnection.printExceptions(e);
+		} finally {
+			MySQLConnection.closeAllConnections(connection);
+		}
+		System.out.println(new StringBuilder().append("Card ").append(iban).append(" doesn't exist."));
+		return false;
 	}
 
 	@Override

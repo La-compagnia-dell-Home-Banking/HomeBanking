@@ -110,9 +110,4 @@ public class Account {
 		return lista_conti.add(conto);
 
 	}
-
-	public boolean bloccareCarta() {
-		return false;
-	}
-
 }
