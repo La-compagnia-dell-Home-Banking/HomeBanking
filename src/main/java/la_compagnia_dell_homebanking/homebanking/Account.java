@@ -4,7 +4,7 @@ package la_compagnia_dell_homebanking.homebanking;
 import la_compagnia_dell_homebanking.homebanking.cliente.PersFisica;
 import la_compagnia_dell_homebanking.homebanking.carta.Carta_Prepagata;
 import la_compagnia_dell_homebanking.homebanking.cliente.Persona;
-import la_compagnia_dell_homebanking.homebanking.cliente.PersonaQueries;
+import la_compagnia_dell_homebanking.homebanking.dao.PersonaDao;
 import la_compagnia_dell_homebanking.homebanking.db.MySQLConnection;
 
 import java.sql.*;
@@ -39,9 +39,9 @@ public class Account {
 		String persFis = rs.getString("persona_id");
 		String persGiur = rs.getString("azienda_id");
 		if (persFis != null)
-			this.persona = PersonaQueries.getPersonaById(persFis);
+			this.persona = PersonaDao.getPersonaById(persFis);
 		else
-			this.persona = PersonaQueries.getPersonaById(persGiur);
+			this.persona = PersonaDao.getPersonaById(persGiur);
 		this.setPassword();
 		connection.getMyConnection().close();
 

@@ -1,5 +1,6 @@
 package la_compagnia_dell_homebanking.homebanking.cliente;
 
+import la_compagnia_dell_homebanking.homebanking.dao.PersonaDao;
 import la_compagnia_dell_homebanking.homebanking.db.MySQLConnection;
 
 import java.sql.PreparedStatement;
@@ -46,12 +47,12 @@ public class PersGiuridica extends Persona {
 			prstmt.setString(11, persona.getDocs().getDocument());
 			status = prstmt.execute();
 		} catch (SQLException e) {
-			PersonaQueries.printExceptions(e);
+			PersonaDao.printExceptions(e);
 		} finally {
 			try {
 				connection.getMyConnection().close();
 			} catch (SQLException e) {
-				PersonaQueries.printExceptions(e);
+				PersonaDao.printExceptions(e);
 			}
 		}
 		System.out.println(new StringBuilder().append("Success. ").append(persona.toString()).

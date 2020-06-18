@@ -1,5 +1,8 @@
-package la_compagnia_dell_homebanking.homebanking.cliente;
+package la_compagnia_dell_homebanking.homebanking.dao;
 
+import la_compagnia_dell_homebanking.homebanking.cliente.PersFisica;
+import la_compagnia_dell_homebanking.homebanking.cliente.PersGiuridica;
+import la_compagnia_dell_homebanking.homebanking.cliente.Persona;
 import la_compagnia_dell_homebanking.homebanking.db.MySQLConnection;
 
 import java.sql.PreparedStatement;
@@ -8,9 +11,9 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
-public class PersonaQueries {
+public class PersonaDao implements PersonaDaoI {
 
-    public static List<Persona> getAllPerson() {
+    static List<Persona> getAllPerson() {
         List<Persona> persone = new ArrayList<>();
         MySQLConnection connection = new MySQLConnection();
         try {
@@ -284,5 +287,5 @@ public class PersonaQueries {
         System.out.println(new StringBuilder().append("SQLState: ").append(e.getSQLState()));
         System.out.println(new StringBuilder().append("VendorError: ").append(e.getErrorCode()));
     }
-
+    
 }
