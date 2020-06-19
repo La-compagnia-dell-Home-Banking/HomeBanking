@@ -6,35 +6,42 @@
 	href="https://unpkg.com/purecss@2.0.3/build/pure-min.css"
 	integrity="sha384-cg6SkqEOCV1NbJoCu11+bm0NvBRc8IYLRGXkmNrqUBfTjmMYwNKPWBTIKyw9mHNJ"
 	crossorigin="anonymous">
-<style>
-body {
-	text-align: center;
-}
-
-form {
-	display: inline-block;
-}
-</style>
+	<link rel="stylesheet" type="text/css" href="public/styles.css">
 </head>
 <body>
-	<p>Home Banking</p>
+
+<header>
+	<nav>
+		<div class="brand">
+			<a href="/main"><img src="img/logo1.jpg" alt="logo" ></a>
+			<a href="#">Contacts</a>
+		</div>
+
+		<div class="info">
+			<a href="#">About Us</a>
+			<a href="#">Addresses</a>
+		</div>
+	</nav>
+</header>
+
 	<div class="myForm">
-		<form class="pure-form" action="/echo" method="post">
-			<fieldset>
-				<input type="text" placeholder="Account Id" name="id" /> <label
-					for="default-remember">
-			</fieldset>
-		</form>
-	</div>
-	<div class="myForm">
-		<form class="pure-form" action="/echo" method="post">
-			<fieldset>
+		<form class="loginForm" action="/echo" method="post">
+			<fieldset id="fieldset">
+				<legend>Welcome to AGO Group</legend>
+					<input id="account" type="text" placeholder="Account Id" name="account" /> <label
+						for="default-remember">
 				<input type="text" placeholder="Password" name="password" /> <label
 					for="default-remember">
+				<button type="accedi" class="pure-button pure-button-primary first">Accedi</button>
+				<button type="registrati" class="pure-button pure-button-primary second">Registrati</button>
 			</fieldset>
 		</form>
 	</div>
-	<button type="accedi" class="pure-button pure-button-primary">Accedi</button>
-	<button type="registrati" class="pure-button pure-button-primary">Registrati</button>
+<script>
+	const border = document.getElementById("fieldset");
+	setInterval(() => {
+		border.classList.toggle("show");
+	},2000)
+</script>
 </body>
 </html>

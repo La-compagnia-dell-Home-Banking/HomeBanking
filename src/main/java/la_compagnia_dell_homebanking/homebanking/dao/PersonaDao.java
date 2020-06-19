@@ -27,9 +27,9 @@ public class PersonaDao implements PersonaDaoI {
                 persone.add(populatePersonaGiuridica(resultSet));
             }
         } catch (SQLException e) {
-            printExceptions(e);
+            MySQLConnection.printExceptions(e);
         } finally {
-            closeAllConnections(connection, resultSet);
+            MySQLConnection.closeAllConnections(connection, resultSet);
         }
         return persone;
     }
@@ -88,9 +88,9 @@ public class PersonaDao implements PersonaDaoI {
                 return populatePersonaGiuridica(resultSet);
             }
         } catch (SQLException e) {
-            printExceptions(e);
+            MySQLConnection.printExceptions(e);
         } finally {
-            closeAllConnections(connection, resultSet);
+            MySQLConnection.closeAllConnections(connection, resultSet);
         }
         System.out.println("ID: '" + id + "' doesn't exist" );
         return null;
@@ -116,9 +116,9 @@ public class PersonaDao implements PersonaDaoI {
                 return listCognome;
             }
         } catch (SQLException e) {
-            printExceptions(e);
+            MySQLConnection.printExceptions(e);
         } finally {
-            closeAllConnections(connection, resultSet);
+            MySQLConnection.closeAllConnections(connection, resultSet);
         }
         return null;
     }
@@ -143,9 +143,9 @@ public class PersonaDao implements PersonaDaoI {
                 return listCognome;
             }
         } catch (SQLException e) {
-            printExceptions(e);
+            MySQLConnection.printExceptions(e);
         } finally {
-            closeAllConnections(connection, resultSet);
+            MySQLConnection.closeAllConnections(connection, resultSet);
         }
         return null;
     }
@@ -173,9 +173,9 @@ public class PersonaDao implements PersonaDaoI {
             return populatePersonaFisica(resultSet);
 
         } catch (SQLException e) {
-            printExceptions(e);
+            MySQLConnection.printExceptions(e);
         } finally {
-            closeAllConnections(connection, resultSet);
+            MySQLConnection.closeAllConnections(connection, resultSet);
         }
         System.out.println("Errore. Person does not exist.");
         return null;
@@ -207,12 +207,12 @@ public class PersonaDao implements PersonaDaoI {
             return populatePersonaGiuridica(rs);
 
         } catch (SQLException e) {
-            printExceptions(e);
+            MySQLConnection.printExceptions(e);
         } finally {
             try {
                 connection.getMyConnection().close();
             } catch (SQLException e) {
-                printExceptions(e);
+                MySQLConnection.printExceptions(e);
             }
         }
         System.out.println("Errore. Person does not exist.");
@@ -232,12 +232,12 @@ public class PersonaDao implements PersonaDaoI {
             }
 
         } catch (SQLException e) {
-            printExceptions(e);
+            MySQLConnection.printExceptions(e);
         } finally {
             try {
                 connection.getMyConnection().close();
             } catch (SQLException e) {
-                printExceptions(e);
+                MySQLConnection.printExceptions(e);
             }
         }
         return  "ID: '" + id + "' doesn't exist";
@@ -255,27 +255,14 @@ public class PersonaDao implements PersonaDaoI {
                 return "One company deleted successfully. ID: '" + id + "'.";
             }
         } catch (SQLException e) {
-            printExceptions(e);
+            MySQLConnection.printExceptions(e);
         } finally {
             try {
                 connection.getMyConnection().close();
             } catch (SQLException e) {
-                printExceptions(e);
+                MySQLConnection.printExceptions(e);
             }
         }
         return  "ID: '" + id + "' doesn't exist";
     }
-
-    public static void printExceptions(SQLException e) {
-        System.out.println(new StringBuilder().append("SQLException: ").append(e.getMessage()));
-        System.out.println(new StringBuilder().append("SQLState: ").append(e.getSQLState()));
-        System.out.println(new StringBuilder().append("VendorError: ").append(e.getErrorCode()));
-    }
-
-    private static void closeAllConnections(MySQLConnection connection, ResultSet resultSet) {
-        if (connection.getMyConnection() != null) try { connection.getMyConnection().close(); } catch (SQLException e) { printExceptions(e); }
-        if (resultSet != null) try { resultSet.close(); } catch (SQLException e) { printExceptions(e); }
-        if (connection.getStmt() != null) try { connection.getStmt().close(); } catch (SQLException e) { printExceptions(e); }
-    }
-    
 }

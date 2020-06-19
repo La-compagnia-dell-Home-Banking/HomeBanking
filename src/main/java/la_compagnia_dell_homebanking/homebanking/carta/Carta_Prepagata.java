@@ -49,9 +49,7 @@ public class Carta_Prepagata implements CartaI {
 		rs.close();
 		conn.close();
 	}
-	
 
-	
 	/**
 	 * @author Gianmarco Polichetti
 	 * @version 0.0.1

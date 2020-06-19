@@ -37,7 +37,7 @@ public interface PersonaDaoI {
     static String removeCompanyById(String id) {
         return PersonaDao.removeCompanyById(id);
     }
-    static void printExceptions(SQLException e) {
-        PersonaDao.printExceptions(e);
+    static void printexceptions(SQLException e) {
+        printexceptions(e);
     }
 }
