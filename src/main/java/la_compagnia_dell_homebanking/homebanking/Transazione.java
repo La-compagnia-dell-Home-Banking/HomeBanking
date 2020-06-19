@@ -27,61 +27,6 @@ public class Transazione {
 		this.accredito = accredito;
 	}
 	
-	/**
-	 * @author Gianmarco Polichetti
-	 * @param query: la query lanciata dai metodi per creare una transazione in entrata o in uscita
-	 * @version 0.0.1
-	 * Prende in input una query e genera una transazione che viene salvata nel DB*/
-	public void creaTransazione(String query) throws SQLException {
-		
-		Connection connection = new MySQLConnection().getMyConnection();
-		PreparedStatement pstmt = connection.prepareStatement(query);
-		//(data_transazione, orario_transazione, numero, nuovo_saldo, somma, is_accredito)
-		pstmt.setDate(1, Date.valueOf(data));
-		pstmt.setTime(2, Time.valueOf(orario));
-		pstmt.setString(3, numero);
-		pstmt.setDouble(4, saldo);
-		pstmt.setDouble(5, movimento);
-		pstmt.setBoolean(6, accredito);
-		pstmt.execute();
-		pstmt.close();
-		connection.close();
-		
-	}
-	
-	public static ArrayList<Transazione> estrattoContoCarta(String query) throws SQLException{
-		
-		ArrayList<Transazione> transazioni=new ArrayList<Transazione>();
-		Connection connection = new MySQLConnection().getMyConnection();
-		Statement stmt = connection.createStatement();
-		ResultSet rs = stmt.executeQuery(query);
-		while(rs.next()) {
-			transazioni.add(new Transazione(rs.getDate("data_transazione").toLocalDate(), rs.getTime("orario_transazione").toLocalTime(),
-					rs.getString("numero"), rs.getDouble("nuovo_saldo"), rs.getDouble("somma"), rs.getBoolean("is_accredito")));
-		}
-		rs.close();
-		stmt.close();
-		connection.close();
-		
-		return transazioni;
-	}
-	
-	public static ArrayList<Transazione> estrattoConto(String query) throws SQLException{
-		
-		ArrayList<Transazione> transazioni=new ArrayList<Transazione>();
-		Connection connection = new MySQLConnection().getMyConnection();
-		Statement stmt = connection.createStatement();
-		ResultSet rs = stmt.executeQuery(query);
-		while(rs.next()) {
-			transazioni.add(new Transazione(rs.getDate("data_transazione").toLocalDate(), rs.getTime("orario_transazione").toLocalTime(),
-					rs.getString("iban"), rs.getDouble("nuovo_saldo"), rs.getDouble("somma"), rs.getBoolean("is_accredito")));
-		}
-		rs.close();
-		stmt.close();
-		connection.close();
-		
-		return transazioni;
-	}
 
 	public LocalDate getData() {
 		return data;

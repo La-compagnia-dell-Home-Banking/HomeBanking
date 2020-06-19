@@ -4,6 +4,9 @@ package la_compagnia_dell_homebanking.homebanking;
 import la_compagnia_dell_homebanking.homebanking.cliente.PersFisica;
 import la_compagnia_dell_homebanking.homebanking.carta.Carta_Prepagata;
 import la_compagnia_dell_homebanking.homebanking.cliente.Persona;
+import la_compagnia_dell_homebanking.homebanking.dao.AccountDao;
+import la_compagnia_dell_homebanking.homebanking.dao.CartaPrepagataDao;
+import la_compagnia_dell_homebanking.homebanking.dao.ContoCorrenteDao;
 import la_compagnia_dell_homebanking.homebanking.dao.PersonaDao;
 import la_compagnia_dell_homebanking.homebanking.db.MySQLConnection;
 
@@ -21,12 +24,12 @@ public class Account {
 
 
 	public Account(Persona persona) throws SQLException {
-		accountID = controlAccount_id() + 1;
+		accountID = AccountDao.controlAccount_id() + 1;
 		this.persona = persona;
 		this.setPassword();
-		this.insertAccountToDb();
-		lista_conti = ContoCorrente.readConti(Integer.toString(accountID));
-		lista_carte = Carta_Prepagata.readCarte(Integer.toString(accountID));
+		AccountDao.insertAccountToDb(persona, accountID);
+		lista_conti = ContoCorrenteDao.readConti(Integer.toString(accountID));
+		lista_carte = CartaPrepagataDao.readCarte(Integer.toString(accountID));
 	}
 
 	public Account(String account_id) throws SQLException {
@@ -47,54 +50,16 @@ public class Account {
 
 	}
 
-	private boolean insertAccountToDb() throws SQLException {
-		MySQLConnection connection = new MySQLConnection();
-		String query = "INSERT INTO account VALUES (?,?,?)";
-
-		PreparedStatement prstmt = connection.getMyConnection().prepareStatement(query);
-		prstmt.setString(1, Integer.toString(accountID));
-
-		if (this.persona instanceof PersFisica) {
-			prstmt.setString(2, this.persona.getPersona_id());
-			prstmt.setString(3, null);
-		} else {
-			prstmt.setString(2, null);
-			prstmt.setString(3, this.persona.getPersona_id());
-		}
-		Boolean status = prstmt.execute();
-		connection.getMyConnection().close();
-		return status;
-	}
-
-	private static int controlAccount_id() throws SQLException {
-		MySQLConnection connection = new MySQLConnection();
-		String query = "SELECT * from account";
-		PreparedStatement prstmt = connection.getMyConnection().prepareStatement(query);
-		ResultSet rs = prstmt.executeQuery();
-		int s, id = 0;
-		while (rs.next()) { // Leggiamo i risultati
-			s = Integer.parseInt(rs.getString("account_id"));
-			if (id < s)
-				id = s;
-
-		}
-		connection.getMyConnection().close();
-		return id;
-
-	}
 
 	private void setPassword() {
 		System.out.println("Imposta la password");
 		Scanner in= new Scanner(System.in);
 		password=in.next();
-
-
 	}
 
 	public String getPassword() {
 		return this.password;
 	}
-
 
 
 	public int getAccountID() {
@@ -106,7 +71,7 @@ public class Account {
 			return false;
 		if (!this.equals(conto.getAccount()))
 			return false;
-		boolean s = conto.insertCCToDb(this);
+		boolean s = ContoCorrenteDao.insertCCToDb(this, conto);
 		return lista_conti.add(conto);
 
 	}
