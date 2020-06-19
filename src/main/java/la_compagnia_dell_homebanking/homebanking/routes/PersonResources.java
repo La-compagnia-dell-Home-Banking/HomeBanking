@@ -21,8 +21,9 @@ public class PersonResources {
     @GET
     @Path("/")
     @Produces(MediaType.TEXT_PLAIN)
-    public void generalPersons() throws ExecutionException, InterruptedException {
-        System.out.println(PersonaDao.getAllPerson());
+    public String generalPersons() throws ExecutionException, InterruptedException {
+//        System.out.println(PersonaDao.getAllPerson());
+        return "Hello World!";
     }
 
     @POST

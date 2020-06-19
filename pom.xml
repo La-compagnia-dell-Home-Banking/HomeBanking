@@ -80,9 +80,6 @@
 		</dependency>
 
 	</dependencies>
-	
-
-
 	<build>
 		<finalName>LaCompagniaDellHomeBanking</finalName>
 		<plugins>
@@ -100,8 +97,6 @@
 					<target>1.8</target>
 				</configuration>
 			</plugin>
-
 		</plugins>
 	</build>
-
 </project>
