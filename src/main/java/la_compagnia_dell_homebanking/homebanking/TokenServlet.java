@@ -103,7 +103,7 @@ public class TokenServlet extends HttpServlet{
 
 		do {
 			System.out.println("Inserisci codice token generato");
-			code_in=in.nextLine();
+			code_in=in.nextLine(); //DECOMMENTARE DOPO I TEST!
 			pstmt = connection.prepareStatement("SELECT * FROM token WHERE account_id=?");
 			pstmt.setString(1, account_id);
 			ResultSet rs = pstmt.executeQuery();
@@ -115,6 +115,8 @@ public class TokenServlet extends HttpServlet{
 			boolean valid=((data_ultimo.equals(LocalDate.now())&&(t>=0 && t<=60)));
 			if(!valid) {
 				TokenServlet.generate(account_id);
+				//COMMENTARE DOPO I TEST!
+				//code_in=rs.getString("generated_token");
 			}
 			rs = pstmt.executeQuery();
 			rs.next();
