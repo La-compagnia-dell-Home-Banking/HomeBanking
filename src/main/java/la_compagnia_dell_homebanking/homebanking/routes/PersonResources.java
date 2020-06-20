@@ -2,17 +2,23 @@ package la_compagnia_dell_homebanking.homebanking.routes;
 
 import la_compagnia_dell_homebanking.homebanking.NumberGenerator;
 import la_compagnia_dell_homebanking.homebanking.cliente.PersFisica;
+import la_compagnia_dell_homebanking.homebanking.cliente.Persona;
 import la_compagnia_dell_homebanking.homebanking.dao.PersonaDao;
 
 import javax.inject.Singleton;
+import javax.json.bind.Jsonb;
+import javax.json.bind.JsonbBuilder;
 import javax.servlet.ServletContext;
 import javax.ws.rs.*;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.concurrent.ExecutionException;
 
 @Singleton
 @Path("/persona")
+
 public class PersonResources {
 
     @Context
@@ -21,9 +27,23 @@ public class PersonResources {
     @GET
     @Path("/")
     @Produces(MediaType.TEXT_PLAIN)
-    public String generalPersons() throws ExecutionException, InterruptedException {
-//        System.out.println(PersonaDao.getAllPerson());
-        return "Hello World!";
+    public String generalPersons() {
+        List<Persona> persone = PersonaDao.getAllPerson();
+        List <PersFisica> persFisica = new ArrayList<>();
+
+        for (Persona person : persone) {
+            if(person == null) continue;
+            if(person.getClass() == PersFisica.class) {
+                persFisica.add((PersFisica) person);
+            }
+        }
+        Jsonb jsonb = JsonbBuilder.create();
+        String result = jsonb.toJson(persFisica);
+        if(!persFisica.isEmpty()) {
+            return result;
+        } else {
+            return "List is empty.";
+        }
     }
 
     @POST
@@ -39,9 +59,11 @@ public class PersonResources {
 
     @GET
     @Path("/{personId}")
-    @Produces(MediaType.TEXT_PLAIN)
-    public void getPerson(@PathParam("personId") String personId) {
-        PersonaDao.getPersonaById(personId);
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.APPLICATION_JSON)
+    public String getPerson(@PathParam("personId") String personId) {
+        Jsonb jsonb = JsonbBuilder.create();
+        return jsonb.toJson(PersonaDao.getPersonaById(personId));
     }
 
     @PUT
@@ -49,7 +71,7 @@ public class PersonResources {
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.TEXT_PLAIN)
     public void updatePerson(@PathParam("personId") String personId) {
-//        PersonaDao.updatePersonG(persnId)
+//        PersonaDao.updatePersonG(personId);
     }
 
     @GET
