@@ -1,6 +1,5 @@
 package la_compagnia_dell_homebanking.homebanking.cliente;
 
-import la_compagnia_dell_homebanking.homebanking.dao.PersonaDao;
 import la_compagnia_dell_homebanking.homebanking.dao.PersonaDaoI;
 import la_compagnia_dell_homebanking.homebanking.db.MySQLConnection;
 
@@ -15,7 +14,6 @@ import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.time.LocalDate;
 import java.time.format.DateTimeParseException;
-
 
 
 
@@ -131,4 +129,3 @@ public class PersFisica extends Persona {
 		return JsonbBuilder.newBuilder().withConfig(config).build().toJson(this);
 	}
 }
-

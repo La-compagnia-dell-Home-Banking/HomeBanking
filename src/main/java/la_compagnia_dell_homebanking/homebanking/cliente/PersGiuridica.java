@@ -1,6 +1,5 @@
 package la_compagnia_dell_homebanking.homebanking.cliente;
 
-import la_compagnia_dell_homebanking.homebanking.dao.PersonaDao;
 import la_compagnia_dell_homebanking.homebanking.dao.PersonaDaoI;
 import la_compagnia_dell_homebanking.homebanking.db.MySQLConnection;
 
