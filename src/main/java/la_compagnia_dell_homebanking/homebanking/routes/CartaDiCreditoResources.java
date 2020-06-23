@@ -17,6 +17,7 @@ import la_compagnia_dell_homebanking.homebanking.TokenService;
 import la_compagnia_dell_homebanking.homebanking.dao.CartaDiCreditoDao;
 import la_compagnia_dell_homebanking.homebanking.dao.CartaPrepagataDao;
 
+
 @Singleton
 @Path("/carta_di_credito")
 public class CartaDiCreditoResources {
@@ -35,7 +36,7 @@ public class CartaDiCreditoResources {
     @Produces(MediaType.TEXT_PLAIN)
     public String bloccaCarta(@PathParam("iban") String iban) {
     	
-    	if(CartaPrepagataDao.bloccaCarta(iban))
+    	if(CartaDiCreditoDao.bloccaCarta(iban))
     		return "La carta collegata al conto "+iban+" è stata bloccata";
     	else 
     		return "Non è stato possibile bloccare la carta";
@@ -53,6 +54,7 @@ public class CartaDiCreditoResources {
     @PathParam("code") String code) {
     	String res=null;
     	try {
+    		if(CartaPrepagataDao.isblocked(iban)) res="La carta è bloccata!";
 			if(TokenService.chiedi_codice(accountId, code)) {
 				if(CartaDiCreditoDao.pagaConCarta(amount, iban)) {
 					res="Hai pagato "+amount+"€ con la carta collegata al conto "+iban;
@@ -86,13 +88,19 @@ public class CartaDiCreditoResources {
     @DELETE
     @Path("/{accountId}/{iban}/remove_carta")
     @Produces(MediaType.APPLICATION_JSON)
-    public void delete_carta(@PathParam("iban") String iban) {
+    public String delete_carta(@PathParam("iban") String iban) {
     	
+    	String res=null;
     	try {
-			CartaDiCreditoDao.eliminaCartaFromDb(iban);
+			if(CartaDiCreditoDao.eliminaCartaFromDb(iban)) {
+				res="Carta eliminata correttamente";
+			}
+			else res="Non è stato possibile eliminare la carta";
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
+    	
+    	return res;
     }
     
     

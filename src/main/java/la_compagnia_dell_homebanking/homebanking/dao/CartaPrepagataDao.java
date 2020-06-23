@@ -350,4 +350,29 @@ public class CartaPrepagataDao {
 		System.out.println(new StringBuilder().append("Card ").append(numero).append(" doesn't exist."));
 		return false;
 	}
+	
+	public static boolean isblocked(String numeroCarta) {
+		
+		MySQLConnection connection = new MySQLConnection();
+		String query = "SELECT FROM carta_prepagata WHERE numero=?";
+		try {
+			PreparedStatement prstmt = connection.getMyConnection().prepareStatement(query);
+			prstmt.setString(1, numeroCarta);
+			
+			ResultSet rs = prstmt.executeQuery();
+			
+			rs.next();
+			
+			boolean flag=rs.getBoolean("isBlocked");
+			
+			if(flag) return true;
+			else return false;
+		}
+	    catch (SQLException e) {
+		MySQLConnection.printExceptions(e);
+	    }
+		return false;
+			
+			
+	}
 }

@@ -154,14 +154,14 @@ public class CartaDiCreditoDao {
 	 * @version 0.0.1
 	 * @return flag: Indica se l'operazione è riuscita o fallita
 	 * Metodo per eliminare una carta dal DB in base al numero della carta*/
-	public static boolean eliminaCartaFromDb(String numeroCarta) throws SQLException {
+	public static boolean eliminaCartaFromDb(String iban) throws SQLException {
 
 		//connetto al DB
 		Connection connection = new MySQLConnection().getMyConnection();
 		
 		//cerco la carta nel DB per eliminarla
-		PreparedStatement pstmt = connection.prepareStatement("DELETE FROM carta_di_credito WHERE numero=?");
-		pstmt.setString(1, numeroCarta);
+		PreparedStatement pstmt = connection.prepareStatement("DELETE FROM carta_di_credito WHERE iban=?");
+		pstmt.setString(1, iban);
 		
 		//eseguo la query e salvo il risultato dell'operazione in una boolean
 		boolean flag=pstmt.execute();
@@ -197,4 +197,29 @@ public class CartaDiCreditoDao {
 		System.out.println(new StringBuilder().append("Card ").append(iban).append(" doesn't exist."));
 		return false;
 	}
+	
+	public static boolean isblocked(String iban) {
+		
+		MySQLConnection connection = new MySQLConnection();
+		String query = "SELECT FROM carta_di_credito WHERE iban=?";
+		try {
+			PreparedStatement prstmt = connection.getMyConnection().prepareStatement(query);
+			prstmt.setString(1, iban);
+			
+			ResultSet rs = prstmt.executeQuery();
+			
+			rs.next();
+			
+			boolean flag=rs.getBoolean("isBlocked");
+			
+			if(flag) return true;
+			else return false;
+		}
+	    catch (SQLException e) {
+		MySQLConnection.printExceptions(e);
+	    }
+		return false;
+						
+	}
+	
 }

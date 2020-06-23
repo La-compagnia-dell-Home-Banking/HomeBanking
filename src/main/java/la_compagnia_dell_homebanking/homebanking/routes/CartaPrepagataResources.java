@@ -90,6 +90,7 @@ public class CartaPrepagataResources {
     @PathParam("code") String code) {
     	String res=null;
     	try {
+    		if(CartaPrepagataDao.isblocked(numeroCarta)) res="La carta è bloccata!";
 			if(TokenService.chiedi_codice(accountId, code)) {
 				if(CartaPrepagataDao.pagaConCarta(amount, numeroCarta)) {
 					res="Hai pagato "+amount+"€ con la carta "+numeroCarta;
@@ -116,6 +117,7 @@ public class CartaPrepagataResources {
     @PathParam("code") String code) {
     	String res=null;
     	try {
+    		if(CartaPrepagataDao.isblocked(numeroCarta)) res="La carta è bloccata!";
 			if(TokenService.chiedi_codice(accountId, code)) {
 				if(CartaPrepagataDao.ricaricaCarta(amount, numeroCarta)) {
 					res="Hai ricaricato "+amount+"€ sulla carta "+numeroCarta;

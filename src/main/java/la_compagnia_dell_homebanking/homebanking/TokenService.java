@@ -17,7 +17,7 @@ public class TokenService {
 
 	public static void save_code(int code, String account_id, String data, String orario) throws SQLException {
 
-		Connection connection = new MySQLConnection().getMyConnection();
+		Connection connection = new MySQLConnection(true).getMyConnection();
 		Statement stmt = connection.createStatement();
 		String query = "UPDATE token "
 				+ "SET generated_token ='"+code+
@@ -31,7 +31,7 @@ public class TokenService {
 	}
 
 	public static boolean chiedi_codice(String account_id, String codice_inserito) throws SQLException {
-		Connection connection = new MySQLConnection().getMyConnection();
+		Connection connection = new MySQLConnection(true).getMyConnection();
 		PreparedStatement pstmt = null;
 		String code_in =  codice_inserito;
 		String gen = null;
@@ -40,6 +40,7 @@ public class TokenService {
 		pstmt = connection.prepareStatement("SELECT * FROM token WHERE account_id=?");
 		pstmt.setString(1, account_id);
 		ResultSet rs = pstmt.executeQuery();
+		
 		rs.next();
 		LocalDate data_ultimo = rs.getDate("data_transazione").toLocalDate();
 		LocalTime orario_ultimo = rs.getTime("orario_transazione").toLocalTime();

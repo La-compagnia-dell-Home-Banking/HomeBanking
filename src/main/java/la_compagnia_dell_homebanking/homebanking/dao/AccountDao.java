@@ -26,19 +26,19 @@ public class AccountDao {
 
 	}
 	
-	public static boolean insertAccountToDb(Persona p, int accountID) throws SQLException {
+	public static boolean insertAccountToDb(String persona_id, boolean kind, String accountID) throws SQLException {
 		MySQLConnection connection = new MySQLConnection();
 		String query = "INSERT INTO account VALUES (?,?,?)";
 
 		PreparedStatement prstmt = connection.getMyConnection().prepareStatement(query);
-		prstmt.setString(1, Integer.toString(accountID));
+		prstmt.setString(1, accountID);
 
-		if (p instanceof PersFisica) {
-			prstmt.setString(2, p.getPersona_id());
+		if (kind) {
+			prstmt.setString(2, persona_id);
 			prstmt.setString(3, null);
 		} else {
 			prstmt.setString(2, null);
-			prstmt.setString(3, p.getPersona_id());
+			prstmt.setString(3, persona_id);
 		}
 		Boolean status = prstmt.execute();
 		connection.getMyConnection().close();
@@ -61,4 +61,6 @@ public class AccountDao {
 		return id;
 
 	}
+	
+	
 }
