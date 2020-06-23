@@ -1,7 +1,7 @@
 package la_compagnia_dell_homebanking.homebanking;
 
 /**
- * @author oleskiy OS, Alessio d'Inverno
+ * @author oleskiy OS, D'Inverno Giuseppe Alessio
  * @version 1.0
  */
 
@@ -19,6 +19,9 @@ public class NumberGenerator {
         long random_int = (long)(Math.random() * (maxNumber - minNumber + 1) + minNumber);
         return addZeros(Long.toString(random_int), requiredLength);
     }
+    
+    
+
 
     /**
      * The method generateRandom() by default generates number between 1 - 9999999999
@@ -45,5 +48,10 @@ public class NumberGenerator {
         for(int i=0; i< length-numlength; i++)
             s.insert(0, "0");
         return s.toString();
+    }
+    
+    
+    public static String generateCardNumber() {
+    	return generateRandom((long)1e+16,(long)9e+16);
     }
 }
