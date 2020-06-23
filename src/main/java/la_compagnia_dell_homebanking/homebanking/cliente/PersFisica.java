@@ -129,4 +129,3 @@ public class PersFisica extends Persona {
 		return JsonbBuilder.newBuilder().withConfig(config).build().toJson(this);
 	}
 }
-
