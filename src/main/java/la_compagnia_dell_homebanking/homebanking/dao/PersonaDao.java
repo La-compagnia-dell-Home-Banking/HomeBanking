@@ -110,7 +110,7 @@ public class PersonaDao implements PersonaDaoI {
             prstmt.setString(1, id);
             resultSet = prstmt.executeQuery();
                 if(resultSet.next()) {
-//                    System.out.println("ID: '" + id + "'. One person found: " + resultSet.getString("nome"));
+                    System.out.println("ID: '" + id + "'. One person found: " + resultSet.getString("nome"));
                     return populatePersonaFisica(resultSet);
                 }
                 prstmt = connection.getMyConnection().prepareStatement("SELECT * from persona_giuridica" +
