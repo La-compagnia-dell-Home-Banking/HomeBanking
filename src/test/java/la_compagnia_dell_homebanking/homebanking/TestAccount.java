@@ -3,12 +3,24 @@ package la_compagnia_dell_homebanking.homebanking;
 
 import la_compagnia_dell_homebanking.homebanking.cliente.PersFisica;
 import la_compagnia_dell_homebanking.homebanking.cliente.Persona;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
 
 import java.sql.SQLException;
 
 public class TestAccount {
-	
-	
+
+
+	/**
+	 * @author oleskiy.OS
+	 * @param num
+	 * @param length
+	 * @return
+	 */
+	@Test
+	@DisplayName("Shoould add 0 to complete quantity of digits")
+
+
 	private static String addZeros(String num,int length) {
 		int numlength=num.length();
 		String s=num;

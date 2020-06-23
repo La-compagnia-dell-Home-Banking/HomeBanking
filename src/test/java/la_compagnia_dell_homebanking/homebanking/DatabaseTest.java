@@ -31,11 +31,12 @@ public class DatabaseTest {
         ResultSet rs = connection.getStmt().executeQuery("SHOW DATABASES;");
         //then
         String actual = null;
-        while (rs.next()) {
+        rs.next();
             actual = rs.getString(1);
-        }
         //expect
-        String expected = "sql7347764";
+        String expected = "home_banking";
+
+
         assertEquals(expected, actual, "deve essere uguale al nome del nostro db");
         connection.getStmt().close();
     }

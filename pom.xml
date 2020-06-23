@@ -17,6 +17,8 @@
 		<jetty-version>9.4.29.v20200521</jetty-version>
 	</properties>
 
+
+
 	<dependencies>
 		<!--		for jsonb=======================-->
 		<dependency>
@@ -38,6 +40,11 @@
 		</dependency>
 		<!--		for jsonb=======================-->
 
+		<dependency>
+			<groupId>com.oracle.ojdbc</groupId>
+			<artifactId>ojdbc10</artifactId>
+			<version>19.3.0.0</version>
+		</dependency>
 
 		<dependency>
 			<groupId>javax.servlet</groupId>
@@ -55,12 +62,13 @@
 			<artifactId>jetty-webapp</artifactId>
 			<version>${jetty-version}</version>
 		</dependency>
-		
+
 		<dependency>
             <groupId>mysql</groupId>
             <artifactId>mysql-connector-java</artifactId>
             <version>8.0.20</version>
         </dependency>
+
         <dependency>
             <groupId>org.junit.jupiter</groupId>
             <artifactId>junit-jupiter-engine</artifactId>
