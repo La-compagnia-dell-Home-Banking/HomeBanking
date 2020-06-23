@@ -1,17 +1,13 @@
 package la_compagnia_dell_homebanking.homebanking.dao;
 
-import java.sql.Connection;
-import java.sql.Date;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.time.LocalDate;
-import java.time.LocalTime;
-
 import la_compagnia_dell_homebanking.homebanking.Transazione;
 import la_compagnia_dell_homebanking.homebanking.carta.Carta_di_Credito;
 import la_compagnia_dell_homebanking.homebanking.db.MySQLConnection;
 import la_compagnia_dell_homebanking.homebanking.exceptions.CreditNotAvailableException;
+
+import java.sql.*;
+import java.time.LocalDate;
+import java.time.LocalTime;
 
 public class CartaDiCreditoDao {
 
@@ -79,6 +75,7 @@ public class CartaDiCreditoDao {
 		
 		//creo la nuova transazione in uscita sul DB
 		String query=("INSERT INTO movimenti_conto(data_transazione, orario_transazione, iban, nuovo_saldo, somma, is_accredito) VALUES(?,?,?,?,?,?)");
+
 		Transazione t=new Transazione(LocalDate.now(), LocalTime.now(), iban, nuovo_credito, -amount, false);
 		TransazioneDao.creaTransazione(t, query);
 		
@@ -87,15 +84,13 @@ public class CartaDiCreditoDao {
 		pstmt.close();
 		connection.close();
 		
-		return status;
+		return !status;
 		
 	}
 	
 	/**
 	 * @author Gianmarco Polichetti
 	 * @param iban: l'iban del conto collegato alla carta
-	 * @param nuovoNumero: Il numero da applicare alla carta rinnovata
-	 * @param nuovoCvv: Il cvv da applicare alla carta rinnovata
 	 * @version 0.0.1
 	 * Metodo per rinnovare una carta di credito, la nuova carta cambiera il numero, la data di scadenza e il cvv*/
 	public static boolean rinnovaCarta(String iban) {
@@ -160,9 +155,10 @@ public class CartaDiCreditoDao {
 		Connection connection = new MySQLConnection().getMyConnection();
 		
 		//cerco la carta nel DB per eliminarla
+
 		PreparedStatement pstmt = connection.prepareStatement("DELETE FROM carta_di_credito WHERE iban=?");
 		pstmt.setString(1, iban);
-		
+
 		//eseguo la query e salvo il risultato dell'operazione in una boolean
 		boolean flag=pstmt.execute();
 		

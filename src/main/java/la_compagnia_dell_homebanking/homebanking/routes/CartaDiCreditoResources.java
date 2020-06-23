@@ -1,37 +1,32 @@
 package la_compagnia_dell_homebanking.homebanking.routes;
 
-import java.sql.SQLException;
-
-import javax.inject.Singleton;
-import javax.ws.rs.Consumes;
-import javax.ws.rs.DELETE;
-import javax.ws.rs.GET;
-import javax.ws.rs.POST;
-import javax.ws.rs.PUT;
-import javax.ws.rs.Path;
-import javax.ws.rs.PathParam;
-import javax.ws.rs.Produces;
-import javax.ws.rs.core.MediaType;
-
 import la_compagnia_dell_homebanking.homebanking.TokenService;
 import la_compagnia_dell_homebanking.homebanking.dao.CartaDiCreditoDao;
-import la_compagnia_dell_homebanking.homebanking.dao.CartaPrepagataDao;
+
+import javax.inject.Singleton;
+import javax.servlet.ServletContext;
+import javax.ws.rs.*;
+import javax.ws.rs.core.Context;
+import javax.ws.rs.core.MediaType;
+import java.sql.SQLException;
 
 
 @Singleton
 @Path("/carta_di_credito")
 public class CartaDiCreditoResources {
-	
+    @Context
+    ServletContext context;
+
     @GET
     @Path("/{accountId}/{iban}")
     @Produces(MediaType.TEXT_PLAIN)
-    public void getCartaDiCredito(@PathParam("iban") String iban) throws SQLException {
-        
-    	CartaDiCreditoDao.readCarta(iban);
+    public String getCartaDiCredito(@PathParam("iban") String iban) throws SQLException {
+
+    	return CartaDiCreditoDao.readCarta(iban).toString();
     	
     }
     
-    @POST
+    @PUT
     @Path("/{accountId}/{iban}/blocca_carta_credito")
     @Produces(MediaType.TEXT_PLAIN)
     public String bloccaCarta(@PathParam("iban") String iban) {
@@ -43,7 +38,7 @@ public class CartaDiCreditoResources {
     }
     
     
-    @PUT
+    @POST
     @Path("/{accountId}/{iban}/paga/{amount}/{code}")
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes(MediaType.APPLICATION_JSON)
@@ -53,6 +48,7 @@ public class CartaDiCreditoResources {
     @PathParam("amount") Double amount,
     @PathParam("code") String code) {
     	String res=null;
+
     	try {
     		if(CartaPrepagataDao.isblocked(iban)) res="La carta è bloccata!";
 			if(TokenService.chiedi_codice(accountId, code)) {
@@ -62,9 +58,7 @@ public class CartaDiCreditoResources {
 				else res="Non è stato possibile effettuare il pagamento";
 			}
 			else res="Codice errato, non è stato possibile effettuare il pagamento!";
-			
 		} catch (SQLException e) {
-
 			e.printStackTrace();
 		}
     	return res;

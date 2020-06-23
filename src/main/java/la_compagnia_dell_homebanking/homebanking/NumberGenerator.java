@@ -52,11 +52,11 @@ public class NumberGenerator {
     
 
     public static String generateCardNumber() {
-    	return generateRandom ((long)1e+16, (long)9e+16);
+    	return generateRandom ((long)1e+15, (long)9e+15);
     }
     
     public static String generateCvvNumber() {
-    	return generateRandom ((long)1e+3, (long)9e+3);
+    	return generateRandom ((long)1e+2, (long)9e+2);
 
     }
 }

@@ -1,23 +1,15 @@
 package la_compagnia_dell_homebanking.homebanking.carta;
 
-import la_compagnia_dell_homebanking.homebanking.db.MySQLConnection;
 import la_compagnia_dell_homebanking.homebanking.NumberGenerator;
-import la_compagnia_dell_homebanking.homebanking.TokenServlet;
 import la_compagnia_dell_homebanking.homebanking.Transazione;
+import la_compagnia_dell_homebanking.homebanking.db.MySQLConnection;
 
-import java.io.BufferedWriter;
-import java.io.File;
-import java.io.FileWriter;
-import java.io.IOException;
+import javax.json.bind.annotation.JsonbCreator;
 import java.sql.Connection;
-import java.sql.Date;
-import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.time.LocalDate;
-import java.time.LocalTime;
-import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 
 public class Carta_Prepagata implements CartaI {
@@ -26,7 +18,8 @@ public class Carta_Prepagata implements CartaI {
 	private double creditoResiduo;
 	private LocalDate dataScadenza;
 	private ArrayList<Transazione> transazioni;
-	
+
+	@JsonbCreator
 	public Carta_Prepagata(String accountId) {
 		this.accountId = accountId;
 		this.numeroCarta = NumberGenerator.generateCardNumber();
