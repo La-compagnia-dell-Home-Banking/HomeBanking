@@ -1,0 +1,17 @@
+
+.personaCard {
+  border: 1px solid rgb(193, 213, 241);
+  border-radius: 20px;
+  width: 200px;
+  padding: 5px;
+}
+
+.personaCard img {
+  width: 85px;
+}
+.personaCard h2 {
+  font-size: 20px;
+}
+.personaCard * {
+  margin: 0px;
+}
