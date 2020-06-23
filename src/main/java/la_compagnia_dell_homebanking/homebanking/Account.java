@@ -73,6 +73,11 @@ public class Account {
 		return this.accountID;
 	}
 
+	
+	public Persona getPersona() {
+		return persona;
+	}
+
 	public boolean aggiungiConto(ContoCorrente conto) throws SQLException {
 		if (lista_conti.contains(conto))
 			return false;
@@ -83,57 +88,24 @@ public class Account {
 
 	}
 
-
-	public boolean richiestaChiusuraConto(ContoCorrente conto) throws IOException {
-		if(!lista_conti.contains(conto)) throw new ContoNotFoundException();
-		
-		String password;
-		System.out.println("Inserisci password");
-		Scanner in= new Scanner(System.in);
-		password=in.next();
-		in.close();
-		if (!password.equals(this.password)) throw new WrongPasswordException();
-		
-		FileWriter file=new FileWriter("richiesta_chiusura_"+accountID);
-		BufferedWriter bf=new BufferedWriter(file);
-		if(persona instanceof PersFisica)
-		{bf.write("Il cliente "+this.persona.getNome()+" "+((PersFisica)this.persona).getCognome()+
-				" richiede la chiusura del conto corrente "+conto.getIBAN()+".");
-		bf.flush();}
-		else	
-		{bf.write("Il cliente "+this.persona.getNome()+
-				" richiede la chiusura del conto corrente "+conto.getIBAN()+".");
-		bf.flush();}
-		bf.close();
-		return richiestaChiusura=true;
-		
-
-	}
-	
-	
-	public boolean chiusuraConto(ContoCorrente conto) throws SQLException {
-		if(!richiestaChiusura)
-			throw new RuntimeException("Non è stata fatta richiesta di chiusura del conto");
-
-			//connetto al DB
-			Connection connection = new MySQLConnection().getMyConnection();
-			
-			//cerco la carta nel DB per eliminarla
-			PreparedStatement pstmt = connection.prepareStatement("DELETE FROM account WHERE account_id=?");
-			pstmt.setString(1, Integer.toString(this.accountID));
-			
-			//eseguo la query e salvo il risultato dell'operazione in una boolean
-			boolean flag=pstmt.execute();
-			
-			//chiudo le connessioni al DB
-			connection.close();
-			pstmt.close();
-			return chiuso=flag;
-		}
-	
-	
 	public boolean isChiuso() {
 		return this.chiuso;
+	}
+
+	public boolean isRichiestaChiusura() {
+		return richiestaChiusura;
+	}
+
+	public void setRichiestaChiusura(boolean richiestaChiusura) {
+		this.richiestaChiusura = richiestaChiusura;
+	}
+
+	public ArrayList<Carta_Prepagata> getLista_carte() {
+		return lista_carte;
+	}
+
+	public void setChiuso(boolean chiuso) {
+		this.chiuso = chiuso;
 	}
 	
 	
