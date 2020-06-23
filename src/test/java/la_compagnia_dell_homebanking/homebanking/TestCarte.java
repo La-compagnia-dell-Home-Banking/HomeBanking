@@ -1,23 +1,19 @@
 package la_compagnia_dell_homebanking.homebanking;
 
-import static org.junit.Assert.assertNotEquals;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.time.LocalDate;
-
-import org.junit.After;
-import org.junit.Before;
-import org.junit.FixMethodOrder;
-import org.junit.jupiter.api.Test;
-import org.junit.runners.MethodSorters;
-
 import la_compagnia_dell_homebanking.homebanking.carta.Carta_Prepagata;
 import la_compagnia_dell_homebanking.homebanking.carta.Carta_di_Credito;
 import la_compagnia_dell_homebanking.homebanking.dao.CartaDiCreditoDao;
 import la_compagnia_dell_homebanking.homebanking.dao.CartaPrepagataDao;
-import la_compagnia_dell_homebanking.homebanking.db.MySQLConnection;
+import org.junit.FixMethodOrder;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
+import org.junit.runners.MethodSorters;
+
+import java.sql.SQLException;
+import java.time.LocalDate;
+
+import static org.junit.Assert.assertNotEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
 public class TestCarte {
@@ -94,11 +90,25 @@ public class TestCarte {
     }
     
 	/**
+	 * @author oleskiy.OS
+	 * This test checks if a credit card was blocked.
+	 */
+	@Test
+	@DisplayName("Card was blocked.")
+	void test_5() {
+		//given
+		boolean actual = CartaDiCreditoDao.bloccaCarta(" asdf1234qwer5678");
+		//expect
+		boolean expect = true;
+		assertEquals(expect, actual, "carta should be blocked.");
+	}
+    
+	/**
      * This test try to insert a Carta_di_Credito Object to DB
      * @throws SQLException
      */
     @Test
-    void test_5() throws SQLException {
+    void test_6() throws SQLException {
  
     	//then 
  
@@ -109,12 +119,14 @@ public class TestCarte {
     	
     }
     
+
+    
 	/**
      * This test try to insert a Carta_di_Credito Object to DB
      * @throws SQLException
      */
     @Test
-    void test_6() throws SQLException {
+    void test_7() throws SQLException {
 
     	//then 
     	Carta_Prepagata nuova=new Carta_Prepagata("1234567890", "1234567890123456", "123", LocalDate.now().minusDays(10), 1000);
@@ -130,7 +142,7 @@ public class TestCarte {
      * @throws SQLException
      */
     @Test
-    void test_7() throws SQLException {
+    void test_8() throws SQLException {
 
     	//then 
     	String actual=CartaPrepagataDao.readCarta("1234567890").toString();    	
