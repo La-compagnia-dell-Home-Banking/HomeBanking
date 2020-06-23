@@ -46,4 +46,12 @@ public class NumberGenerator {
             s.insert(0, "0");
         return s.toString();
     }
+    
+    public static String generateCardNumber() {
+    	return generateRandom ((long)1e+16, (long)9e+16);
+    }
+    
+    public static String generateCvvNumber() {
+    	return generateRandom ((long)1e+3, (long)9e+3);
+    }
 }

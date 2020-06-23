@@ -8,6 +8,7 @@ import javax.inject.Singleton;
 import javax.json.bind.Jsonb;
 import javax.json.bind.JsonbBuilder;
 import javax.ws.rs.Consumes;
+import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.PUT;
@@ -65,7 +66,8 @@ public class CartaPrepagataResources {
         
     }
     
-    @POST
+    
+    @PUT
     @Path("/{accountId}/{numeroCarta}/blocca_prepagata")
     @Produces(MediaType.TEXT_PLAIN)
     public String bloccaCarta(@PathParam("numeroCarta") String numeroCarta) {
@@ -76,8 +78,11 @@ public class CartaPrepagataResources {
     		return "Non è stato possibile bloccare la carta";
     }
     
+    
     @PUT
     @Path("/{accountId}/{numeroCarta}/paga/{amount}/{code}")
+    @Produces(MediaType.APPLICATION_JSON)
+    @Consumes(MediaType.APPLICATION_JSON)
     public String pay
     (@PathParam("numeroCarta") String numeroCarta,
     @PathParam("accountId") String accountId,
@@ -94,7 +99,7 @@ public class CartaPrepagataResources {
 			else res="Codice errato, non è stato possibile effettuare il pagamento!";
 			
 		} catch (SQLException e) {
-			// TODO Auto-generated catch block
+
 			e.printStackTrace();
 		}
     	return res;
@@ -102,6 +107,8 @@ public class CartaPrepagataResources {
     
     @PUT
     @Path("/{accountId}/{numeroCarta}/ricarica/{amount}/{code}")
+    @Produces(MediaType.APPLICATION_JSON)
+    @Consumes(MediaType.APPLICATION_JSON)
     public String ricarica
     (@PathParam("numeroCarta") String numeroCarta,
     @PathParam("accountId") String accountId,
@@ -111,17 +118,44 @@ public class CartaPrepagataResources {
     	try {
 			if(TokenService.chiedi_codice(accountId, code)) {
 				if(CartaPrepagataDao.ricaricaCarta(amount, numeroCarta)) {
-					res="Hai pagato "+amount+"€ con la carta "+numeroCarta;
+					res="Hai ricaricato "+amount+"€ sulla carta "+numeroCarta;
 				}
-				else res="Non è stato possibile effettuare il pagamento";
+				else res="Non è stato possibile effettuare la ricarica";
 			}
-			else res="Codice errato, non è stato possibile effettuare il pagamento!";
+			else res="Codice errato, non è stato possibile effettuare la ricarica!";
 			
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
     	return res;
+    }
+    
+    @POST
+    @Path("/{accountId}/add_carta")
+    @Produces(MediaType.APPLICATION_JSON)
+    public void add_carta_prepagata(@PathParam("accountId") String accountId) {
+    	
+    	Carta_Prepagata nuova= new Carta_Prepagata(accountId);
+    	try {
+			CartaPrepagataDao.inserisciCartaToDb(nuova);
+		} catch (SQLException e) {
+			
+			e.printStackTrace();
+		}
+    	
+    }
+    
+    @DELETE
+    @Path("/{accountId}/{numeroCarta}/remove_carta")
+    @Produces(MediaType.APPLICATION_JSON)
+    public void delete_carta(@PathParam("numeroCarta") String numeroCarta) {
+    	
+    	try {
+			CartaPrepagataDao.eliminaCartaFromDb(numeroCarta);
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
     }
 
 }

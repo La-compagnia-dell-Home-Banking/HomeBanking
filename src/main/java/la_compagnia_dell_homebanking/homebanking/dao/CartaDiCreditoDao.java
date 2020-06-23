@@ -98,23 +98,26 @@ public class CartaDiCreditoDao {
 	 * @param nuovoCvv: Il cvv da applicare alla carta rinnovata
 	 * @version 0.0.1
 	 * Metodo per rinnovare una carta di credito, la nuova carta cambiera il numero, la data di scadenza e il cvv*/
-	public static Carta_di_Credito rinnovaCarta(String iban, String nuovoNumero, String nuovoCvv) {
+	public static boolean rinnovaCarta(String iban) {
 		
 		Carta_di_Credito rinnovata = null;
 		Carta_di_Credito vecchia = null;
 
 		try {
 			vecchia = new Carta_di_Credito(iban);
-			rinnovata=new Carta_di_Credito(vecchia.getAccountId(), nuovoNumero, nuovoCvv, vecchia.getConto_corrente(), LocalDate.now().plusYears(4));
+			rinnovata = new Carta_di_Credito(vecchia.getAccountId(), vecchia.getConto_corrente());
 
-			CartaDiCreditoDao.inserisciCartaToDb(rinnovata);
-			CartaDiCreditoDao.eliminaCartaFromDb(vecchia.getNumeroCarta());
+			if(CartaDiCreditoDao.inserisciCartaToDb(rinnovata)&&CartaDiCreditoDao.eliminaCartaFromDb(vecchia.getNumeroCarta()))
+					return true;
+			
+			else return false;
 			
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		return rinnovata;
+		return false;
+		
 	}
 	
 	
