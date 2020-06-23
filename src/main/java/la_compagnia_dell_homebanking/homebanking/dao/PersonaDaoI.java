@@ -3,6 +3,7 @@ package la_compagnia_dell_homebanking.homebanking.dao;
 import la_compagnia_dell_homebanking.homebanking.cliente.PersFisica;
 import la_compagnia_dell_homebanking.homebanking.cliente.PersGiuridica;
 import la_compagnia_dell_homebanking.homebanking.cliente.Persona;
+import la_compagnia_dell_homebanking.homebanking.cliente.UpdatedPersonaFisica;
 
 import java.sql.SQLException;
 import java.util.List;
@@ -21,9 +22,8 @@ public interface PersonaDaoI {
     static List<PersFisica> getPersonByBirthDate(String data) {
         return PersonaDao.getPersonByBirthDate(data);
     }
-    static PersFisica updatePersonF(String personId, String indirizzo, String residenza, String cap, String email,
-                                    String telefono) {
-        return PersonaDao.updatePersonF(personId, indirizzo, residenza, cap, email, telefono);
+    static PersFisica updatePersonF(UpdatedPersonaFisica personaFisica) {
+        return PersonaDao.updatePersonF(personaFisica);
     }
     static PersGiuridica updatePersonG(String personId, String nome_rappresentante, String cognome_rappresentante,
                                               String sede_legale, String indirizzo, String cap, String email,

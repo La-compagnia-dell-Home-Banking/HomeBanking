@@ -2,6 +2,7 @@ package la_compagnia_dell_homebanking.homebanking;
 
 import la_compagnia_dell_homebanking.homebanking.cliente.PersFisica;
 import la_compagnia_dell_homebanking.homebanking.cliente.PersGiuridica;
+import la_compagnia_dell_homebanking.homebanking.cliente.UpdatedPersonaFisica;
 import la_compagnia_dell_homebanking.homebanking.dao.PersonaDao;
 import la_compagnia_dell_homebanking.homebanking.db.MySQLConnection;
 import org.junit.jupiter.api.DisplayName;
@@ -72,7 +73,7 @@ public class DatabaseTest {
         //given
         PersFisica persFisica = new PersFisica("Alex", "X", "3487218089", "@",
                 "SCSVSSVSD", "0950-01-02", "Visantia", "via",
-                "non c'è", "Costantinopoli", "?", "5555555555", false);
+                "non c'è", "Costantinopoli", "?", "5555555555");
         //then
         boolean isTheSamePerson = PersonaDao.getPersonaById("5555555555").equals(persFisica);
         //expect
@@ -93,7 +94,7 @@ public class DatabaseTest {
         //given
         PersGiuridica persGiuridica = new PersGiuridica("1234567", "azienda@mail.com", "Pippo spa", "911",
                 "via del Pippo", "dsf23124", "02345", "Edgar",
-                "Alan Po", "USA", "1111111111", false);
+                "Alan Po", "USA", "1111111111");
         //then
         boolean isTheSameCompany = PersonaDao.getPersonaById("1111111111").equals(persGiuridica);
         //expect
@@ -111,10 +112,10 @@ public class DatabaseTest {
         String cognome = "cognome";
         PersFisica persFisica = new PersFisica("Mister", cognome, "3487218089", "@",
                 "DFRD3453SD234", "0950-01-02", "Visantia", "via",
-                "12345632", "Costantinopoli", "?", "1111111111", false);
+                "12345632", "Costantinopoli", "?", "1111111111");
         PersFisica persFisica2 = new PersFisica("Mister2", cognome, "2324252323", "@2",
                 "ACASDASD1241", "0923-02-01", "Australia", "via a",
-                "asd34512", "Australia", "444356", "2222222222", false);
+                "asd34512", "Australia", "444356", "2222222222");
         //then
         List<PersFisica> persons = PersonaDao.getPersonaByCognome(cognome);
         boolean isTheSame = false;
@@ -139,10 +140,12 @@ public class DatabaseTest {
         //given
         PersFisica persFisica = new PersFisica("MisterX", "Bz", "43521234", "@mail",
                 "FHSDLA!@#!", "1991-01-02", "Torino", "via T",
-                "FG31242", "Italia", "12019", "3333333333", false);
+                "FG31242", "Italia", "12019", "3333333333");
         //then
-        PersFisica modificatedPerson = PersonaDao.updatePersonF("3333333333", "via Nuova",
+        UpdatedPersonaFisica updatedPersonaFisica = new UpdatedPersonaFisica("3333333333", "via Nuova",
                 "Nuova", "nuovo", "nuova_email", "nuovo_t");
+
+        PersFisica modificatedPerson = PersonaDao.updatePersonF(updatedPersonaFisica);
 
         boolean actual = modificatedPerson.getResidenza().equals("Nuova") &&
                 modificatedPerson.getTelefono().equals("nuovo_t");
@@ -160,7 +163,7 @@ public class DatabaseTest {
         //given
         PersGiuridica persGiuridica = new PersGiuridica("321413124", "azienda@mail.com", "Pippo&Co", "141235",
                 "via del Pippo", "FRE43453", "02345", "Edgar",
-                "Alan Po", "USA", "4444444444", false);
+                "Alan Po", "USA", "4444444444");
 
         String actual = PersonaDao.removeCompanyById("4444444444");
         //expect
@@ -177,7 +180,7 @@ public class DatabaseTest {
         //given
         PersGiuridica persGiuridica = new PersGiuridica("321413124", "azienda@mail.com", "Pippo&Partners", "131415113",
                 "via del Pippo", "ASDFASD123", "02345", "Edgar",
-                "Alan Po", "USA", "2222222222", false);
+                "Alan Po", "USA", "2222222222");
 
         String actual = PersonaDao.removeCompanyById("1231325231");
         //expect

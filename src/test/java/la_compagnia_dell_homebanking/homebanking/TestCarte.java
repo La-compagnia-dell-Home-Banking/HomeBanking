@@ -1,24 +1,19 @@
 package la_compagnia_dell_homebanking.homebanking;
 
-import static org.junit.Assert.assertNotEquals;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.time.LocalDate;
-
-import org.junit.After;
-import org.junit.Before;
+import la_compagnia_dell_homebanking.homebanking.carta.Carta_Prepagata;
+import la_compagnia_dell_homebanking.homebanking.carta.Carta_di_Credito;
+import la_compagnia_dell_homebanking.homebanking.dao.CartaDiCreditoDao;
+import la_compagnia_dell_homebanking.homebanking.dao.CartaPrepagataDao;
 import org.junit.FixMethodOrder;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.runners.MethodSorters;
 
-import la_compagnia_dell_homebanking.homebanking.carta.Carta_Prepagata;
-import la_compagnia_dell_homebanking.homebanking.carta.Carta_di_Credito;
-import la_compagnia_dell_homebanking.homebanking.dao.CartaDiCreditoDao;
-import la_compagnia_dell_homebanking.homebanking.dao.CartaPrepagataDao;
-import la_compagnia_dell_homebanking.homebanking.db.MySQLConnection;
+import java.sql.SQLException;
+import java.time.LocalDate;
+
+import static org.junit.Assert.assertNotEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
 public class TestCarte {
