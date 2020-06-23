@@ -11,12 +11,26 @@ $(document).ready(() => {
           }
       }
   }
+
+
+  fetch(`http://localhost:8080/HomeBanking/home-banking/persona/${accountID}`, {
+      
+  }).then(value => {
+    return value.json().then(value => {
+      console.log(value);
+    })
+  })
+
+
+
+
+
   async function getData() {
-    $('#jquery').click( ()=> {
-  $.ajax("localhost:8080/HomeBanking/home-banking/persona")
+    $('#jquery').click( () => {
+  $.ajax()
   .done( data => {
-    $("#quote").text(data[0])
-    console.log(data.jsin());
+    // $("#quote").text(data[0])
+    console.log(data.json());
   })
   .fail((err)=> {
     console.log(err.statusText)
@@ -25,7 +39,6 @@ $(document).ready(() => {
   }
 
   console.log(getData());
-
 });
 
 

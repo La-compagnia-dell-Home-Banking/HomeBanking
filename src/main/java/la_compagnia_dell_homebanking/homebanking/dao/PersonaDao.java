@@ -3,6 +3,7 @@ package la_compagnia_dell_homebanking.homebanking.dao;
 import la_compagnia_dell_homebanking.homebanking.cliente.PersFisica;
 import la_compagnia_dell_homebanking.homebanking.cliente.PersGiuridica;
 import la_compagnia_dell_homebanking.homebanking.cliente.Persona;
+import la_compagnia_dell_homebanking.homebanking.cliente.UpdatedPersonaFisica;
 import la_compagnia_dell_homebanking.homebanking.db.MySQLConnection;
 
 import java.sql.PreparedStatement;
@@ -12,6 +13,39 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class PersonaDao implements PersonaDaoI {
+
+
+   public static void insertPersonToDb(PersFisica personaFisica) {
+        Boolean status = null;
+        MySQLConnection connection = new MySQLConnection();
+        String query = "INSERT INTO persona_fisica VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+        try {
+            PreparedStatement prstmt = connection.getMyConnection().prepareStatement(query);
+            prstmt.setString(1, personaFisica.getPersona_id());
+            prstmt.setString(2, personaFisica.getNome());
+            prstmt.setString(3, personaFisica.getCognome());
+            prstmt.setString(4, personaFisica.getDocs().getCodice_fiscale());
+            prstmt.setString(5, personaFisica.getdataDiNascita());
+            prstmt.setString(6, personaFisica.getLuogoDiNascita());
+            prstmt.setString(7, personaFisica.getResidenza());
+            prstmt.setString(8, personaFisica.getIndirizzo());
+            prstmt.setString(9, personaFisica.getCap());
+            prstmt.setString(10, personaFisica.getEmail());
+            prstmt.setString(11, personaFisica.getTelefono());
+            prstmt.setString(12, personaFisica.getDocs().getDocument());
+            status = prstmt.execute();
+        } catch (SQLException e) {
+            PersonaDaoI.printexceptions(e);
+        } finally {
+            try {
+                connection.getMyConnection().close();
+            } catch (SQLException e) {
+                PersonaDaoI.printexceptions(e);
+            }
+        }
+        System.out.println(new StringBuilder().append("Success. Client ").append(personaFisica.toString()).
+                append(" was created.").toString());
+    }
 
     public static List<Persona> getAllPerson() {
         List<Persona> persone = new ArrayList<>();
@@ -48,7 +82,7 @@ public class PersonaDao implements PersonaDaoI {
         String telefono = resultSet.getString("telefono");
         String documento = resultSet.getString("documento");
         return new PersFisica(nome,cognome,telefono,email,cf,dataDiNascita,luogoNascita,
-                indirizzo,documento,residenza,cap,person_id,true);
+                indirizzo,documento,residenza,cap,person_id);
     }
 
     private static PersGiuridica populatePersonaGiuridica(ResultSet resultSet) throws SQLException {
@@ -64,7 +98,7 @@ public class PersonaDao implements PersonaDaoI {
         String partita_iva = resultSet.getString("partita_iva");
         String documento_rappresentante = resultSet.getString("documento_rappresentante");
         return new PersGiuridica(telefono,email,ragione_sociale,partita_iva,indirizzo,documento_rappresentante,
-                cap,nome_rappresentante,cognome_rappresentante,sede_legale,azienda_id, true);
+                cap,nome_rappresentante,cognome_rappresentante,sede_legale,azienda_id);
     }
 
     public static Persona getPersonaById(String id) {
@@ -150,24 +184,23 @@ public class PersonaDao implements PersonaDaoI {
         return null;
     }
 
-    public static PersFisica updatePersonF(String personId, String indirizzo, String residenza, String cap, String email,
-                                   String telefono) {
+    public static PersFisica updatePersonF(UpdatedPersonaFisica updatedPersonaFisica) {
         MySQLConnection connection = new MySQLConnection();
         ResultSet resultSet = null;
         try {
             PreparedStatement prstmt = connection.getMyConnection().prepareStatement("UPDATE persona_fisica" +
                     " SET indirizzo=?, residenza=?, cap=?, email=?, telefono=?  WHERE persona_id=?");
-            prstmt.setString(1, indirizzo);
-            prstmt.setString(2, residenza);
-            prstmt.setString(3, cap);
-            prstmt.setString(4, email);
-            prstmt.setString(5, telefono);
-            prstmt.setString(6, personId);
+            prstmt.setString(1, updatedPersonaFisica.getIndirizzo());
+            prstmt.setString(2, updatedPersonaFisica.getResidenza());
+            prstmt.setString(3, updatedPersonaFisica.getCap());
+            prstmt.setString(4, updatedPersonaFisica.getEmail());
+            prstmt.setString(5, updatedPersonaFisica.getTelefono());
+            prstmt.setString(6, updatedPersonaFisica.getPersonId());
             prstmt.execute();
-            System.out.println("Person with ID: '" + personId + "' was successfully updated.");
+            System.out.println("Person with ID: '" + updatedPersonaFisica.getPersonId() + "' was successfully updated.");
             prstmt = connection.getMyConnection().prepareStatement("SELECT * FROM persona_fisica " +
                     "WHERE persona_id=?");
-            prstmt.setString(1, personId);
+            prstmt.setString(1, updatedPersonaFisica.getPersonId());
             resultSet = prstmt.executeQuery();
             resultSet.next();
             return populatePersonaFisica(resultSet);

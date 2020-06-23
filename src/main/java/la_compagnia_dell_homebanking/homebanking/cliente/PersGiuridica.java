@@ -16,16 +16,13 @@ public class PersGiuridica extends Persona {
 
 	public PersGiuridica(String telefono, String email, String ragione_sociale, String p_iva,
 						 String indirizzo, String documento, String cap, String nomeRappresentante, String cognomeRappresentante,
-						 String sedeLegale, String azienda_id, Boolean isInDb) {
+						 String sedeLegale, String azienda_id) {
 		super(ragione_sociale, telefono, email, indirizzo, documento, cap, azienda_id);
 		this.ragione_sociale = ragione_sociale;
 		this.nomeRappresentante = nomeRappresentante;
 		this.cognomeRappresentante = cognomeRappresentante;
 		this.sedeLegale = sedeLegale;
 		this.getDocs().setP_iva(p_iva);
-		if(!isInDb) {
-			insertPersonToDb(this);
-		}
 	}
 
 	private void insertPersonToDb(PersGiuridica persona) {
