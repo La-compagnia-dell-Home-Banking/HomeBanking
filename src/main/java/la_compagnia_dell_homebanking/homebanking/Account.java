@@ -1,6 +1,5 @@
 package la_compagnia_dell_homebanking.homebanking;
 
-
 import la_compagnia_dell_homebanking.homebanking.cliente.PersFisica;
 import la_compagnia_dell_homebanking.homebanking.carta.Carta_Prepagata;
 import la_compagnia_dell_homebanking.homebanking.cliente.Persona;
@@ -16,6 +15,14 @@ import java.sql.*;
 import java.util.*;
 
 
+/**
+ * 
+ * @author D'Inverno, Giuseppe Alessio
+ * Classe account
+ * 
+ */
+
+
 public class Account {
 	private ArrayList<ContoCorrente> lista_conti;
 	private ArrayList<Carta_Prepagata> lista_carte;
@@ -23,10 +30,13 @@ public class Account {
 	private final Persona persona;
 	private boolean richiestaChiusura=false;
 	private boolean chiuso=false;
-	
-
 	private String password = "";
 
+	/**
+	 * Class constructor which takes in input a Persona and initializes all the attributes
+	 * @param persona	The person which owns the account
+	 * @throws SQLException	The exception SQLException is launched when there are problems with the database connection
+	 */
 
 	public Account(Persona persona) throws SQLException {
 		accountID = AccountDao.controlAccount_id() + 1;
@@ -37,6 +47,11 @@ public class Account {
 		lista_carte = CartaPrepagataDao.readCarte(Integer.toString(accountID));
 	}
 
+	/**
+	 * Class constructor which takes in input an account ID  and initializes all the attributes from the database
+	 * @param account_id	The ID number of the account
+	 * @throws SQLException	The exception SQLException is launched when there are problems with the database connection
+	 */
 	public Account(String account_id) throws SQLException {
 		accountID = Integer.parseInt(account_id);
 		MySQLConnection connection = new MySQLConnection();
@@ -55,7 +70,9 @@ public class Account {
 
 	}
 
-
+	/**
+	 * The method set a password for the account; It is called in the main constructor
+	 */
 	private void setPassword() {
 		System.out.println("Imposta la password");
 		Scanner in= new Scanner(System.in);
@@ -64,20 +81,37 @@ public class Account {
 
 	}
 
+	/**
+	 * The method returns the password of the account.
+	 * @return
+	 */
 	public String getPassword() {
 		return this.password;
 	}
 
 
+	/**
+	 * The method returns the ID of the account.
+	 * @return
+	 */
 	public int getAccountID() {
 		return this.accountID;
 	}
 
-	
+	/**
+	 * The method returns the object Persona which owns the account.
+	 * @return
+	 */
 	public Persona getPersona() {
 		return persona;
 	}
 
+	/**
+	 * The method adds a bank account ContoCorrent in the Account
+	 * @param conto 	The bank account which we want to add in the Account
+	 * @return true if the bank account is added, false otherwise;
+	 * @throws SQLException
+	 */
 	public boolean aggiungiConto(ContoCorrente conto) throws SQLException {
 		if (lista_conti.contains(conto))
 			return false;
@@ -87,7 +121,11 @@ public class Account {
 		return lista_conti.add(conto);
 
 	}
-
+	
+	/**
+	 * 
+	 * @return
+	 */
 	public boolean isChiuso() {
 		return this.chiuso;
 	}
