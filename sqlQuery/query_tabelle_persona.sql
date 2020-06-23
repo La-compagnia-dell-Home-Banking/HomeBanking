@@ -62,11 +62,12 @@ credito_Residuo DECIMAL(6,2) NOT NULL,
 numero VARCHAR (16) PRIMARY KEY NOT NULL,
 scadenza DATE NOT NULL,
 cvv VARCHAR(3) NOT NULL,
+isBlocked BOOLEAN DEFAULT false,
 FOREIGN KEY (account_id) REFERENCES account(account_id) ON DELETE CASCADE
 );
 
 CREATE TABLE movimenti_conto(
-numero_transazione INT NOT NULL PRIMARY KEY,
+numero_transazione INTEGER AUTO_INCREMENT NOT NULL PRIMARY KEY,
 data_transazione DATE NOT NULL,
 orario_transazione TIME NOT NULL,
 iban VARCHAR(25) NOT NULL,
@@ -76,7 +77,7 @@ is_accredito BOOLEAN NOT NULL,
 FOREIGN KEY (iban) REFERENCES conto_corrente(iban) ON DELETE CASCADE
 );
 CREATE TABLE movimenti_carta_prepagata(
-numero_transazione INT NOT NULL PRIMARY KEY,
+numero_transazione INTEGER AUTO_INCREMENT NOT NULL PRIMARY KEY,
 data_transazione DATE NOT NULL,
 orario_transazione TIME NOT NULL,
 numero VARCHAR(16) NOT NULL,

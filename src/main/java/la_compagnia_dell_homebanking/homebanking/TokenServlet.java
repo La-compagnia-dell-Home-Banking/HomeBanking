@@ -33,7 +33,7 @@ public class TokenServlet extends HttpServlet{
 		LocalTime orario_ultimo = null;
 		String codice_attuale = null;
 		try {
-			Connection connection = new MySQLConnection().getMyConnection();
+			Connection connection = new MySQLConnection(true).getMyConnection();
 			PreparedStatement pstmt = connection.prepareStatement("SELECT * FROM token WHERE account_id=?");
 			pstmt.setString(1, account_id);
 			ResultSet rs = pstmt.executeQuery();

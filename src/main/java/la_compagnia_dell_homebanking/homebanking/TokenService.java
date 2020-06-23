@@ -1,23 +1,18 @@
 package la_compagnia_dell_homebanking.homebanking;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Statement;
+import la_compagnia_dell_homebanking.homebanking.db.MySQLConnection;
+
+import java.sql.*;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
 
-
-import la_compagnia_dell_homebanking.homebanking.db.MySQLConnection;
-
 public class TokenService {
 
 	public static void save_code(int code, String account_id, String data, String orario) throws SQLException {
 
-		Connection connection = new MySQLConnection().getMyConnection();
+		Connection connection = new MySQLConnection(true).getMyConnection();
 		Statement stmt = connection.createStatement();
 		String query = "UPDATE token "
 				+ "SET generated_token ='"+code+
@@ -31,9 +26,8 @@ public class TokenService {
 	}
 
 	public static boolean chiedi_codice(String account_id, String codice_inserito) throws SQLException {
-		Connection connection = new MySQLConnection().getMyConnection();
+		Connection connection = new MySQLConnection(true).getMyConnection();
 		PreparedStatement pstmt = null;
-		String code_in =  codice_inserito;
 		String gen = null;
 
 	
@@ -44,10 +38,15 @@ public class TokenService {
 		LocalDate data_ultimo = rs.getDate("data_transazione").toLocalDate();
 		LocalTime orario_ultimo = rs.getTime("orario_transazione").toLocalTime();
 		long t = -(ChronoUnit.SECONDS.between(LocalTime.now(), orario_ultimo));
+		System.out.println(t);
+		System.out.println(orario_ultimo);
+		System.out.println(LocalTime.now());
+
 		if (t >= 60)
 			t = -1;
 		boolean valid = ((data_ultimo.equals(LocalDate.now()) && (t >= 0 && t <= 60)));
 		if (!valid) {
+
 			TokenService.generate(account_id);
 		}
 		rs = pstmt.executeQuery();
@@ -57,10 +56,9 @@ public class TokenService {
 		rs.close();
 		connection.close();
 		pstmt.close();
-
-		if(!code_in.equals(gen)) return false;
+//		System.out.println(gen);
+		if(!codice_inserito.equals(gen)) return false;
 		return true;
-
 	}
 	
 	public static void generate(String account_id) throws SQLException {

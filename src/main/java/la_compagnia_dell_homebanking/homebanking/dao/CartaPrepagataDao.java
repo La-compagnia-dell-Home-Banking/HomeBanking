@@ -1,26 +1,20 @@
 package la_compagnia_dell_homebanking.homebanking.dao;
 
+import la_compagnia_dell_homebanking.homebanking.Transazione;
+import la_compagnia_dell_homebanking.homebanking.carta.Carta_Prepagata;
+import la_compagnia_dell_homebanking.homebanking.db.MySQLConnection;
+import la_compagnia_dell_homebanking.homebanking.exceptions.CreditExceedException;
+import la_compagnia_dell_homebanking.homebanking.exceptions.CreditNotAvailableException;
+
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.sql.Connection;
-import java.sql.Date;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
+import java.sql.*;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
-
-import la_compagnia_dell_homebanking.homebanking.TokenServlet;
-import la_compagnia_dell_homebanking.homebanking.Transazione;
-import la_compagnia_dell_homebanking.homebanking.carta.Carta_Prepagata;
-import la_compagnia_dell_homebanking.homebanking.carta.Carta_di_Credito;
-import la_compagnia_dell_homebanking.homebanking.db.MySQLConnection;
-import la_compagnia_dell_homebanking.homebanking.exceptions.CreditExceedException;
-import la_compagnia_dell_homebanking.homebanking.exceptions.CreditNotAvailableException;
 
 public class CartaPrepagataDao {
 	
@@ -119,7 +113,7 @@ public class CartaPrepagataDao {
 		rs.close();
 		pstmt.close();
 		connection.close();
-		return status;
+		return !status;
 		
 	}
 	
@@ -165,7 +159,7 @@ public class CartaPrepagataDao {
 		pstmt.close();
 		connection.close();
 		
-		return status;
+		return !status;
 		
 	}
 	

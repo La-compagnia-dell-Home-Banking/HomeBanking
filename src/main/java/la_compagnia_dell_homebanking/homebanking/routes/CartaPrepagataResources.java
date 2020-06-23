@@ -1,26 +1,17 @@
 package la_compagnia_dell_homebanking.homebanking.routes;
 
-import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.concurrent.ExecutionException;
-
-import javax.inject.Singleton;
-import javax.json.bind.Jsonb;
-import javax.json.bind.JsonbBuilder;
-import javax.ws.rs.Consumes;
-import javax.ws.rs.DELETE;
-import javax.ws.rs.GET;
-import javax.ws.rs.POST;
-import javax.ws.rs.PUT;
-import javax.ws.rs.Path;
-import javax.ws.rs.PathParam;
-import javax.ws.rs.Produces;
-import javax.ws.rs.core.MediaType;
-
 import la_compagnia_dell_homebanking.homebanking.TokenService;
 import la_compagnia_dell_homebanking.homebanking.Transazione;
 import la_compagnia_dell_homebanking.homebanking.carta.Carta_Prepagata;
 import la_compagnia_dell_homebanking.homebanking.dao.CartaPrepagataDao;
+
+import javax.inject.Singleton;
+import javax.json.bind.Jsonb;
+import javax.json.bind.JsonbBuilder;
+import javax.ws.rs.*;
+import javax.ws.rs.core.MediaType;
+import java.sql.SQLException;
+import java.util.ArrayList;
 
 @Singleton
 @Path("/carta_prepagata")
@@ -28,11 +19,10 @@ public class CartaPrepagataResources {
 	
     @GET
     @Path("/{accountId}/{numeroCarta}")
-    @Produces(MediaType.TEXT_PLAIN)
-    public void getCartaPrepagata(@PathParam("numeroCarta") String numeroCarta) throws SQLException {
-        
-    	CartaPrepagataDao.readCarta(numeroCarta);
-    	
+    @Produces(MediaType.APPLICATION_JSON)
+    public String getCartaPrepagata(@PathParam("numeroCarta") String numeroCarta) throws SQLException {
+        Jsonb jsonb = JsonbBuilder.create();
+    	return jsonb.toJson(CartaPrepagataDao.readCarta(numeroCarta));
     }
     
     @GET
@@ -134,28 +124,34 @@ public class CartaPrepagataResources {
     @POST
     @Path("/{accountId}/add_carta")
     @Produces(MediaType.APPLICATION_JSON)
-    public void add_carta_prepagata(@PathParam("accountId") String accountId) {
+    public String add_carta_prepagata(@PathParam("accountId") String accountId) {
     	
     	Carta_Prepagata nuova= new Carta_Prepagata(accountId);
     	try {
-			CartaPrepagataDao.inserisciCartaToDb(nuova);
+            if (CartaPrepagataDao.inserisciCartaToDb(nuova)) {
+                return "La carta " + nuova.getNumeroCarta() + " è stata aggiunta.";
+            }
+
 		} catch (SQLException e) {
-			
 			e.printStackTrace();
 		}
-    	
+    	return "Errore. La carta " + nuova.getNumeroCarta() + " non è stata aggiunta.";
     }
     
     @DELETE
     @Path("/{accountId}/{numeroCarta}/remove_carta")
     @Produces(MediaType.APPLICATION_JSON)
-    public void delete_carta(@PathParam("numeroCarta") String numeroCarta) {
-    	
-    	try {
-			CartaPrepagataDao.eliminaCartaFromDb(numeroCarta);
-		} catch (SQLException e) {
+    public String delete_carta(@PathParam("numeroCarta") String numeroCarta) {
+
+        try {
+            if (CartaPrepagataDao.eliminaCartaFromDb(numeroCarta)) {
+                return "La carta " + numeroCarta + " è stata eleminata.";
+            }
+
+        } catch (SQLException e) {
 			e.printStackTrace();
 		}
+        return "Errere. La carta " + numeroCarta + " non è stata eliminata.";
     }
 
 }
