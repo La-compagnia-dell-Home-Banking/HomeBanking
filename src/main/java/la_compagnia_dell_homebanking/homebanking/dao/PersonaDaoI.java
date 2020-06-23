@@ -3,6 +3,7 @@ package la_compagnia_dell_homebanking.homebanking.dao;
 import la_compagnia_dell_homebanking.homebanking.cliente.PersFisica;
 import la_compagnia_dell_homebanking.homebanking.cliente.PersGiuridica;
 import la_compagnia_dell_homebanking.homebanking.cliente.Persona;
+import la_compagnia_dell_homebanking.homebanking.db.MySQLConnection;
 
 import java.sql.SQLException;
 import java.util.List;
@@ -38,6 +39,6 @@ public interface PersonaDaoI {
         return PersonaDao.removeCompanyById(id);
     }
     static void printexceptions(SQLException e) {
-        PersonaDao.printexceptions(e);
+        MySQLConnection.printExceptions(e);
     }
 }
