@@ -8,10 +8,10 @@ import java.sql.SQLException;
 import java.time.LocalDate;
 import java.time.LocalTime;
 
-import la_compagnia_dell_homebanking.homebanking.TokenServlet;
 import la_compagnia_dell_homebanking.homebanking.Transazione;
 import la_compagnia_dell_homebanking.homebanking.carta.Carta_di_Credito;
 import la_compagnia_dell_homebanking.homebanking.db.MySQLConnection;
+import la_compagnia_dell_homebanking.homebanking.exceptions.CreditNotAvailableException;
 
 public class CartaDiCreditoDao {
 
@@ -61,15 +61,11 @@ public class CartaDiCreditoDao {
 		pstmt.setString(1, iban);
 		ResultSet rs = pstmt.executeQuery();
 		rs.next();		
-		
-		//controllo il codice token
-		if(TokenServlet.chiedi_codice(rs.getString("account_id"))) System.out.println("Codice ok!");
-		
-		
+
 		double disponibile=rs.getDouble("saldo_disponibile");
 		
 		//controllo se il saldo disponibile è sufficiente
-		if(disponibile<amount) return false;
+		if(disponibile<amount) throw new CreditNotAvailableException();
 		
 		//calcolo il nuovo saldo
 		double nuovo_credito=disponibile-amount;
@@ -91,7 +87,7 @@ public class CartaDiCreditoDao {
 		pstmt.close();
 		connection.close();
 		
-		return true;
+		return status;
 		
 	}
 	
@@ -171,5 +167,31 @@ public class CartaDiCreditoDao {
 		connection.close();
 		pstmt.close();
 		return flag;
+	}
+	
+	/**
+	 * @author oleskiy.OS
+	 * @param iban = conto (in DB)
+	 * @return boolean - true if card was blocked properly, false if wasn't.
+	 * This method blocks a credit card.
+	 */
+	public static boolean bloccaCarta(String iban) {
+		MySQLConnection connection = new MySQLConnection();
+		String query = "UPDATE carta_di_credito SET isBlocked=true WHERE conto =?";
+		try {
+			PreparedStatement prstmt = connection.getMyConnection().prepareStatement(query);
+			prstmt.setString(1, iban);
+			int status = prstmt.executeUpdate();
+			if(status == 1) {
+				System.out.println(new StringBuilder().append("Credit card IBAN ").append(iban).append(" was blocked."));
+				return true;
+			}
+		} catch (SQLException e) {
+			MySQLConnection.printExceptions(e);
+		} finally {
+			MySQLConnection.closeAllConnections(connection);
+		}
+		System.out.println(new StringBuilder().append("Card ").append(iban).append(" doesn't exist."));
+		return false;
 	}
 }

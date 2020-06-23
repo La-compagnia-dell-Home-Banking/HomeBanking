@@ -12,13 +12,18 @@ import java.time.LocalDate;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.Scanner;
 
 import la_compagnia_dell_homebanking.homebanking.Account;
 import la_compagnia_dell_homebanking.homebanking.ContoCorrente;
 import la_compagnia_dell_homebanking.homebanking.TokenServlet;
 import la_compagnia_dell_homebanking.homebanking.Transazione;
 import la_compagnia_dell_homebanking.homebanking.carta.Carta_di_Credito;
+import la_compagnia_dell_homebanking.homebanking.cliente.PersFisica;
 import la_compagnia_dell_homebanking.homebanking.db.MySQLConnection;
+import la_compagnia_dell_homebanking.homebanking.exceptions.ContoNotFoundException;
+import la_compagnia_dell_homebanking.homebanking.exceptions.CreditNotAvailableException;
+import la_compagnia_dell_homebanking.homebanking.exceptions.WrongPasswordException;
 
 public class ContoCorrenteDao {
 
@@ -84,14 +89,13 @@ public class ContoCorrenteDao {
 		pstmt.setString(1, iban);
 		ResultSet rs = pstmt.executeQuery();
 		rs.next();		
-		
-		if(TokenServlet.chiedi_codice(rs.getString("account_id"))) System.out.println("Codice ok!");
+
 		
 		
 		double disponibile=rs.getDouble("saldo_disponibile");
 		
 		//controllo se il saldo disponibile è sufficiente
-		if(disponibile<amount) return false;
+		if(disponibile<amount) throw new CreditNotAvailableException();
 		
 		//calcolo il nuovo saldo
 		double nuovo_credito=rs.getDouble("saldo_disponibile")-amount;
@@ -112,7 +116,7 @@ public class ContoCorrenteDao {
 		rs.close();
 		pstmt.close();
 		connection.close();
-		return true;
+		return status;
 		
 	}
 	
@@ -194,4 +198,53 @@ public class ContoCorrenteDao {
 		return res;
 
 	}
+	
+	public static boolean richiestaChiusuraConto(Account account, ContoCorrente conto) throws IOException, SQLException {
+		if(!account.getLista_carte().contains(conto)) throw new ContoNotFoundException();
+		
+		String password;
+		System.out.println("Inserisci password");
+		Scanner in= new Scanner(System.in);
+		password=in.next();
+		in.close();
+		if (!password.equals(account.getPassword())) throw new WrongPasswordException();
+		
+		FileWriter file=new FileWriter("richiesta_chiusura_"+account.getAccountID());
+		BufferedWriter bf=new BufferedWriter(file);
+		if(account.getPersona() instanceof PersFisica)
+		{bf.write("Il cliente "+account.getPersona().getNome()+" "+((PersFisica)account.getPersona()).getCognome()+
+				" richiede la chiusura del conto corrente "+conto.getIBAN()+".");
+		bf.flush();}
+		else	
+		{bf.write("Il cliente "+account.getPersona().getNome()+
+				" richiede la chiusura del conto corrente "+conto.getIBAN()+".");
+		bf.flush();}
+		bf.close();
+		account.setRichiestaChiusura(true);
+		return true;
+		
+
+	}
+	
+	
+	public boolean chiusuraConto(Account account, ContoCorrente conto) throws SQLException {
+		if(!account.isRichiestaChiusura())
+			throw new RuntimeException("Non è stata fatta richiesta di chiusura del conto");
+
+			//connetto al DB
+			Connection connection = new MySQLConnection().getMyConnection();
+			
+			//cerco la carta nel DB per eliminarla
+			PreparedStatement pstmt = connection.prepareStatement("DELETE FROM account WHERE account_id=?");
+			pstmt.setString(1, Integer.toString(account.getAccountID()));
+			
+			//eseguo la query e salvo il risultato dell'operazione in una boolean
+			boolean flag=pstmt.execute();
+			
+			//chiudo le connessioni al DB
+			connection.close();
+			pstmt.close();
+			account.setChiuso(flag);
+			return flag;
+		}
 }

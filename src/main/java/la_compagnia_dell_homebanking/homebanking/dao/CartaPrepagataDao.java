@@ -19,6 +19,8 @@ import la_compagnia_dell_homebanking.homebanking.Transazione;
 import la_compagnia_dell_homebanking.homebanking.carta.Carta_Prepagata;
 import la_compagnia_dell_homebanking.homebanking.carta.Carta_di_Credito;
 import la_compagnia_dell_homebanking.homebanking.db.MySQLConnection;
+import la_compagnia_dell_homebanking.homebanking.exceptions.CreditExceedException;
+import la_compagnia_dell_homebanking.homebanking.exceptions.CreditNotAvailableException;
 
 public class CartaPrepagataDao {
 	
@@ -93,13 +95,12 @@ public class CartaPrepagataDao {
 		ResultSet rs = pstmt.executeQuery();
 		rs.next();		
 		
-		//controllo il codice token
-		if(TokenServlet.chiedi_codice(rs.getString("account_id"))) System.out.println("Codice ok!");
-		
 		double disponibile=rs.getDouble("credito_residuo");
 		
 		//controllo se il saldo disponibile è sufficiente
-		if(disponibile<amount) return false;
+		if(disponibile<amount) throw new CreditNotAvailableException();
+			
+		
 		
 		//calcolo il nuovo saldo
 		double nuovo_credito=rs.getDouble("credito_residuo")-amount;
@@ -118,7 +119,7 @@ public class CartaPrepagataDao {
 		rs.close();
 		pstmt.close();
 		connection.close();
-		return true;
+		return status;
 		
 	}
 	
@@ -128,7 +129,7 @@ public class CartaPrepagataDao {
 	 * @version 0.0.1
 	 * Metodo per ricaricare una carta prepagata, dopo aver richiesto il codice token generato, se il codice è corretto,
 	 *  il saldo sulla carta viene aggiornato e viene creata una nuova transazione in entrata*/
-	public static void ricaricaCarta(double amount, String numeroCarta) throws SQLException {
+	public static boolean ricaricaCarta(double amount, String numeroCarta) throws SQLException {
 
 		//connetto al DB
 		Connection connection = new MySQLConnection().getMyConnection();
@@ -139,11 +140,14 @@ public class CartaPrepagataDao {
 		ResultSet rs = pstmt.executeQuery();
 		rs.next();		
 		
-		//controllo il codice token
-		if(TokenServlet.chiedi_codice(rs.getString("account_id"))) System.out.println("Codice ok!");
+		double disponibile=rs.getDouble("credito_residuo");
+		
+		//controllo se il saldo disponibile è sufficiente
+		if(disponibile+amount >= 5000) throw new CreditExceedException();
+		
 		
 		//calcolo il nuovo saldo
-		double nuovo_credito=rs.getDouble("credito_residuo")+amount;
+		double nuovo_credito=disponibile+amount;
 		
 		//aggiorno la carta con il nuovo saldo
 		pstmt = connection.prepareStatement("UPDATE carta_prepagata SET credito_residuo =? WHERE numero=?");
@@ -160,6 +164,8 @@ public class CartaPrepagataDao {
 		rs.close();
 		pstmt.close();
 		connection.close();
+		
+		return status;
 		
 	}
 	
@@ -317,5 +323,31 @@ public class CartaPrepagataDao {
 		File res=new File("C:\\Users\\"+System.getProperty("user.name")+"\\Documents\\HomeBanking\\Uscite "+numeroCarta+".txt");
 		return res;
 
+	}
+	
+	/**
+	 * @author oleskiy.OS
+	 * @param numero = conto (in DB)
+	 * @return boolean - true if card was blocked properly, false if wasn't.
+	 * This method blocks a credit card.
+	 */
+	public static boolean bloccaCarta(String numero) {
+		MySQLConnection connection = new MySQLConnection();
+		String query = "UPDATE carta_prepagata SET isBlocked=true WHERE numero =?";
+		try {
+			PreparedStatement prstmt = connection.getMyConnection().prepareStatement(query);
+			prstmt.setString(1, numero);
+			int status = prstmt.executeUpdate();
+			if(status == 1) {
+				System.out.println(new StringBuilder().append("Prepayed Card Number ").append(numero).append(" was blocked."));
+				return true;
+			}
+		} catch (SQLException e) {
+			MySQLConnection.printExceptions(e);
+		} finally {
+			MySQLConnection.closeAllConnections(connection);
+		}
+		System.out.println(new StringBuilder().append("Card ").append(numero).append(" doesn't exist."));
+		return false;
 	}
 }

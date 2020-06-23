@@ -53,31 +53,6 @@ public class Carta_di_Credito implements CartaI {
 		
 	}
 
-	/**
-	 * @author oleskiy.OS
-	 * @param iban = conto (in DB)
-	 * @return boolean - true if card was blocked properly, false if wasn't.
-	 * This method blocks a credit card.
-	 */
-	public static boolean bloccareCarta(String iban) {
-		MySQLConnection connection = new MySQLConnection();
-		String query = "UPDATE carta_di_credito SET isBlocked=true WHERE conto =?";
-		try {
-			PreparedStatement prstmt = connection.getMyConnection().prepareStatement(query);
-			prstmt.setString(1, iban);
-			int status = prstmt.executeUpdate();
-			if(status == 1) {
-				System.out.println(new StringBuilder().append("Credit card IBAN ").append(iban).append(" was blocked."));
-				return true;
-			}
-		} catch (SQLException e) {
-			MySQLConnection.printExceptions(e);
-		} finally {
-			MySQLConnection.closeAllConnections(connection);
-		}
-		System.out.println(new StringBuilder().append("Card ").append(iban).append(" doesn't exist."));
-		return false;
-	}
 
 	@Override
 	public String toString() {
