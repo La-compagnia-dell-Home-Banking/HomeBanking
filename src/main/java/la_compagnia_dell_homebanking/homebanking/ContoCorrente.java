@@ -19,6 +19,14 @@ import java.time.LocalDate;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 
+/**
+ * 
+ * @author D'Inverno, Giuseppe Alessio
+ * 
+ * The class represents a bank account
+ *
+ */
+
 public class ContoCorrente {
 	private Carta_di_Credito carta;
 	private Account account;
@@ -29,6 +37,12 @@ public class ContoCorrente {
 	private double saldo_disponibile;
 	private double saldo_contabile;
 	private ArrayList<Transazione> transazioni;
+	
+	/**
+	 * The constructor takes an Account in input, initializes a new Carta_di_Credito associated to this ContoCorrente
+	 * @param account	The Account of the user
+	 * @throws SQLException
+	 */
 
 	public ContoCorrente(Account account) throws SQLException {
 
@@ -36,11 +50,19 @@ public class ContoCorrente {
 		this.generateIBAN();
 		saldo_disponibile = 0.00;
 		saldo_contabile = 0.00;
-		carta = new Carta_di_Credito(Integer.toString(account.getAccountID()), iban);
+		carta = new Carta_di_Credito(Integer.toString(account.getAccountID()),
+				NumberGenerator.generateRandom(10000000, 99999999) + NumberGenerator.generateRandom(10000000, 99999999),
+				(NumberGenerator.generateRandom(100, 999)), iban, LocalDate.now().plusYears(4));
 		account.aggiungiConto(this);
 	
 	}
 
+	
+	/**
+	 * The constructor takes an iban in input and search the correspondent ContoCorrente in the database and initializes it
+	 * @param iban	The Account of the user
+	 * @throws SQLException
+	 */
 	public ContoCorrente(String iban) throws SQLException {
 		this.iban = iban;
 		MySQLConnection connection = new MySQLConnection();
@@ -51,7 +73,10 @@ public class ContoCorrente {
 		rs.next();
 		account = AccountDao.getAccountFromDb(rs.getString("account_id"));
 		if (CartaDiCreditoDao.readCarta(iban)==null)
-			carta = new Carta_di_Credito(Integer.toString(account.getAccountID()), iban);
+			carta = new Carta_di_Credito(Integer.toString(account.getAccountID()),
+					NumberGenerator.generateRandom(10000000, 99999999)
+							+ NumberGenerator.generateRandom(10000000, 99999999),
+					(NumberGenerator.generateRandom(100, 999)), iban, LocalDate.now().plusYears(4));
 
 		saldo_disponibile = rs.getDouble("saldo_disponibile");
 		saldo_contabile = rs.getDouble("saldo_contabile");
@@ -62,73 +87,67 @@ public class ContoCorrente {
 
 	}
 
-	private static String addZeros(String num, int length) {
-		int numlength = num.length();
-		String s = num;
-		for (int i = 0; i < length - numlength; i++)
-			s = '0' + s;
-
-		return s;
-
-	}
 
 
+	/**
+	 * The method generates a random Capital letter.
+	 * @return char		The generated capital letter.
+	 */
 	private static char rndChar() {
 		int rnd = (int) (Math.random() * 52); // or use Random or whatever
 		return (char) ('A' + rnd % 26);
 
 
 	}
-
+	
+	/**
+	 * The method generates an IBAN.
+	 */
 	private void generateIBAN() {
 		iban_final++;
 		this.iban = "IT" + NumberGenerator.generateRandom(1, 99) + rndChar() + Integer.toString(ABI)
-				+ Integer.toString(CAB) + addZeros(Integer.toString(iban_final), 12);
+				+ Integer.toString(CAB) + NumberGenerator.addZeros(Integer.toString(iban_final), 12);
 	}
 
 
+	/**
+	 * The method returns the iban associated to the ContoCorrente
+	 * @return iban
+	 */
 	public String getIBAN() {
 		return this.iban;
 	}
 
 	
-
+	/**
+	 * The method returns the saldo_disponibile of the ContoCorrente
+	 * @return saldo_disponibile
+	 */
 	public double getSaldo_disponibile() {
 		return saldo_disponibile;
 	}
 
+	
+	/**
+	 * The method returns the saldo_contabile of the ContoCorrente
+	 * @return	saldo_contabile
+	 */
 	public double getSaldo_contabile() {
 		return saldo_contabile;
 	}
 
 
-
+	
+	/**
+	 * The method returns the Account owner of this ContoCorrente
+	 * @return account
+	 */
 	public Account getAccount() {
 		return this.account;
 	}
 
 
-//
-//	private boolean findCartaAssociata() throws SQLException {
-//		MySQLConnection connection = new MySQLConnection();
-//		String query = "SELECT * FROM carta_di_credito WHERE conto=?";
-//		PreparedStatement prstmt = connection.getMyConnection().prepareStatement(query);
-//		prstmt.setString(1, this.iban);
-//		ResultSet rs = prstmt.executeQuery();
-//		rs.next();
-//		if (rs.getString("numero") != null) {
-//			carta = new Carta_di_Credito(rs.getString("account_id"));
-//			prstmt.close();
-//			rs.close();
-//			connection.getMyConnection().close();
-//			return true;
-//		} else {
-//			prstmt.close();
-//			rs.close();
-//			connection.getMyConnection().close();
-//			return false;}
-//
-//	}
+
 	
 	
 
