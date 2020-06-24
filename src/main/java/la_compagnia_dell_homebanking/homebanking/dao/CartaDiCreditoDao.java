@@ -157,7 +157,7 @@ public class CartaDiCreditoDao {
 		
 		//cerco la carta nel DB per eliminarla
 
-		PreparedStatement pstmt = connection.prepareStatement("DELETE FROM carta_di_credito WHERE iban=?");
+		PreparedStatement pstmt = connection.prepareStatement("DELETE FROM carta_di_credito WHERE conto=?");
 		pstmt.setString(1, iban);
 
 		//eseguo la query e salvo il risultato dell'operazione in una boolean
@@ -166,7 +166,7 @@ public class CartaDiCreditoDao {
 		//chiudo le connessioni al DB
 		connection.close();
 		pstmt.close();
-		return flag;
+		return !flag;
 	}
 	
 	/**

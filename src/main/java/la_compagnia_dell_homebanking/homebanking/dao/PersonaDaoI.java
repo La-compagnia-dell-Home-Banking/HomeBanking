@@ -5,7 +5,6 @@ import la_compagnia_dell_homebanking.homebanking.cliente.PersGiuridica;
 import la_compagnia_dell_homebanking.homebanking.cliente.Persona;
 import la_compagnia_dell_homebanking.homebanking.cliente.UpdatedPersonaFisica;
 
-import java.sql.SQLException;
 import java.util.List;
 
 public interface PersonaDaoI {
@@ -37,7 +36,5 @@ public interface PersonaDaoI {
     static String removeCompanyById(String id) {
         return PersonaDao.removeCompanyById(id);
     }
-    static void printexceptions(SQLException e) {
-        printexceptions(e);
-    }
+
 }

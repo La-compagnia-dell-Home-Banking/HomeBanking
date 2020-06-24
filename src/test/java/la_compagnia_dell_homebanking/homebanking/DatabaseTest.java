@@ -152,7 +152,7 @@ public class DatabaseTest {
         PersGiuridica persGiuridica = new PersGiuridica("321413124", "azienda@mail.com", "Pippo&Co", "141235",
                 "via del Pippo", "FRE43453", "02345", "Edgar",
                 "Alan Po", "USA", "4444444444");
-
+        PersonaDao.insertPersonToDb(persGiuridica);
         String actual = PersonaDao.removeCompanyById("4444444444");
         //expect
         String expected = "One company deleted successfully. ID: '4444444444'.";

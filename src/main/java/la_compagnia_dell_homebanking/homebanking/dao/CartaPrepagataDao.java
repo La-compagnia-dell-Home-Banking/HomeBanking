@@ -20,7 +20,6 @@ public class CartaPrepagataDao {
 	
 	/**
 	 * @author Gianmarco Polichetti
-	 * @param account_id: l'iban del conto del quale si vuole conoscere la carta di credito collegata
 	 * @version 0.0.1
 	 * @return carta: la carta collegata al conto
 	 * Legge la carta di credito collegata al conto dal DB e la restituisce*/
@@ -37,7 +36,9 @@ public class CartaPrepagataDao {
 
 			while (rs.next()) { // Leggiamo i risultati
 
-				carta = new Carta_Prepagata(rs.getString("numero"), true);
+
+				carta = new Carta_Prepagata(rs.getString("account_id"), rs.getString("numero"), rs.getString("cvv"),
+						rs.getDouble("credito_Residuo"), rs.getDate("scadenza").toLocalDate());
 
 			}
 			rs.close();
@@ -64,7 +65,9 @@ public class CartaPrepagataDao {
 
 			while (rs.next()) { // Leggiamo i risultati
 
-				Carta_Prepagata carta = new Carta_Prepagata(rs.getString("numero"), true);
+				Carta_Prepagata carta = new Carta_Prepagata(rs.getString("account_id"), rs.getString("numero"), rs.getString("cvv"),
+						rs.getDouble("credito_Residuo"), rs.getDate("scadenza").toLocalDate());
+
 				lista.add(carta);
 			}
 			connection.close();
@@ -206,7 +209,7 @@ public class CartaPrepagataDao {
 		Connection connection = new MySQLConnection().getMyConnection();
 		
 		//inserisco i dati della carta
-		PreparedStatement pstmt = connection.prepareStatement("INSERT INTO carta_prepagata(account_id, credito_residuo, numero, scadenza, cvv) VALUES(?,?,?,?,?)");
+		PreparedStatement pstmt = connection.prepareStatement("INSERT INTO carta_prepagata(account_id, credito_Residuo, numero, scadenza, cvv) VALUES(?,?,?,?,?)");
 		pstmt.setString(1, nuovaCarta.getAccountId());
 		pstmt.setDouble(2, nuovaCarta.getCreditoResiduo());
 		pstmt.setString(3, nuovaCarta.getNumeroCarta());
@@ -219,7 +222,7 @@ public class CartaPrepagataDao {
 		//chiudo le connessioni al DB
 		connection.close();
 		pstmt.close();
-		return flag;
+		return !flag;
 	}
 	
 	/**

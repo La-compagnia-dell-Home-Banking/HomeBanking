@@ -35,12 +35,12 @@ public class PersonaDao implements PersonaDaoI {
             prstmt.setString(12, personaFisica.getDocs().getDocument());
             status = prstmt.execute();
         } catch (SQLException e) {
-            PersonaDaoI.printexceptions(e);
+            MySQLConnection.printExceptions(e);
         } finally {
             try {
                 connection.getMyConnection().close();
             } catch (SQLException e) {
-                PersonaDaoI.printexceptions(e);
+                MySQLConnection.printExceptions(e);
             }
         }
         System.out.println(new StringBuilder().append("Success. Client ").append(personaFisica.toString()).
@@ -64,14 +64,14 @@ public class PersonaDao implements PersonaDaoI {
             prstmt.setString(9, persona.getEmail());
             prstmt.setString(10, persona.getTelefono());
             prstmt.setString(11, persona.getDocs().getDocument());
-            status = prstmt.execute();
+            prstmt.execute();
         } catch (SQLException e) {
-            PersonaDaoI.printexceptions(e);
+            MySQLConnection.printExceptions(e);
         } finally {
             try {
                 connection.getMyConnection().close();
             } catch (SQLException e) {
-                PersonaDaoI.printexceptions(e);
+                MySQLConnection.printExceptions(e);
             }
         }
         System.out.println(new StringBuilder().append("Success. ").append(persona.toString()).

@@ -12,7 +12,6 @@ import org.junit.runners.MethodSorters;
 import java.sql.SQLException;
 import java.time.LocalDate;
 
-import static org.junit.Assert.assertNotEquals;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
@@ -97,7 +96,7 @@ public class TestCarte {
 	@DisplayName("Card was blocked.")
 	void test_5() {
 		//given
-		boolean actual = CartaDiCreditoDao.bloccaCarta(" asdf1234qwer5678");
+		boolean actual = CartaDiCreditoDao.bloccaCarta("asdf1234qwer5678");
 		//expect
 		boolean expect = true;
 		assertEquals(expect, actual, "carta should be blocked.");
@@ -109,13 +108,10 @@ public class TestCarte {
      */
     @Test
     void test_6() throws SQLException {
- 
-    	//then 
- 
-    	boolean actual=CartaDiCreditoDao.eliminaCartaFromDb("3539153403921784");
+    	//then
+    	boolean actual = CartaDiCreditoDao.eliminaCartaFromDb("asdf1234qwer5678");
     	//expected
-    	
-    	assertEquals(false, actual, "la carta è stata rimossa dal DB");
+    	assertEquals(true, actual, "la carta è stata rimossa dal DB");
     	
     }
     
@@ -127,13 +123,11 @@ public class TestCarte {
      */
     @Test
     void test_7() throws SQLException {
-
     	//then 
-    	Carta_Prepagata nuova=new Carta_Prepagata("1234567890");
+    	Carta_Prepagata nuova=new Carta_Prepagata("1111111111");
     	//expected
-    	boolean actual=CartaPrepagataDao.inserisciCartaToDb(nuova);   
-    	
-    	assertEquals(false, actual, "la carta è stata aggiunta al DB");
+    	boolean actual= CartaPrepagataDao.inserisciCartaToDb(nuova);
+    	assertEquals(true, actual, "la carta è stata aggiunta al DB");
     	
     }
     
@@ -145,10 +139,10 @@ public class TestCarte {
     void test_8() throws SQLException {
 
     	//then 
-    	String actual=CartaPrepagataDao.readCarta("1234567890").toString();    	
+    	String actual=CartaPrepagataDao.readCarta("7612679469284369").toString();
     	
     	//expected
-    	String expected="Carta_Prepagata [accountId=1234567890, numeroCarta=1234567890123456, cvv=123, creditoResiduo=1000.00, dataScadenza=" + LocalDate.now().minusDays(10) + "]";
+    	String expected="Carta_Prepagata [accountId=1111111111, numeroCarta=7612679469284369, cvv=601, creditoResiduo=0.0, dataScadenza=2024-06-24]";
     	
     	assertEquals(expected, actual, "la carta è stata letta correttamente");
     	

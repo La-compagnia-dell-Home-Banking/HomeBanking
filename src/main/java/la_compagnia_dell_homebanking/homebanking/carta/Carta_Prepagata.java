@@ -2,13 +2,8 @@ package la_compagnia_dell_homebanking.homebanking.carta;
 
 import la_compagnia_dell_homebanking.homebanking.NumberGenerator;
 import la_compagnia_dell_homebanking.homebanking.Transazione;
-import la_compagnia_dell_homebanking.homebanking.db.MySQLConnection;
 
 import javax.json.bind.annotation.JsonbCreator;
-import java.sql.Connection;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Statement;
 import java.time.LocalDate;
 import java.util.ArrayList;
 
@@ -30,22 +25,15 @@ public class Carta_Prepagata implements CartaI {
 		this.dataScadenza = LocalDate.now().plusYears(4);
 	}
 
-	public Carta_Prepagata(String numeroCarta, boolean fromDb) throws SQLException {
-		
-		Connection conn=new MySQLConnection().getMyConnection();
-		Statement stmt = conn.createStatement();
-		ResultSet rs = stmt.executeQuery("SELECT * FROM carta_prepagata WHERE numero='"+numeroCarta+"'");
-		rs.next();
-		accountId=rs.getString("account_id");
-		this.numeroCarta=numeroCarta;
-		cvv=rs.getString("cvv");
-		creditoResiduo=rs.getDouble("credito_residuo");
-		dataScadenza=rs.getDate("scadenza").toLocalDate();
-		stmt.close();
-		rs.close();
-		conn.close();
+	public Carta_Prepagata(String accountId, String numeroCarta, String cvv, double creditoResiduo,
+						   LocalDate dataScadenza) {
+		this.accountId = accountId;
+		this.numeroCarta = numeroCarta;
+		this.cvv = cvv;
+		this.creditoResiduo = creditoResiduo;
+		this.dataScadenza = dataScadenza;
 	}
-	
+
 	public Carta_Prepagata(String accountId, double creditoResiduo) {
 		this.accountId = accountId;
 		this.numeroCarta = NumberGenerator.generateCardNumber();
