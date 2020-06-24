@@ -8,6 +8,9 @@ import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
 
+/**@author Gianmarco Polichetti
+ * Classe che definisce i servizi legati al generatore di token*/
+
 public class TokenService {
 
 	/**

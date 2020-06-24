@@ -50,9 +50,7 @@ public class ContoCorrente {
 		this.generateIBAN();
 		saldo_disponibile = 0.00;
 		saldo_contabile = 0.00;
-		carta = new Carta_di_Credito(Integer.toString(account.getAccountID()),
-				NumberGenerator.generateRandom(10000000, 99999999) + NumberGenerator.generateRandom(10000000, 99999999),
-				(NumberGenerator.generateRandom(100, 999)), iban, LocalDate.now().plusYears(4));
+		carta = new Carta_di_Credito(Integer.toString(account.getAccountID()),iban);
 		account.aggiungiConto(this);
 	
 	}
@@ -73,10 +71,7 @@ public class ContoCorrente {
 		rs.next();
 		account = AccountDao.getAccountFromDb(rs.getString("account_id"));
 		if (CartaDiCreditoDao.readCarta(iban)==null)
-			carta = new Carta_di_Credito(Integer.toString(account.getAccountID()),
-					NumberGenerator.generateRandom(10000000, 99999999)
-							+ NumberGenerator.generateRandom(10000000, 99999999),
-					(NumberGenerator.generateRandom(100, 999)), iban, LocalDate.now().plusYears(4));
+			carta = new Carta_di_Credito(Integer.toString(account.getAccountID()), iban);
 
 		saldo_disponibile = rs.getDouble("saldo_disponibile");
 		saldo_contabile = rs.getDouble("saldo_contabile");

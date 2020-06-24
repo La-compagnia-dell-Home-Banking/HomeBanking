@@ -50,11 +50,18 @@ public class NumberGenerator {
         return s.toString();
     }
     
-
+	/**
+	 * @author Giuseppe Alessio D'inverno
+	 * @version 0.0.1
+	 * Genera il numero di una carta*/
     public static String generateCardNumber() {
     	return generateRandom ((long)1e+15, (long)9e+15);
     }
     
+	/**
+	 * @author Giuseppe Alessio D'inverno
+	 * @version 0.0.1
+	 * Genera il cvv di una carta*/
     public static String generateCvvNumber() {
     	return generateRandom ((long)1e+2, (long)9e+2);
 

@@ -26,6 +26,11 @@ import la_compagnia_dell_homebanking.homebanking.exceptions.CreditExceedExceptio
 import la_compagnia_dell_homebanking.homebanking.exceptions.CreditNotAvailableException;
 import la_compagnia_dell_homebanking.homebanking.exceptions.WrongPasswordException;
 
+/**@author Gianmarco Polichetti, Giuseppe Alessio D'Inverno
+ * @version 0.0.1
+ * Gestisce le operazioni possibili su di un conto corrente: inserimento, eliminazione, 
+ * lettura delle informazioni del conto e pagamenti in entrata ed uscita  */
+
 public class ContoCorrenteDao {
 
 	private static boolean insertCCToDb(ContoCorrente c) throws SQLException {
@@ -50,6 +55,12 @@ public class ContoCorrenteDao {
 		return insertCCToDb(c);
 	}
 
+	/**
+	 * @author Gianmarco Polichetti, Giuseppe Alessio D'Inverno
+	 * @param account_id The id of the owner of the checking account's
+	 * @version 0.0.1
+	 * Generate a list of checking account's linked to the account id*/	
+	
 	public static ArrayList<ContoCorrente> readConti(String account_id) throws SQLException {
 
 		ArrayList<ContoCorrente> lista = new ArrayList<ContoCorrente>();
@@ -247,6 +258,13 @@ public class ContoCorrenteDao {
 
 	}
 	
+	
+	/**
+	 * @author Giuseppe Alessio D'inverno
+	 * @param account
+	 * @param conto
+	 * @version 0.0.1
+	 * Richiede la chiusura del conto da parte di un amministratore di sistema*/
 	public static boolean richiestaChiusuraConto(Account account, ContoCorrente conto) throws IOException, SQLException {
 		if(!account.getLista_carte().contains(conto)) throw new ContoNotFoundException();
 		
@@ -274,7 +292,12 @@ public class ContoCorrenteDao {
 
 	}
 	
-	
+	/**
+	 * @author Giuseppe Alessio D'inverno
+	 * @param account
+	 * @param conto
+	 * @version 0.0.1
+	 * Questo metodo può essere richiamato da un amministratore di sistema per chiudere un conto se ne è stata fatta richiesta*/
 	public boolean chiusuraConto(Account account, ContoCorrente conto) throws SQLException {
 		if(!account.isRichiestaChiusura())
 			throw new RuntimeException("Non è stata fatta richiesta di chiusura del conto");

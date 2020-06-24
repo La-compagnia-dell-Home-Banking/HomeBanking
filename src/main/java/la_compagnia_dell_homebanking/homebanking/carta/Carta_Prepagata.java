@@ -12,6 +12,8 @@ import java.sql.Statement;
 import java.time.LocalDate;
 import java.util.ArrayList;
 
+/**@author Gianmarco Polichetti
+ * Classe che definisce l'oggetto carta prepagata*/
 public class Carta_Prepagata implements CartaI {
 	
 	private String accountId, numeroCarta, cvv;

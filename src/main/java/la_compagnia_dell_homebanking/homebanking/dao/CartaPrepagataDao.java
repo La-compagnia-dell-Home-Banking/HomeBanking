@@ -345,6 +345,12 @@ public class CartaPrepagataDao {
 		return false;
 	}
 	
+	/**
+	 * @author Gianmarco Polichetti
+	 * @param iban the iban of the account linked to the card
+	 * @return boolean - true if card is blocked, false if wasn't.
+	 * This method check if a credit card is blocked.
+	 */
 	public static boolean isblocked(String numeroCarta) {
 		
 		MySQLConnection connection = new MySQLConnection();
