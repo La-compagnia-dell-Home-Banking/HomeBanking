@@ -1,9 +1,6 @@
 package la_compagnia_dell_homebanking.homebanking.dao;
 
-import la_compagnia_dell_homebanking.homebanking.cliente.PersFisica;
-import la_compagnia_dell_homebanking.homebanking.cliente.PersGiuridica;
-import la_compagnia_dell_homebanking.homebanking.cliente.Persona;
-import la_compagnia_dell_homebanking.homebanking.cliente.UpdatedPersonaFisica;
+import la_compagnia_dell_homebanking.homebanking.cliente.*;
 import la_compagnia_dell_homebanking.homebanking.db.MySQLConnection;
 
 import java.sql.PreparedStatement;
@@ -12,9 +9,13 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * @author oleskiy.OS
+ * @version 1.0
+ * All methods are described in PersonaDaoI interface
+ */
+
 public class PersonaDao implements PersonaDaoI {
-
-
    public static void insertPersonToDb(PersFisica personaFisica) {
         Boolean status = null;
         MySQLConnection connection = new MySQLConnection();
@@ -99,6 +100,13 @@ public class PersonaDao implements PersonaDaoI {
         return persone;
     }
 
+    /**
+     * Method populates person from DB (from resultSet) and returns new person class
+     * @author oleskiy.OS
+     * @param resultSet
+     * @return PersFisica class
+     * @throws SQLException
+     */
     private static PersFisica populatePersonaFisica(ResultSet resultSet) throws SQLException {
         String person_id = resultSet.getString("persona_id");
         String nome = resultSet.getString("nome");
@@ -116,6 +124,13 @@ public class PersonaDao implements PersonaDaoI {
                 indirizzo,documento,residenza,cap,person_id);
     }
 
+    /**
+     * Method populates company from DB (from resultSet) and returns new PersGiuridica class
+     * @author oleskiy.OS
+     * @param resultSet
+     * @return PersGiuridica class
+     * @throws SQLException
+     */
     private static PersGiuridica populatePersonaGiuridica(ResultSet resultSet) throws SQLException {
         String azienda_id = resultSet.getString("azienda_id");
         String ragione_sociale = resultSet.getString("ragione_sociale");
@@ -245,27 +260,25 @@ public class PersonaDao implements PersonaDaoI {
         return null;
     }
 
-    public static PersGiuridica updatePersonG(String personId, String nome_rappresentante, String cognome_rappresentante,
-                                     String sede_legale, String indirizzo, String cap, String email,
-                                     String telefono) {
+    public static PersGiuridica updatePersonG(UpdatedPersonaGiuridica updatedPersonaGiuridica) {
         MySQLConnection connection = new MySQLConnection();
         try {
             PreparedStatement prstmt = connection.getMyConnection().prepareStatement("UPDATE persona_giuridica" +
                     " SET nome_rappresentante=?, cognome_rappresentante=?," +
                     " sede_legale=?, indirizzo=?, cap=?, email=?, telefono=?  WHERE azienda_id=?");
-            prstmt.setString(1, nome_rappresentante);
-            prstmt.setString(2, cognome_rappresentante);
-            prstmt.setString(3, sede_legale);
-            prstmt.setString(4, indirizzo);
-            prstmt.setString(5, cap);
-            prstmt.setString(6, email);
-            prstmt.setString(7, telefono);
-            prstmt.setString(8, personId);
+            prstmt.setString(1, updatedPersonaGiuridica.getNome_rappresentante());
+            prstmt.setString(2, updatedPersonaGiuridica.getCognome_rappresentante());
+            prstmt.setString(3, updatedPersonaGiuridica.getSede_legale());
+            prstmt.setString(4, updatedPersonaGiuridica.getIndirizzo());
+            prstmt.setString(5, updatedPersonaGiuridica.getCap());
+            prstmt.setString(6, updatedPersonaGiuridica.getEmail());
+            prstmt.setString(7, updatedPersonaGiuridica.getTelefono());
+            prstmt.setString(8, updatedPersonaGiuridica.getPersonId());
             prstmt.execute();
-            System.out.println("Person with ID: '" + personId + "' was successfully updated.");
+            System.out.println("Person with ID: '" + updatedPersonaGiuridica.getPersonId() + "' was successfully updated.");
             prstmt = connection.getMyConnection().prepareStatement("SELECT * FROM persona_giuridica " +
                     "WHERE azienda_id=?");
-            prstmt.setString(1, personId);
+            prstmt.setString(1, updatedPersonaGiuridica.getPersonId());
             ResultSet rs = prstmt.executeQuery();
             rs.next();
             return populatePersonaGiuridica(rs);

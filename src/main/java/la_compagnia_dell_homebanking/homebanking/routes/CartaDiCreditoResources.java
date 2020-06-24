@@ -10,13 +10,18 @@ import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import java.sql.SQLException;
 
-
+/**@author Gianmarco Polichetti*/
 @Singleton
 @Path("/carta_di_credito")
 public class CartaDiCreditoResources {
     @Context
     ServletContext context;
 
+	/**
+	 * @author Gianmarco Polichetti
+	 * @param iban
+	 * @version 0.0.1
+	 * Show a selected credit card linked to an existing checking account*/
     @GET
     @Path("/{accountId}/{iban}")
     @Produces(MediaType.TEXT_PLAIN)
@@ -25,7 +30,12 @@ public class CartaDiCreditoResources {
     	return CartaDiCreditoDao.readCarta(iban).toString();
     	
     }
-    
+
+	/**
+	 * @author Gianmarco Polichetti
+	 * @param iban
+	 * @version 0.0.1
+	 * Lock a card linked to an existing checking account*/
     @PUT
     @Path("/{accountId}/{iban}/blocca_carta_credito")
     @Produces(MediaType.TEXT_PLAIN)
@@ -36,8 +46,15 @@ public class CartaDiCreditoResources {
     	else 
     		return "Non è stato possibile bloccare la carta";
     }
-    
-    
+
+	/**
+	 * @author Gianmarco Polichetti
+	 * @param accountId
+	 * @param iban
+	 * @param amount
+	 * @param code
+	 * @version 0.0.1
+	 * Pay an amount with the credit card after insert a generated security code*/
     @POST
     @Path("/{accountId}/{iban}/paga/{amount}/{code}")
     @Produces(MediaType.APPLICATION_JSON)
@@ -63,7 +80,13 @@ public class CartaDiCreditoResources {
 		}
     	return res;
     }
-    
+
+	/**
+	 * @author Gianmarco Polichetti
+	 * @param accountId
+	 * @param iban
+	 * @version 0.0.1
+	 * Renew an expired credit card*/
     @PUT
     @Path("/{accountId}/{iban}/rinnova")
     @Produces(MediaType.APPLICATION_JSON)
@@ -78,7 +101,12 @@ public class CartaDiCreditoResources {
     	
     	return res;
     }
-    
+
+	/**
+	 * @author Gianmarco Polichetti
+	 * @param iban
+	 * @version 0.0.1
+	 * Delete an expired credit card*/
     @DELETE
     @Path("/{accountId}/{iban}/remove_carta")
     @Produces(MediaType.APPLICATION_JSON)

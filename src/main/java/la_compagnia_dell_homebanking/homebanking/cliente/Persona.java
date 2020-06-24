@@ -1,5 +1,11 @@
 package la_compagnia_dell_homebanking.homebanking.cliente;
 
+/**
+ * Person's Superclass
+ * @author oleskiy.OS
+ * @version 1.0
+ */
+
 public class Persona implements Cliente {
 
 	private String nome;
@@ -56,11 +62,6 @@ public class Persona implements Cliente {
 		this.email = null;
 		this.indirizzo = null;
 		this.docs.setDocument(null);
-	}
-
-	@Override
-	public int compareTo(Cliente o) {
-		return 0;
 	}
 
 	@Override

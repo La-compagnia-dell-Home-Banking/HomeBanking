@@ -13,10 +13,17 @@ import javax.ws.rs.core.MediaType;
 import java.sql.SQLException;
 import java.util.ArrayList;
 
+/**@author Gianmarco Polichetti*/
 @Singleton
 @Path("/carta_prepagata")
 public class CartaPrepagataResources {
-	
+
+
+    /**
+     * @author Gianmarco Polichetti
+     * @param numeroCarta
+     * @version 0.0.1
+     * Show a selected prepaid card linked to an existing account*/
     @GET
     @Path("/{accountId}/{numeroCarta}")
     @Produces(MediaType.APPLICATION_JSON)
@@ -24,7 +31,12 @@ public class CartaPrepagataResources {
         Jsonb jsonb = JsonbBuilder.create();
     	return jsonb.toJson(CartaPrepagataDao.readCarta(numeroCarta));
     }
-    
+
+    /**
+     * @author Gianmarco Polichetti
+     * @param accountId
+     * @version 0.0.1
+     * Show a list of prepaid cards linked to an existing account*/
     @GET
     @Path("/{accountId}/lista_carte_prepagate")
     @Produces(MediaType.APPLICATION_JSON)
@@ -39,7 +51,12 @@ public class CartaPrepagataResources {
             return "List is empty.";
         }
     }
-    
+
+    /**
+     * @author Gianmarco Polichetti
+     * @param numeroCarta
+     * @version 0.0.1
+     * Displays a list of transactions made with a prepaid card*/
     @GET
     @Path("/{accountId}/{numeroCarta}/transazioni")
     @Produces(MediaType.APPLICATION_JSON)
@@ -55,8 +72,12 @@ public class CartaPrepagataResources {
         }
         
     }
-    
-    
+
+    /**
+     * @author Gianmarco Polichetti
+     * @param numeroCarta
+     * @version 0.0.1
+     * Lock a prepaid card linked to an existing account*/
     @PUT
     @Path("/{accountId}/{numeroCarta}/blocca_prepagata")
     @Produces(MediaType.TEXT_PLAIN)
@@ -67,8 +88,15 @@ public class CartaPrepagataResources {
     	else 
     		return "Non è stato possibile bloccare la carta";
     }
-    
-    
+
+    /**
+     * @author Gianmarco Polichetti
+     * @param accountId
+     * @param numeroCarta
+     * @param amount
+     * @param code
+     * @version 0.0.1
+     * Pay an amount with the prepaid card after insert a generated security code*/
     @PUT
     @Path("/{accountId}/{numeroCarta}/paga/{amount}/{code}")
     @Produces(MediaType.APPLICATION_JSON)
@@ -95,7 +123,15 @@ public class CartaPrepagataResources {
 		}
     	return res;
     }
-    
+
+    /**
+     * @author Gianmarco Polichetti
+     * @param accountId
+     * @param numeroCarta
+     * @param amount
+     * @param code
+     * @version 0.0.1
+     * Recharge an amount to the prepaid card after insert a generated security code*/
     @PUT
     @Path("/{accountId}/{numeroCarta}/ricarica/{amount}/{code}")
     @Produces(MediaType.APPLICATION_JSON)
@@ -122,7 +158,12 @@ public class CartaPrepagataResources {
 		}
     	return res;
     }
-    
+
+    /**
+     * @author Gianmarco Polichetti
+     * @param accountId
+     * @version 0.0.1
+     * Add a new prepaid card to an existing account*/
     @POST
     @Path("/{accountId}/add_carta")
     @Produces(MediaType.APPLICATION_JSON)
@@ -139,7 +180,34 @@ public class CartaPrepagataResources {
 		}
     	return "Errore. La carta " + nuova.getNumeroCarta() + " non è stata aggiunta.";
     }
-    
+
+    /**
+     * @author Gianmarco Polichetti
+     * @param accountId
+     * @param numeroCarta
+     * @version 0.0.1
+     * Renew an expired prapaid card*/
+    @PUT
+    @Path("/{accountId}/{numeroCarta}/rinnova")
+    @Produces(MediaType.APPLICATION_JSON)
+    @Consumes(MediaType.APPLICATION_JSON)
+    public String rinnova_carta_prepagata(@PathParam("numeroCarta") String numeroCarta, @PathParam("accountId") String accountId) {
+
+        String res=null;
+
+        if(CartaPrepagataDao.rinnovaCarta(numeroCarta))
+            res="Carta rinnovata";
+        else res="Impossibile rinnovare la carta";
+
+        return res;
+    }
+
+
+    /**
+     * @author Gianmarco Polichetti
+     * @param numeroCarta
+     * @version 0.0.1
+     * Delete an expired prepaid card*/
     @DELETE
     @Path("/{accountId}/{numeroCarta}/remove_carta")
     @Produces(MediaType.APPLICATION_JSON)

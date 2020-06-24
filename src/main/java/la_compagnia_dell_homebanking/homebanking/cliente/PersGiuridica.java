@@ -1,11 +1,11 @@
 package la_compagnia_dell_homebanking.homebanking.cliente;
 
-import la_compagnia_dell_homebanking.homebanking.dao.PersonaDaoI;
-import la_compagnia_dell_homebanking.homebanking.db.MySQLConnection;
 
-import java.sql.PreparedStatement;
-import java.sql.SQLException;
 
+/**
+ * @author oleskiy.OS
+ * @version 1.0
+ */
 public class PersGiuridica extends Persona {
 
 	private String ragione_sociale;

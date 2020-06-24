@@ -1,24 +1,19 @@
 package la_compagnia_dell_homebanking.homebanking.cliente;
 
-import la_compagnia_dell_homebanking.homebanking.NumberGenerator;
 
-public interface Cliente extends Comparable<Cliente> {
+/**
+ * @author oleskiy.OS
+ * @version 1.0
+ * interface for all Persons
+ */
+public interface Cliente {
 
-	public static String generateRandom() {
-
-		return NumberGenerator.generateRandom();
-	}
-
-	public static String generateRandom(long minNumber, long maxNumber) {
-		return NumberGenerator.generateRandom(minNumber, maxNumber);
-	}
-
-	public String getEmail();
-	public String getTelefono();
-	public String getNome();
-	public Documents getDocs();
-	public String getIndirizzo();
-	public String getCap();
-	public boolean equals(Object o);
-	public int hashCode();
+	String getEmail();
+	String getTelefono();
+	String getNome();
+	Documents getDocs();
+	String getIndirizzo();
+	String getCap();
+	boolean equals(Object o);
+	int hashCode();
 }

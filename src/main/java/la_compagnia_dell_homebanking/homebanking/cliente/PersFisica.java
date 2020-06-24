@@ -10,14 +10,16 @@ import java.lang.reflect.Method;
 import java.time.LocalDate;
 import java.time.format.DateTimeParseException;
 
-
+/**
+ * @author oleskiy.OS
+ * @version 1.0
+ */
 
 public class PersFisica extends Persona {
 	private String cognome;
 	private LocalDate dataDiNascita;
 	private String luogoDiNascita;
 	private String residenza;
-	private String persona_id;
 
 	@JsonbCreator
 	public PersFisica(@JsonbProperty("nome") String nome,
@@ -44,6 +46,11 @@ public class PersFisica extends Persona {
 		this.residenza = residenza;
 	}
 
+	/**
+	 * This method controls date format for DB inserting
+	 * @param date
+	 * @return LocalDate
+	 */
 	public static LocalDate isValidFormat(String date) {
 		LocalDate localDate = null;
 		try {
@@ -85,7 +92,6 @@ public class PersFisica extends Persona {
 			public boolean isVisible(Field field) {
 				return false;
 			}
-
 			@Override
 			public boolean isVisible(Method method) {
 				return true;
