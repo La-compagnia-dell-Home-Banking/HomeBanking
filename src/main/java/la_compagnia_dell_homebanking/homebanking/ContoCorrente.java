@@ -5,19 +5,10 @@ import la_compagnia_dell_homebanking.homebanking.dao.AccountDao;
 import la_compagnia_dell_homebanking.homebanking.dao.CartaDiCreditoDao;
 import la_compagnia_dell_homebanking.homebanking.db.MySQLConnection;
 
-import java.io.BufferedWriter;
-import java.io.File;
-import java.io.FileWriter;
-import java.io.IOException;
-import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
-import java.util.*;
-
 import java.sql.SQLException;
-import java.time.LocalDate;
-import java.time.LocalTime;
-import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
 
 /**
  * 
@@ -31,6 +22,7 @@ public class ContoCorrente {
 	private Carta_di_Credito carta;
 	private Account account;
 	private String iban;
+	private String accountId;
 	private static final int ABI = 45654;
 	private static final int CAB = 78987;
 	private static int iban_final = 0;
@@ -50,7 +42,7 @@ public class ContoCorrente {
 		this.generateIBAN();
 		saldo_disponibile = 0.00;
 		saldo_contabile = 0.00;
-		carta = new Carta_di_Credito(Integer.toString(account.getAccountID()),iban);
+		carta = new Carta_di_Credito(accountId,iban);
 		account.aggiungiConto(this);
 	
 	}
@@ -61,7 +53,7 @@ public class ContoCorrente {
 	 * @param iban	The Account of the user
 	 * @throws SQLException
 	 */
-	public ContoCorrente(String iban) throws SQLException {
+	public ContoCorrente(String iban, boolean fromdb) throws SQLException {
 		this.iban = iban;
 		MySQLConnection connection = new MySQLConnection();
 		String query = "SELECT * from conto_corrente WHERE iban=?";
@@ -71,18 +63,22 @@ public class ContoCorrente {
 		rs.next();
 		account = AccountDao.getAccountFromDb(rs.getString("account_id"));
 		if (CartaDiCreditoDao.readCarta(iban)==null)
-			carta = new Carta_di_Credito(Integer.toString(account.getAccountID()), iban);
+			carta = new Carta_di_Credito(accountId, iban);
 
 		saldo_disponibile = rs.getDouble("saldo_disponibile");
 		saldo_contabile = rs.getDouble("saldo_contabile");
-		account.aggiungiConto(this);
 		prstmt.close();
 		rs.close();
 		connection.getMyConnection().close();
 
 	}
 
-
+	public ContoCorrente(String accountId) {
+		this.accountId= accountId;
+		this.generateIBAN();
+		this.saldo_disponibile=0;
+		this.saldo_contabile=0;
+	}
 
 	/**
 	 * The method generates a random Capital letter.
@@ -141,7 +137,9 @@ public class ContoCorrente {
 		return this.account;
 	}
 
-
+	public String getAccountId() {
+		return this.accountId;
+	}
 
 	
 	

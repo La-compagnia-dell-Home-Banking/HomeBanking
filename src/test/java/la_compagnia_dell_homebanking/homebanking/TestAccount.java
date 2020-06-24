@@ -41,7 +41,7 @@ public class TestAccount {
 
 		Persona oleksii=new PersFisica("Oleksii","Suvorov","1234567891","boh@gmail.com","ok","27/12/1238","Grosseto","via le mani dal naso","pass", "ok", "mah", NumberGenerator.generateRandom());
 		Account account2= new Account(oleksii);	
-		System.out.println(account2.getPassword());
+//		System.out.println(account2.getPassword());
 		System.out.println(account2.getAccountID());
 		
 		ContoCorrente first= new ContoCorrente(account1);

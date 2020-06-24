@@ -1,18 +1,18 @@
 package la_compagnia_dell_homebanking.homebanking;
 
-import la_compagnia_dell_homebanking.homebanking.cliente.PersFisica;
 import la_compagnia_dell_homebanking.homebanking.carta.Carta_Prepagata;
+import la_compagnia_dell_homebanking.homebanking.cliente.PersFisica;
 import la_compagnia_dell_homebanking.homebanking.cliente.Persona;
 import la_compagnia_dell_homebanking.homebanking.dao.AccountDao;
 import la_compagnia_dell_homebanking.homebanking.dao.CartaPrepagataDao;
 import la_compagnia_dell_homebanking.homebanking.dao.ContoCorrenteDao;
 import la_compagnia_dell_homebanking.homebanking.dao.PersonaDao;
 import la_compagnia_dell_homebanking.homebanking.db.MySQLConnection;
-import la_compagnia_dell_homebanking.homebanking.exceptions.*;
-import java.io.*;
 
-import java.sql.*;
-import java.util.*;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.util.ArrayList;
 
 
 /**
@@ -26,17 +26,17 @@ import java.util.*;
 public class Account {
 	private ArrayList<ContoCorrente> lista_conti;
 	private ArrayList<Carta_Prepagata> lista_carte;
-	private static int accountID;
+	private String accountID;
 	private final Persona persona;
 	private boolean richiestaChiusura=false;
 	private boolean chiuso=false;
-	private String password = "";
+//	private String password = "";
 	private boolean isAdmin=false;
 
 	
-	public Account(int adminId, boolean isAdmin) {
+	public Account(String adminId, boolean isAdmin) {
 		this.accountID=adminId;
-		this.persona = PersonaDao.getPersonaById(Integer.toString(adminId));
+		this.persona = PersonaDao.getPersonaById(adminId);
 	}
 	/**
 	 * Class constructor which takes in input a Persona and initializes all the attributes
@@ -45,13 +45,13 @@ public class Account {
 	 */
 
 	public Account(Persona persona) throws SQLException {
-		accountID = AccountDao.controlAccount_id() + 1;
+		accountID = Integer.toString(AccountDao.controlAccount_id() + 1);
 		this.persona = persona;
-		this.setPassword();
-		if(persona instanceof PersFisica) AccountDao.insertAccountToDb(persona.getPersona_id(), true, Integer.toString(accountID));
-		else AccountDao.insertAccountToDb(persona.getPersona_id(), false, Integer.toString(accountID));
-		lista_conti = ContoCorrenteDao.readConti(Integer.toString(accountID));
-		lista_carte = CartaPrepagataDao.readCarte(Integer.toString(accountID));
+//		this.setPassword();
+		if(persona instanceof PersFisica) AccountDao.insertAccountToDb(persona.getPersona_id(), true, accountID);
+		else AccountDao.insertAccountToDb(persona.getPersona_id(), false, accountID);
+		lista_conti = ContoCorrenteDao.readConti(accountID);
+		lista_carte = CartaPrepagataDao.readCarte(accountID);
 	}
 
 	/**
@@ -60,7 +60,7 @@ public class Account {
 	 * @throws SQLException	The exception SQLException is launched when there are problems with the database connection
 	 */
 	public Account(String account_id) throws SQLException {
-		accountID = Integer.parseInt(account_id);
+		this.accountID = account_id;
 		MySQLConnection connection = new MySQLConnection();
 		String query = "SELECT * from account WHERE account_id=" + account_id;
 		PreparedStatement prstmt = connection.getMyConnection().prepareStatement(query);
@@ -72,38 +72,38 @@ public class Account {
 			this.persona = PersonaDao.getPersonaById(persFis);
 		else
 			this.persona = PersonaDao.getPersonaById(persGiur);
-		this.setPassword();
-		connection.getMyConnection().close();
 
+//		this.setPassword();
+		connection.getMyConnection().close();
 	}
 
 	/**
 	 * The method set a password for the account; It is called in the main constructor
 	 */
-	private void setPassword() {
-		System.out.println("Imposta la password");
-		Scanner in= new Scanner(System.in);
-		password=in.next();
-		this.password=in.next();
+//	private void setPassword() {
+//		System.out.println("Password impostata:");
+//		String pwd = NumberGenerator.generateRandom(1, 999999);
+//		System.out.println(pwd);
+//		this.password = pwd;
+//		Scanner in= new Scanner(System.in);
+//		password=in.next();
+//		this.password=in.next();
 
-	}
+//	}
 
 	/**
 	 * The method returns the password of the account.
 	 * @return
 	 */
-	public String getPassword() {
-		return this.password;
-	}
+//	public String getPassword() {
+//		return this.password;
+//	}
 
 
 	/**
 	 * The method returns the ID of the account.
 	 * @return
 	 */
-	public int getAccountID() {
-		return this.accountID;
-	}
 
 	/**
 	 * The method returns the object Persona which owns the account.
@@ -157,6 +157,8 @@ public class Account {
 		return isAdmin;
 	}
 	
-	
+	public String getAccountID() {
+		return this.accountID;
+	}
 	
 	}

@@ -1,5 +1,9 @@
+//author oleskiy.OS
+//This should be a client side, so we need to launch another localhost server
+//to get it to work. Also i did not use React, because of
+//project's time restrictions, so this is unstructured dummy pages with vanilla JS
+//and jQuery scripts, just for client side testing purposes of our backend API routes
 $(document).ready(() => {
-
   var name = document.querySelector(".personaCard h2");
   var bday = document.querySelector(".personaCard .bday");
   var container = document.querySelector(".data");

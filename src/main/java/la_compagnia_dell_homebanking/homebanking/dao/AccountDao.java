@@ -1,18 +1,11 @@
 package la_compagnia_dell_homebanking.homebanking.dao;
 
-import java.sql.Connection;
-import java.sql.Date;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Time;
+import la_compagnia_dell_homebanking.homebanking.Account;
+import la_compagnia_dell_homebanking.homebanking.db.MySQLConnection;
+
+import java.sql.*;
 import java.time.LocalDate;
 import java.time.LocalTime;
-
-import la_compagnia_dell_homebanking.homebanking.Account;
-import la_compagnia_dell_homebanking.homebanking.cliente.PersFisica;
-import la_compagnia_dell_homebanking.homebanking.cliente.Persona;
-import la_compagnia_dell_homebanking.homebanking.db.MySQLConnection;
 
 public class AccountDao {
 
@@ -47,7 +40,7 @@ public class AccountDao {
 		}
 		Boolean status = prstmt.execute();
 		connection.getMyConnection().close();
-		return status;
+		return !status;
 	}
 
 	public static int controlAccount_id() throws SQLException {
@@ -87,7 +80,7 @@ public class AccountDao {
 			prstmt.setInt(4, (int)(((Math.random())*999999)+1));
 			Boolean status = prstmt.execute();
 			connection.close();
-			return status;
+			return !status;
 			
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block

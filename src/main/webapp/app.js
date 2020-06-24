@@ -1,3 +1,8 @@
+//author oleskiy.OS
+//This should be a client side, so we need to launch another localhost server
+//to get it to work. Also i did not use React, because of
+//project's time restrictions, so this is very dummy pages with vanilla JS
+//and jQuery scripts, just for client side testing purposes of our backend API routes
 $(document).ready(() => {
   var accountID = GetParameterValues('account');
   var password = GetParameterValues('password');
@@ -18,8 +23,9 @@ $(document).ready(() => {
           }
       }
   }
+alert(accountID);
 function getData(path = `persona/${accountID}`,) {
-  fetch(`http://localhost:8080/HomeBanking/home-banking/${path}`, {
+  fetch(`http://localhost:8080/HomeBanking/${path}`, {
       "method": "GET",
       "headers": {
           "Access-Control-Request-Headers": "*",

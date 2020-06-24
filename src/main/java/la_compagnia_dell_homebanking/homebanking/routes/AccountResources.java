@@ -1,19 +1,15 @@
 package la_compagnia_dell_homebanking.homebanking.routes;
 
-import java.sql.SQLException;
+import la_compagnia_dell_homebanking.homebanking.dao.AccountDao;
 
 import javax.inject.Singleton;
+import javax.json.bind.Jsonb;
+import javax.json.bind.JsonbBuilder;
 import javax.servlet.ServletContext;
-import javax.ws.rs.GET;
-import javax.ws.rs.POST;
-import javax.ws.rs.Path;
-import javax.ws.rs.PathParam;
-import javax.ws.rs.Produces;
+import javax.ws.rs.*;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
-
-import la_compagnia_dell_homebanking.homebanking.Account;
-import la_compagnia_dell_homebanking.homebanking.dao.AccountDao;
+import java.sql.SQLException;
 
 
 
@@ -27,17 +23,19 @@ public class AccountResources {
     
     @GET
     @Path("/{accountId}")
-    @Produces(MediaType.TEXT_PLAIN)
-    public void getAccount(@PathParam("account_id") String account_id) throws SQLException {
-        
-    	AccountDao.getAccountFromDb(account_id);
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.APPLICATION_JSON)
+    public String getAccount(@PathParam("accountId") String account_id) throws SQLException {
+        Jsonb jsonb = JsonbBuilder.create();
+        System.out.println(account_id);
+    	return jsonb.toJson(AccountDao.getAccountFromDb(account_id));
     	
     }
     
     @POST
     @Path("/{accountId}/{personaId}/add_account_pf")
     @Produces(MediaType.APPLICATION_JSON)
-    public String add_account_pf(@PathParam("accountId") String accountId, @PathParam("accountId") String personaId ) {
+    public String add_account_pf(@PathParam("accountId") String accountId, @PathParam("personaId") String personaId ) {
     	 
       	try {
     		if(AccountDao.insertAccountToDb(personaId, true, accountId)) {
@@ -48,13 +46,12 @@ public class AccountResources {
 			e.printStackTrace();
 		}
     	return "L'account non è stato inserito nel database";
-    	
     }
     
     @POST
     @Path("/{accountId}/{personaId}/add_conto_pg")
     @Produces(MediaType.APPLICATION_JSON)
-    public String add_account_pg(@PathParam("accountId") String accountId, @PathParam("accountId") String personaId ) {
+    public String add_account_pg(@PathParam("accountId") String accountId, @PathParam("personaId") String personaId ) {
     	 
     	try {
     		if(AccountDao.insertAccountToDb(personaId, false, accountId)) {
