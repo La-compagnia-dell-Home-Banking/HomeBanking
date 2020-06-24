@@ -21,7 +21,7 @@ public class TransazioneDao {
 	* Takes as input a query and generates a transaction which is saved in the DB */
 	public static void creaTransazione(Transazione t, String query) throws SQLException {
 		
-		Connection connection = new MySQLConnection().getMyConnection();
+		Connection connection = new MySQLConnection(true).getMyConnection();
 		PreparedStatement pstmt = connection.prepareStatement(query);
 		//(data_transazione, orario_transazione, numero, nuovo_saldo, somma, is_accredito)
 		pstmt.setDate(1, Date.valueOf(t.getData()));
@@ -45,7 +45,7 @@ public class TransazioneDao {
 	public static ArrayList<Transazione> estrattoContoCarta(String query) throws SQLException{
 		
 		ArrayList<Transazione> transazioni=new ArrayList<Transazione>();
-		Connection connection = new MySQLConnection().getMyConnection();
+		Connection connection = new MySQLConnection(true).getMyConnection();
 		Statement stmt = connection.createStatement();
 		ResultSet rs = stmt.executeQuery(query);
 		while(rs.next()) {
@@ -67,7 +67,7 @@ public class TransazioneDao {
 	public static ArrayList<Transazione> estrattoConto(String query) throws SQLException{
 		
 		ArrayList<Transazione> transazioni=new ArrayList<Transazione>();
-		Connection connection = new MySQLConnection().getMyConnection();
+		Connection connection = new MySQLConnection(true).getMyConnection();
 		Statement stmt = connection.createStatement();
 		ResultSet rs = stmt.executeQuery(query);
 		while(rs.next()) {

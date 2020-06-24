@@ -30,6 +30,7 @@ import java.time.format.DateTimeFormatter;
 public class ContoCorrente {
 	private Carta_di_Credito carta;
 	private Account account;
+	private String accountId;
 	private String iban;
 	private static final int ABI = 45654;
 	private static final int CAB = 78987;
@@ -38,12 +39,24 @@ public class ContoCorrente {
 	private double saldo_contabile;
 	private ArrayList<Transazione> transazioni;
 	
+	
+
+	public ContoCorrente(String accountId, String iban) {
+		
+		this.accountId=accountId;
+		this.iban=iban;
+		this.saldo_disponibile=0;
+		this.saldo_contabile=0;
+		
+	}
+	
 	/**
 	 * The constructor takes an Account in input, initializes a new Carta_di_Credito associated to this ContoCorrente
 	 * @param account	The Account of the user
 	 * @throws SQLException
 	 */
 
+	
 	public ContoCorrente(Account account) throws SQLException {
 
 		this.account = account;

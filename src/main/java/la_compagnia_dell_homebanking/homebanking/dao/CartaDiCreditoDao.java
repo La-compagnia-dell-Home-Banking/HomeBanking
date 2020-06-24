@@ -21,7 +21,7 @@ public class CartaDiCreditoDao {
 	
 	public static Carta_di_Credito readCarta(String iban) throws SQLException {
 
-			Connection connection=new MySQLConnection().getMyConnection();
+			Connection connection=new MySQLConnection(true).getMyConnection();
 			Carta_di_Credito carta = null;
 			String query = "SELECT * FROM carta_di_credito WHERE conto=?";
 			PreparedStatement prstmt = connection.prepareStatement(query);
@@ -50,7 +50,7 @@ public class CartaDiCreditoDao {
 		
 		
 		//connetto al DB
-		Connection connection = new MySQLConnection().getMyConnection();
+		Connection connection = new MySQLConnection(true).getMyConnection();
 		
 		//cerco la carta sul DB
 		PreparedStatement pstmt = connection.prepareStatement("SELECT * FROM conto_corrente WHERE iban=?");
@@ -125,7 +125,7 @@ public class CartaDiCreditoDao {
 	public static boolean inserisciCartaToDb(Carta_di_Credito nuovaCarta) throws SQLException {
 		
 		//connetto al DB
-		Connection connection = new MySQLConnection().getMyConnection();
+		Connection connection = new MySQLConnection(true).getMyConnection();
 		
 		//inserisco i dati della carta
 		PreparedStatement pstmt = connection.prepareStatement("INSERT INTO carta_di_credito(conto, account_id, numero, scadenza, cvv) VALUES(?,?,?,?,?)");
@@ -152,7 +152,7 @@ public class CartaDiCreditoDao {
 	public static boolean eliminaCartaFromDb(String iban) throws SQLException {
 
 		//connetto al DB
-		Connection connection = new MySQLConnection().getMyConnection();
+		Connection connection = new MySQLConnection(true).getMyConnection();
 		
 		//cerco la carta nel DB per eliminarla
 
@@ -175,7 +175,7 @@ public class CartaDiCreditoDao {
 	 * This method blocks a credit card.
 	 */
 	public static boolean bloccaCarta(String iban) {
-		MySQLConnection connection = new MySQLConnection();
+		MySQLConnection connection = new MySQLConnection(true);
 		String query = "UPDATE carta_di_credito SET isBlocked=true WHERE conto =?";
 		try {
 			PreparedStatement prstmt = connection.getMyConnection().prepareStatement(query);
@@ -203,7 +203,7 @@ public class CartaDiCreditoDao {
 	 */
 	public static boolean isblocked(String iban) {
 		
-		MySQLConnection connection = new MySQLConnection();
+		MySQLConnection connection = new MySQLConnection(true);
 		String query = "SELECT FROM carta_di_credito WHERE iban=?";
 		try {
 			PreparedStatement prstmt = connection.getMyConnection().prepareStatement(query);

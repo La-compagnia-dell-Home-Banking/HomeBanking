@@ -17,7 +17,7 @@ public class PersonaDao implements PersonaDaoI {
 
    public static void insertPersonToDb(PersFisica personaFisica) {
         Boolean status = null;
-        MySQLConnection connection = new MySQLConnection();
+        MySQLConnection connection = new MySQLConnection(true);
         String query = "INSERT INTO persona_fisica VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
         try {
             PreparedStatement prstmt = connection.getMyConnection().prepareStatement(query);
@@ -49,7 +49,7 @@ public class PersonaDao implements PersonaDaoI {
 
     public static List<Persona> getAllPerson() {
         List<Persona> persone = new ArrayList<>();
-        MySQLConnection connection = new MySQLConnection();
+        MySQLConnection connection = new MySQLConnection(true);
         ResultSet resultSet = null;
         try {
             resultSet = connection.getStmt().executeQuery("SELECT * from persona_fisica");
@@ -102,7 +102,7 @@ public class PersonaDao implements PersonaDaoI {
     }
 
     public static Persona getPersonaById(String id) {
-        MySQLConnection connection = new MySQLConnection();
+        MySQLConnection connection = new MySQLConnection(true);
         ResultSet resultSet =null;
         try {
             PreparedStatement prstmt = connection.getMyConnection().prepareStatement("SELECT * from persona_fisica" +
@@ -132,7 +132,7 @@ public class PersonaDao implements PersonaDaoI {
 
     public static List<PersFisica> getPersonaByCognome(String cognome) {
         List<PersFisica> listCognome = new ArrayList<>();
-        MySQLConnection connection = new MySQLConnection();
+        MySQLConnection connection = new MySQLConnection(true);
         ResultSet resultSet = null;
         try {
             PreparedStatement prstmt = connection.getMyConnection().prepareStatement("SELECT * FROM persona_fisica WHERE " +
@@ -159,7 +159,7 @@ public class PersonaDao implements PersonaDaoI {
     public static List<PersFisica> getPersonByBirthDate(String data) {
         PersFisica.isValidFormat(data);
         List<PersFisica> listCognome = new ArrayList<>();
-        MySQLConnection connection = new MySQLConnection();
+        MySQLConnection connection = new MySQLConnection(true);
         ResultSet resultSet = null;
         try {
             PreparedStatement prstmt = connection.getMyConnection().prepareStatement("SELECT * FROM persona_fisica WHERE " +
@@ -185,7 +185,7 @@ public class PersonaDao implements PersonaDaoI {
     }
 
     public static PersFisica updatePersonF(UpdatedPersonaFisica updatedPersonaFisica) {
-        MySQLConnection connection = new MySQLConnection();
+        MySQLConnection connection = new MySQLConnection(true);
         ResultSet resultSet = null;
         try {
             PreparedStatement prstmt = connection.getMyConnection().prepareStatement("UPDATE persona_fisica" +
@@ -217,7 +217,7 @@ public class PersonaDao implements PersonaDaoI {
     public static PersGiuridica updatePersonG(String personId, String nome_rappresentante, String cognome_rappresentante,
                                      String sede_legale, String indirizzo, String cap, String email,
                                      String telefono) {
-        MySQLConnection connection = new MySQLConnection();
+        MySQLConnection connection = new MySQLConnection(true);
         try {
             PreparedStatement prstmt = connection.getMyConnection().prepareStatement("UPDATE persona_giuridica" +
                     " SET nome_rappresentante=?, cognome_rappresentante=?," +
@@ -253,7 +253,7 @@ public class PersonaDao implements PersonaDaoI {
     }
 
     public static String removePersonById(String id) {
-        MySQLConnection connection = new MySQLConnection();
+        MySQLConnection connection = new MySQLConnection(true);
         try {
             PreparedStatement prstmt = connection.getMyConnection().
                     prepareStatement("DELETE from persona_fisica WHERE persona_id =?");
@@ -277,7 +277,7 @@ public class PersonaDao implements PersonaDaoI {
     }
 
     public static String removeCompanyById(String id) {
-        MySQLConnection connection = new MySQLConnection();
+        MySQLConnection connection = new MySQLConnection(true);
         try {
             PreparedStatement prstmt = connection.getMyConnection().prepareStatement("DELETE from persona_giuridica" +
                     " WHERE azienda_id =?");

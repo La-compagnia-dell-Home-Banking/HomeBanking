@@ -90,7 +90,7 @@ public class TokenService {
 	}
 	
 //	public static boolean chiedi_codice_OLD(String account_id, String codice_inserito) throws SQLException {
-//		Connection connection = new MySQLConnection().getMyConnection();
+//		Connection connection = new MySQLConnection(true).getMyConnection();
 //		PreparedStatement pstmt = null;
 //		Scanner in=new Scanner(System.in);
 //		String code_in = null;

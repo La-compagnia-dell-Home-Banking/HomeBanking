@@ -33,8 +33,8 @@ import la_compagnia_dell_homebanking.homebanking.exceptions.WrongPasswordExcepti
 
 public class ContoCorrenteDao {
 
-	private static boolean insertCCToDb(ContoCorrente c) throws SQLException {
-		Connection connection = new MySQLConnection().getMyConnection();
+	public static boolean insertCCToDb(ContoCorrente c) throws SQLException {
+		Connection connection = new MySQLConnection(true).getMyConnection();
 		String query = "INSERT INTO conto_corrente VALUES (?,?,?,?)";
 
 		PreparedStatement prstmt = connection.prepareStatement(query);
@@ -65,7 +65,7 @@ public class ContoCorrenteDao {
 
 		ArrayList<ContoCorrente> lista = new ArrayList<ContoCorrente>();
 		ResultSet rs;
-		Connection connection = new MySQLConnection().getMyConnection();
+		Connection connection = new MySQLConnection(true).getMyConnection();
 		String query = "SELECT * FROM conto_corrente WHERE account_id=?";
 		
 		PreparedStatement prstmt = connection.prepareStatement(query);
@@ -94,7 +94,7 @@ public class ContoCorrenteDao {
 	public static boolean pagaConBonifico(double amount, String iban) throws SQLException {
 		
 		//connetto al DB
-		Connection connection = new MySQLConnection().getMyConnection();
+		Connection connection = new MySQLConnection(true).getMyConnection();
 		
 		//cerco la carta sul DB
 		PreparedStatement pstmt = connection.prepareStatement("SELECT * FROM conto_corrente WHERE iban=?");
@@ -141,7 +141,7 @@ public class ContoCorrenteDao {
 	public static boolean entrataConto(double amount, String iban) throws SQLException {
 
 		//connetto al DB
-		Connection connection = new MySQLConnection().getMyConnection();
+		Connection connection = new MySQLConnection(true).getMyConnection();
 		
 		//cerco la carta sul DB
 		PreparedStatement pstmt = connection.prepareStatement("SELECT FROM conto_corrente WHERE iban=?");
@@ -273,7 +273,7 @@ public class ContoCorrenteDao {
 		Scanner in= new Scanner(System.in);
 		password=in.next();
 		in.close();
-		if (!password.equals(account.getPassword())) throw new WrongPasswordException();
+//		if (!password.equals(account.getPassword())) throw new WrongPasswordException();
 		
 		FileWriter file=new FileWriter("richiesta_chiusura_"+account.getAccountID());
 		BufferedWriter bf=new BufferedWriter(file);
@@ -303,7 +303,7 @@ public class ContoCorrenteDao {
 			throw new RuntimeException("Non è stata fatta richiesta di chiusura del conto");
 
 			//connetto al DB
-			Connection connection = new MySQLConnection().getMyConnection();
+			Connection connection = new MySQLConnection(true).getMyConnection();
 			
 			//cerco il conto nel DB per eliminarlo
 			PreparedStatement pstmt = connection.prepareStatement("DELETE FROM account WHERE account_id=?");

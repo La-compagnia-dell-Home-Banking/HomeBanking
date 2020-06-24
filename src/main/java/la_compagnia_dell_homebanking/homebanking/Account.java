@@ -30,7 +30,6 @@ public class Account {
 	private final Persona persona;
 	private boolean richiestaChiusura=false;
 	private boolean chiuso=false;
-	private String password = "";
 	private boolean isAdmin=false;
 
 	
@@ -47,7 +46,6 @@ public class Account {
 	public Account(Persona persona) throws SQLException {
 		accountID = AccountDao.controlAccount_id() + 1;
 		this.persona = persona;
-		this.setPassword();
 		if(persona instanceof PersFisica) AccountDao.insertAccountToDb(persona.getPersona_id(), true, Integer.toString(accountID));
 		else AccountDao.insertAccountToDb(persona.getPersona_id(), false, Integer.toString(accountID));
 		lista_conti = ContoCorrenteDao.readConti(Integer.toString(accountID));
@@ -72,29 +70,28 @@ public class Account {
 			this.persona = PersonaDao.getPersonaById(persFis);
 		else
 			this.persona = PersonaDao.getPersonaById(persGiur);
-		this.setPassword();
 		connection.getMyConnection().close();
 
 	}
 
-	/**
-	 * The method set a password for the account; It is called in the main constructor
-	 */
-	private void setPassword() {
-		System.out.println("Imposta la password");
-		Scanner in= new Scanner(System.in);
-		password=in.next();
-		this.password=in.next();
+//	/**
+//	 * The method set a password for the account; It is called in the main constructor
+//	 */
+//	private void setPassword() {
+//		System.out.println("Imposta la password");
+//		Scanner in= new Scanner(System.in);
+//		password=in.next();
+//		this.password=in.next();
+//
+//	}
 
-	}
-
-	/**
-	 * The method returns the password of the account.
-	 * @return
-	 */
-	public String getPassword() {
-		return this.password;
-	}
+//	/**
+//	 * The method returns the password of the account.
+//	 * @return
+//	 */
+//	public String getPassword() {
+//		return this.password;
+//	}
 
 
 	/**

@@ -17,7 +17,7 @@ import la_compagnia_dell_homebanking.homebanking.db.MySQLConnection;
 public class AccountDao {
 
 	public static Account getAccountFromDb(String acc) throws SQLException {
-		MySQLConnection connection = new MySQLConnection();
+		MySQLConnection connection = new MySQLConnection(true);
 		String query = "SELECT * FROM account WHERE account_id=?";
 		PreparedStatement prstmt = connection.getMyConnection().prepareStatement(query);
 		prstmt.setString(1, acc);
@@ -32,7 +32,7 @@ public class AccountDao {
 	}
 	
 	public static boolean insertAccountToDb(String persona_id, boolean kind, String accountID) throws SQLException {
-		MySQLConnection connection = new MySQLConnection();
+		MySQLConnection connection = new MySQLConnection(true);
 		String query = "INSERT INTO account VALUES (?,?,?)";
 
 		PreparedStatement prstmt = connection.getMyConnection().prepareStatement(query);
@@ -51,7 +51,7 @@ public class AccountDao {
 	}
 
 	public static int controlAccount_id() throws SQLException {
-		MySQLConnection connection = new MySQLConnection();
+		MySQLConnection connection = new MySQLConnection(true);
 		String query = "SELECT * from account";
 		PreparedStatement prstmt = connection.getMyConnection().prepareStatement(query);
 		ResultSet rs = prstmt.executeQuery();
@@ -77,7 +77,7 @@ public class AccountDao {
 		
 
 		try {
-			Connection connection = new MySQLConnection().getMyConnection();
+			Connection connection = new MySQLConnection(true).getMyConnection();
 			
 			String query = "INSERT INTO token VALUES(?, ?, ?, ?)";
 			PreparedStatement prstmt = connection.prepareStatement(query);

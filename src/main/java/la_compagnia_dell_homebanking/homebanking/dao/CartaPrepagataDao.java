@@ -27,7 +27,7 @@ public class CartaPrepagataDao {
 	
 	public static Carta_Prepagata readCarta(String numeroCarta) throws SQLException {
 
-			Connection connection=new MySQLConnection().getMyConnection();
+			Connection connection=new MySQLConnection(true).getMyConnection();
 			Carta_Prepagata carta = null;
 			String query = "SELECT * FROM carta_prepagata WHERE numero=?";
 			PreparedStatement prstmt = connection.prepareStatement(query);
@@ -54,7 +54,7 @@ public class CartaPrepagataDao {
 	 * Legge le carte prepagate collegate all'account dal DB e le salva in un ArrayList*/
 	public static ArrayList<Carta_Prepagata> readCarte(String account_id) throws SQLException {
 
-			Connection connection=new MySQLConnection().getMyConnection();
+			Connection connection=new MySQLConnection(true).getMyConnection();
 			ArrayList<Carta_Prepagata> lista = new ArrayList<Carta_Prepagata>();
 			String query = "SELECT * FROM carta_prepagata WHERE account_id=?";
 			PreparedStatement prstmt = connection.prepareStatement(query);
@@ -81,7 +81,7 @@ public class CartaPrepagataDao {
 	public static boolean pagaConCarta(double amount, String numeroCarta) throws SQLException {
 		
 		//connetto al DB
-		Connection connection = new MySQLConnection().getMyConnection();
+		Connection connection = new MySQLConnection(true).getMyConnection();
 		
 		//cerco la carta sul DB
 		PreparedStatement pstmt = connection.prepareStatement("SELECT * FROM carta_prepagata WHERE numero=?");
@@ -126,7 +126,7 @@ public class CartaPrepagataDao {
 	public static boolean ricaricaCarta(double amount, String numeroCarta) throws SQLException {
 
 		//connetto al DB
-		Connection connection = new MySQLConnection().getMyConnection();
+		Connection connection = new MySQLConnection(true).getMyConnection();
 		
 		//cerco la carta sul DB
 		PreparedStatement pstmt = connection.prepareStatement("SELECT * FROM carta_prepagata WHERE numero=?");
@@ -198,7 +198,7 @@ public class CartaPrepagataDao {
 	public static boolean inserisciCartaToDb(Carta_Prepagata nuovaCarta) throws SQLException {
 		
 		//connetto al DB
-		Connection connection = new MySQLConnection().getMyConnection();
+		Connection connection = new MySQLConnection(true).getMyConnection();
 		
 		//inserisco i dati della carta
 		PreparedStatement pstmt = connection.prepareStatement("INSERT INTO carta_prepagata(account_id, credito_residuo, numero, scadenza, cvv) VALUES(?,?,?,?,?)");
@@ -225,7 +225,7 @@ public class CartaPrepagataDao {
 	public static boolean eliminaCartaFromDb(String numeroCarta) throws SQLException {
 
 		//connetto al DB
-		Connection connection = new MySQLConnection().getMyConnection();
+		Connection connection = new MySQLConnection(true).getMyConnection();
 		
 		//cerco la carta nel DB per eliminarla
 		PreparedStatement pstmt = connection.prepareStatement("DELETE FROM carta_prepagata WHERE numero=?");
@@ -326,7 +326,7 @@ public class CartaPrepagataDao {
 	 * This method blocks a credit card.
 	 */
 	public static boolean bloccaCarta(String numero) {
-		MySQLConnection connection = new MySQLConnection();
+		MySQLConnection connection = new MySQLConnection(true);
 		String query = "UPDATE carta_prepagata SET isBlocked=true WHERE numero =?";
 		try {
 			PreparedStatement prstmt = connection.getMyConnection().prepareStatement(query);
@@ -353,7 +353,7 @@ public class CartaPrepagataDao {
 	 */
 	public static boolean isblocked(String numeroCarta) {
 		
-		MySQLConnection connection = new MySQLConnection();
+		MySQLConnection connection = new MySQLConnection(true);
 		String query = "SELECT FROM carta_prepagata WHERE numero=?";
 		try {
 			PreparedStatement prstmt = connection.getMyConnection().prepareStatement(query);

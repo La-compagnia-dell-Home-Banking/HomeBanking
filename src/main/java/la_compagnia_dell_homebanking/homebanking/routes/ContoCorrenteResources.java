@@ -29,16 +29,18 @@ public class ContoCorrenteResources {
     ServletContext context;
     
     @PUT
-    @Path("/{iban}/add_conto")
+    @Path("/{accountId}/{iban}/add_conto")
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
-    public String insertConto(Account a, ContoCorrente c) throws SQLException {
+    public String insertConto(@PathParam("accountId") String accountId, @PathParam("iban") String iban) throws SQLException {
+    	
+    	ContoCorrente nuovo = new ContoCorrente(accountId, iban);
     	
     	Jsonb jsonb = JsonbBuilder.create();
-    	if(ContoCorrenteDao.insertCCToDb(a, c)) {
-    		return "Conto "+c.getIBAN()+" iserito correttamente";
+    	if(ContoCorrenteDao.insertCCToDb(nuovo)) {
+    		return "Conto "+nuovo.getIBAN()+" iserito correttamente";
     	}
-    	return "Non è stato possibile inserire il conto "+c.getIBAN();
+    	return "Non è stato possibile inserire il conto "+nuovo.getIBAN();
     }
 
     
