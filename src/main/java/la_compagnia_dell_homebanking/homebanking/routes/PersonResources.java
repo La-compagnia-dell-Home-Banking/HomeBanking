@@ -16,6 +16,12 @@ import javax.ws.rs.core.MediaType;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * API for PersonaFisica class
+ * @author oleskiy.OS
+ * @version 1.0
+ */
+
 @Singleton
 @Path("/persona")
 
@@ -24,6 +30,10 @@ public class PersonResources {
     @Context
     ServletContext context;
 
+    /**
+     * Method gets all persons from DB and returns a list
+     * @return List<Persona>
+     */
     @GET
     @Path("/")
     @Consumes(MediaType.APPLICATION_JSON)
@@ -47,6 +57,10 @@ public class PersonResources {
         }
     }
 
+    /**
+     * Method creates a person and adds information to DB
+     * @return String in format JSON with a person created
+     */
     @POST
     @Path("/")
     @Consumes(MediaType.APPLICATION_JSON)
@@ -61,6 +75,11 @@ public class PersonResources {
         return jsonb.toJson(PersonaDao.getPersonaById(id_generated));
     }
 
+
+    /**
+     * Method gets a persons from DB by Id
+     * @return String in format JSON with a person found
+     */
     @GET
     @Path("/{personId}")
     @Consumes(MediaType.APPLICATION_JSON)
@@ -70,6 +89,10 @@ public class PersonResources {
         return jsonb.toJson(PersonaDao.getPersonaById(personId));
     }
 
+    /**
+     * Method updates a person in DB
+     * @return String in format JSON with a person updated
+     */
     @PUT
     @Path("/{personId}")
     @Consumes(MediaType.APPLICATION_JSON)
@@ -81,13 +104,6 @@ public class PersonResources {
 
 }
 
-
-
-//        return CompletableFuture.supplyAsync(() -> {
-//                return "Completed";
-//                }).thenApplyAsync(result -> {
-//
-//                }).get();
 
 
 

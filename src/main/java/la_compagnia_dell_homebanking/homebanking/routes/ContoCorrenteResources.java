@@ -15,13 +15,22 @@ import javax.ws.rs.core.MediaType;
 import java.sql.SQLException;
 import java.util.ArrayList;
 
+/**
+ * API for ContoCorrente class
+ * @author Gianmarco Polichetti, oleskiy.OS
+ * @version 1.0
+ */
 @Singleton
 @Path("/conto_corrente")
 public class ContoCorrenteResources {
-
     @Context
     ServletContext context;
 
+    /**
+     * @author Gianmarco Polichetti, oleskiy.OS
+     * @param accountId
+     * @version 0.0.1
+     * Show a list of checking accounts linked to an existing account*/
     @GET
     @Path("/{accountId}/getConti")
     @Produces(MediaType.APPLICATION_JSON)
@@ -39,6 +48,11 @@ public class ContoCorrenteResources {
         return "List is emty.";
     }
 
+    /**
+     * @author Gianmarco Polichetti, oleskiy.OS
+     * @param accountId
+     * @version 0.0.1
+     * Add a new checking account to an existing account*/
     @POST
     @Path("/{accountId}/add_conto")
     @Consumes(MediaType.APPLICATION_JSON)
@@ -54,6 +68,13 @@ public class ContoCorrenteResources {
         return "Non è stato possibile inserire il conto "+nuovo.getIBAN();
     }
 
+    /**
+     * @author Gianmarco Polichetti, oleskiy.OS
+     * @param ibanOut
+     * @param amount
+     * @param ibanIn
+     * @version 0.0.1
+     * Pay a sum by bank transfer after entering the generated code*/
     @POST
     @Path("/{ibanOut}/paga/{amount}/{ibanIn}")
     @Consumes(MediaType.APPLICATION_JSON)
@@ -71,6 +92,12 @@ public class ContoCorrenteResources {
         return "Error. Operazione è fallita.";
     }
 
+
+    /**
+     * @author Gianmarco Polichetti, oleskiy.OS
+     * @param iban
+     * @version 0.0.1
+     * View a list of transactions made on the current account*/
     @GET
     @Path("/{iban}/getEstrattoConto")
     @Consumes(MediaType.APPLICATION_JSON)
@@ -90,6 +117,11 @@ public class ContoCorrenteResources {
         return "Error. La lista è vuota.";
     }
 
+    /**
+     * @author Gianmarco Polichetti, oleskiy.OS
+     * @param iban
+     * @version 0.0.1
+     * Displays a list of incoming transactions made to the current account*/
     @GET
     @Path("/{iban}/getEntrate")
     @Consumes(MediaType.APPLICATION_JSON)
@@ -109,6 +141,11 @@ public class ContoCorrenteResources {
         return "Error. La lista è vuota.";
     }
 
+    /**
+     * @author Gianmarco Polichetti, oleskiy.OS
+     * @param iban
+     * @version 0.0.1
+     * Displays a list of outgoing transactions made to the current account*/
     @GET
     @Path("/{iban}/getUscite")
     @Consumes(MediaType.APPLICATION_JSON)
@@ -129,11 +166,11 @@ public class ContoCorrenteResources {
     }
 
     /**
-     * @author Gianmarco
+     * @author Gianmarco Polichetti
      * @param iban
-     * @return
+     * @version 0.0.1
+     * Asks the closure of a current account
      */
-
     @PUT
     @Path("/{iban}/richiedi_chiusura")
     @Consumes(MediaType.APPLICATION_JSON)
@@ -150,9 +187,10 @@ public class ContoCorrenteResources {
     }
 
     /**
-     * @author Gianmarco
+     * @author Gianmarco Polichetti
      * @param iban
-     * @return
+     * @version 0.0.1
+     * Close a current account
      */
     @PUT
     @Path("/{iban}/chiusura_conto")

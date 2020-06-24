@@ -1,4 +1,4 @@
-
+--authors oleskiy.OS, Gianmarco Polichetti, Alessio d'Inverno
 CREATE TABLE persona_fisica(
 persona_id VARCHAR(10) PRIMARY KEY NOT NULL,
 nome VARCHAR(20) NOT NULL,

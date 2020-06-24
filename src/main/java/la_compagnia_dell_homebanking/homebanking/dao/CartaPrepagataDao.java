@@ -16,6 +16,11 @@ import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 
+/**@author Gianmarco Polichetti
+ * @version 0.0.1
+ * Manages possible operations on a prepaid card: insertion, deletion,
+ * reading card information and incoming and outgoing payments */
+
 public class CartaPrepagataDao {
 	
 	/**
@@ -167,31 +172,28 @@ public class CartaPrepagataDao {
 		return !status;
 		
 	}
-	
-	
+
+
 	/**
 	 * @author Gianmarco Polichetti
-	 * @param nuovoNumero: Il numero da applicare alla carta rinnovata
-	 * @param nuovoCvv: Il cvv da applicare alla carta rinnovata
 	 * @version 0.0.1
 	 * Metodo per rinnovare una carta prepagata, la nuova carta cambiera il numero, la data di scadenza e il cvv
 	 * ma manterrà il credito residuo*/
-	public static Carta_Prepagata rinnovaCarta(String vecchioNumero) {
+	public static boolean rinnovaCarta(String vecchioNumero) {
 		Carta_Prepagata vecchia = null;
 		Carta_Prepagata rinnovata = null;
-		
+
 		try {
 			vecchia=CartaPrepagataDao.readCarta(vecchioNumero);
 			rinnovata=new Carta_Prepagata(vecchia.getAccountId(), vecchia.getCreditoResiduo());
-			CartaPrepagataDao.inserisciCartaToDb(rinnovata);
-			CartaPrepagataDao.eliminaCartaFromDb(vecchia.getNumeroCarta());
-		
+			if(CartaPrepagataDao.inserisciCartaToDb(rinnovata)&&CartaPrepagataDao.eliminaCartaFromDb(vecchia.getNumeroCarta())) return true;
+
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		
-		return rinnovata;
+
+		return false;
 	}
 	
 	/**

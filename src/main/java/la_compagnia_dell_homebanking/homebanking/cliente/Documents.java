@@ -1,5 +1,11 @@
 package la_compagnia_dell_homebanking.homebanking.cliente;
 
+/**
+ * @author oleskiy.OS
+ * @version 1.0
+ * This class serves to separate documents from Person class, but it exists inside Person class
+ */
+
 public class Documents {
     private String document;
     private String codice_fiscale;

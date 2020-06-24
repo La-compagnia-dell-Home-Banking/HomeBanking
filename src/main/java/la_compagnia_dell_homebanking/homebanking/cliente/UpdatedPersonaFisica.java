@@ -3,6 +3,11 @@ package la_compagnia_dell_homebanking.homebanking.cliente;
 import javax.json.bind.annotation.JsonbCreator;
 import javax.json.bind.annotation.JsonbProperty;
 
+/**
+ * This class serves for updating person and serializing and deserializing it within JSON-B
+ * @author oleskiy.OS
+ */
+
 public class UpdatedPersonaFisica {
 
     private String personId;

@@ -1,17 +1,15 @@
 package la_compagnia_dell_homebanking.homebanking.dao;
 
-import java.sql.Connection;
-import java.sql.Date;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Statement;
-import java.sql.Time;
-import java.util.ArrayList;
-
 import la_compagnia_dell_homebanking.homebanking.Transazione;
 import la_compagnia_dell_homebanking.homebanking.db.MySQLConnection;
 
+import java.sql.*;
+import java.util.ArrayList;
+
+/** @author Gianmarco Polichetti
+ * @version 0.0.1
+ * Manages possible operations on a transaction: insertion,
+ * return of transaction lists */
 public class TransazioneDao {
 
 	/**

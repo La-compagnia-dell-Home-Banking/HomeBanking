@@ -7,6 +7,10 @@ import java.sql.*;
 import java.time.LocalDate;
 import java.time.LocalTime;
 
+/** @author Gianmarco Polichetti
+ * @version 0.0.1
+ * Manages possible operations on an account: insertion,
+ * display info, activation of the token device */
 public class AccountDao {
 
 	public static Account getAccountFromDb(String acc) throws SQLException {
