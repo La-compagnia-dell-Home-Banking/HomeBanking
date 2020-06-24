@@ -1,26 +1,20 @@
 package la_compagnia_dell_homebanking.homebanking.dao;
 
+import la_compagnia_dell_homebanking.homebanking.Transazione;
+import la_compagnia_dell_homebanking.homebanking.carta.Carta_Prepagata;
+import la_compagnia_dell_homebanking.homebanking.db.MySQLConnection;
+import la_compagnia_dell_homebanking.homebanking.exceptions.CreditExceedException;
+import la_compagnia_dell_homebanking.homebanking.exceptions.CreditNotAvailableException;
+
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.sql.Connection;
-import java.sql.Date;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
+import java.sql.*;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
-
-import la_compagnia_dell_homebanking.homebanking.TokenServlet;
-import la_compagnia_dell_homebanking.homebanking.Transazione;
-import la_compagnia_dell_homebanking.homebanking.carta.Carta_Prepagata;
-import la_compagnia_dell_homebanking.homebanking.carta.Carta_di_Credito;
-import la_compagnia_dell_homebanking.homebanking.db.MySQLConnection;
-import la_compagnia_dell_homebanking.homebanking.exceptions.CreditExceedException;
-import la_compagnia_dell_homebanking.homebanking.exceptions.CreditNotAvailableException;
 
 public class CartaPrepagataDao {
 	
@@ -43,7 +37,7 @@ public class CartaPrepagataDao {
 
 			while (rs.next()) { // Leggiamo i risultati
 
-				carta = new Carta_Prepagata(rs.getString("numero"));
+				carta = new Carta_Prepagata(rs.getString("numero"), true);
 
 			}
 			rs.close();
@@ -70,7 +64,7 @@ public class CartaPrepagataDao {
 
 			while (rs.next()) { // Leggiamo i risultati
 
-				Carta_Prepagata carta = new Carta_Prepagata(rs.getString("numero"));
+				Carta_Prepagata carta = new Carta_Prepagata(rs.getString("numero"), true);
 				lista.add(carta);
 			}
 			connection.close();
@@ -119,7 +113,7 @@ public class CartaPrepagataDao {
 		rs.close();
 		pstmt.close();
 		connection.close();
-		return status;
+		return !status;
 		
 	}
 	
@@ -165,7 +159,7 @@ public class CartaPrepagataDao {
 		pstmt.close();
 		connection.close();
 		
-		return status;
+		return !status;
 		
 	}
 	
@@ -177,13 +171,13 @@ public class CartaPrepagataDao {
 	 * @version 0.0.1
 	 * Metodo per rinnovare una carta prepagata, la nuova carta cambiera il numero, la data di scadenza e il cvv
 	 * ma manterrà il credito residuo*/
-	public static Carta_Prepagata rinnovaCarta(String vecchioNumero, String nuovoNumero, String nuovoCvv) {
+	public static Carta_Prepagata rinnovaCarta(String vecchioNumero) {
 		Carta_Prepagata vecchia = null;
 		Carta_Prepagata rinnovata = null;
 		
 		try {
 			vecchia=CartaPrepagataDao.readCarta(vecchioNumero);
-			rinnovata=new Carta_Prepagata(vecchia.getAccountId(), nuovoNumero, nuovoCvv, LocalDate.now().plusYears(4), vecchia.getCreditoResiduo());
+			rinnovata=new Carta_Prepagata(vecchia.getAccountId(), vecchia.getCreditoResiduo());
 			CartaPrepagataDao.inserisciCartaToDb(rinnovata);
 			CartaPrepagataDao.eliminaCartaFromDb(vecchia.getNumeroCarta());
 		
@@ -349,5 +343,30 @@ public class CartaPrepagataDao {
 		}
 		System.out.println(new StringBuilder().append("Card ").append(numero).append(" doesn't exist."));
 		return false;
+	}
+	
+	public static boolean isblocked(String numeroCarta) {
+		
+		MySQLConnection connection = new MySQLConnection();
+		String query = "SELECT FROM carta_prepagata WHERE numero=?";
+		try {
+			PreparedStatement prstmt = connection.getMyConnection().prepareStatement(query);
+			prstmt.setString(1, numeroCarta);
+			
+			ResultSet rs = prstmt.executeQuery();
+			
+			rs.next();
+			
+			boolean flag=rs.getBoolean("isBlocked");
+			
+			if(flag) return true;
+			else return false;
+		}
+	    catch (SQLException e) {
+		MySQLConnection.printExceptions(e);
+	    }
+		return false;
+			
+			
 	}
 }

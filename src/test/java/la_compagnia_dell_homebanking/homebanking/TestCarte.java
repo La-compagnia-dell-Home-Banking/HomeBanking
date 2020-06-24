@@ -1,24 +1,19 @@
 package la_compagnia_dell_homebanking.homebanking;
 
-import static org.junit.Assert.assertNotEquals;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.time.LocalDate;
-
-import org.junit.After;
-import org.junit.Before;
+import la_compagnia_dell_homebanking.homebanking.carta.Carta_Prepagata;
+import la_compagnia_dell_homebanking.homebanking.carta.Carta_di_Credito;
+import la_compagnia_dell_homebanking.homebanking.dao.CartaDiCreditoDao;
+import la_compagnia_dell_homebanking.homebanking.dao.CartaPrepagataDao;
 import org.junit.FixMethodOrder;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.runners.MethodSorters;
 
-import la_compagnia_dell_homebanking.homebanking.carta.Carta_Prepagata;
-import la_compagnia_dell_homebanking.homebanking.carta.Carta_di_Credito;
-import la_compagnia_dell_homebanking.homebanking.dao.CartaDiCreditoDao;
-import la_compagnia_dell_homebanking.homebanking.dao.CartaPrepagataDao;
-import la_compagnia_dell_homebanking.homebanking.db.MySQLConnection;
+import java.sql.SQLException;
+import java.time.LocalDate;
+
+import static org.junit.Assert.assertNotEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
 public class TestCarte {
@@ -31,7 +26,7 @@ public class TestCarte {
     @Test
     void test_1() throws SQLException {
     	//then 
-    	Carta_di_Credito nuova=new Carta_di_Credito("1234567890", "2839153403921784", "112", "qwer0987mnbv4567", LocalDate.now().minusDays(10));
+    	Carta_di_Credito nuova=new Carta_di_Credito("1234567890",  "qwer0987mnbv4567");
     	boolean actual=CartaDiCreditoDao.inserisciCartaToDb(nuova);
     	//expected
     	
@@ -77,22 +72,22 @@ public class TestCarte {
      * @throws SQLException
      */
 
-    @Test
-    void test_4() throws SQLException {
-    	
-    	Carta_di_Credito expected=null;
-    	//String iban, String nuovoNumero, String nuovoCvv
-    	//then 
-    	Carta_di_Credito actual=CartaDiCreditoDao.readCarta("qwer0987mnbv4567");
-    	//expected
-    	if(actual.isScaduta()) 
-    		expected=CartaDiCreditoDao.rinnovaCarta("qwer0987mnbv4567", "3539153403921784", "118");
-    	else
-    		expected=actual;
-    		
-    	assertNotEquals(expected.toString(), actual.toString(), "la carta è rinnovata correttamente");
-    	
-    }
+//    @Test
+//    void test_4() throws SQLException {
+//    	
+//    	boolean expected=false;
+//    	//String iban, String nuovoNumero, String nuovoCvv
+//    	//then 
+//    	Carta_di_Credito actual=CartaDiCreditoDao.readCarta("qwer0987mnbv4567");
+//    	//expected
+//    	if(actual.isScaduta()) 
+//    		expected=CartaDiCreditoDao.rinnovaCarta("qwer0987mnbv4567");
+//    	else
+//    		expected=actual;
+//    		
+//    	assertNotEquals(expected.toString(), actual.toString(), "la carta è rinnovata correttamente");
+//    	
+//    }
     
 	/**
 	 * @author oleskiy.OS
@@ -134,7 +129,7 @@ public class TestCarte {
     void test_7() throws SQLException {
 
     	//then 
-    	Carta_Prepagata nuova=new Carta_Prepagata("1234567890", "1234567890123456", "123", LocalDate.now().minusDays(10), 1000);
+    	Carta_Prepagata nuova=new Carta_Prepagata("1234567890");
     	//expected
     	boolean actual=CartaPrepagataDao.inserisciCartaToDb(nuova);   
     	
@@ -158,8 +153,6 @@ public class TestCarte {
     	assertEquals(expected, actual, "la carta è stata letta correttamente");
     	
     }
-    
-    
     
     
 }

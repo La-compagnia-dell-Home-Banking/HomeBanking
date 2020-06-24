@@ -1,17 +1,13 @@
 package la_compagnia_dell_homebanking.homebanking.dao;
 
-import java.sql.Connection;
-import java.sql.Date;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.time.LocalDate;
-import java.time.LocalTime;
-
 import la_compagnia_dell_homebanking.homebanking.Transazione;
 import la_compagnia_dell_homebanking.homebanking.carta.Carta_di_Credito;
 import la_compagnia_dell_homebanking.homebanking.db.MySQLConnection;
 import la_compagnia_dell_homebanking.homebanking.exceptions.CreditNotAvailableException;
+
+import java.sql.*;
+import java.time.LocalDate;
+import java.time.LocalTime;
 
 public class CartaDiCreditoDao {
 
@@ -79,6 +75,7 @@ public class CartaDiCreditoDao {
 		
 		//creo la nuova transazione in uscita sul DB
 		String query=("INSERT INTO movimenti_conto(data_transazione, orario_transazione, iban, nuovo_saldo, somma, is_accredito) VALUES(?,?,?,?,?,?)");
+
 		Transazione t=new Transazione(LocalDate.now(), LocalTime.now(), iban, nuovo_credito, -amount, false);
 		TransazioneDao.creaTransazione(t, query);
 		
@@ -87,34 +84,35 @@ public class CartaDiCreditoDao {
 		pstmt.close();
 		connection.close();
 		
-		return status;
+		return !status;
 		
 	}
 	
 	/**
 	 * @author Gianmarco Polichetti
 	 * @param iban: l'iban del conto collegato alla carta
-	 * @param nuovoNumero: Il numero da applicare alla carta rinnovata
-	 * @param nuovoCvv: Il cvv da applicare alla carta rinnovata
 	 * @version 0.0.1
 	 * Metodo per rinnovare una carta di credito, la nuova carta cambiera il numero, la data di scadenza e il cvv*/
-	public static Carta_di_Credito rinnovaCarta(String iban, String nuovoNumero, String nuovoCvv) {
+	public static boolean rinnovaCarta(String iban) {
 		
 		Carta_di_Credito rinnovata = null;
 		Carta_di_Credito vecchia = null;
 
 		try {
 			vecchia = new Carta_di_Credito(iban);
-			rinnovata=new Carta_di_Credito(vecchia.getAccountId(), nuovoNumero, nuovoCvv, vecchia.getConto_corrente(), LocalDate.now().plusYears(4));
+			rinnovata = new Carta_di_Credito(vecchia.getAccountId(), vecchia.getConto_corrente());
 
-			CartaDiCreditoDao.inserisciCartaToDb(rinnovata);
-			CartaDiCreditoDao.eliminaCartaFromDb(vecchia.getNumeroCarta());
+			if(CartaDiCreditoDao.inserisciCartaToDb(rinnovata)&&CartaDiCreditoDao.eliminaCartaFromDb(vecchia.getNumeroCarta()))
+					return true;
+			
+			else return false;
 			
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		return rinnovata;
+		return false;
+		
 	}
 	
 	
@@ -151,15 +149,16 @@ public class CartaDiCreditoDao {
 	 * @version 0.0.1
 	 * @return flag: Indica se l'operazione è riuscita o fallita
 	 * Metodo per eliminare una carta dal DB in base al numero della carta*/
-	public static boolean eliminaCartaFromDb(String numeroCarta) throws SQLException {
+	public static boolean eliminaCartaFromDb(String iban) throws SQLException {
 
 		//connetto al DB
 		Connection connection = new MySQLConnection().getMyConnection();
 		
 		//cerco la carta nel DB per eliminarla
-		PreparedStatement pstmt = connection.prepareStatement("DELETE FROM carta_di_credito WHERE numero=?");
-		pstmt.setString(1, numeroCarta);
-		
+
+		PreparedStatement pstmt = connection.prepareStatement("DELETE FROM carta_di_credito WHERE iban=?");
+		pstmt.setString(1, iban);
+
 		//eseguo la query e salvo il risultato dell'operazione in una boolean
 		boolean flag=pstmt.execute();
 		
@@ -194,4 +193,29 @@ public class CartaDiCreditoDao {
 		System.out.println(new StringBuilder().append("Card ").append(iban).append(" doesn't exist."));
 		return false;
 	}
+	
+	public static boolean isblocked(String iban) {
+		
+		MySQLConnection connection = new MySQLConnection();
+		String query = "SELECT FROM carta_di_credito WHERE iban=?";
+		try {
+			PreparedStatement prstmt = connection.getMyConnection().prepareStatement(query);
+			prstmt.setString(1, iban);
+			
+			ResultSet rs = prstmt.executeQuery();
+			
+			rs.next();
+			
+			boolean flag=rs.getBoolean("isBlocked");
+			
+			if(flag) return true;
+			else return false;
+		}
+	    catch (SQLException e) {
+		MySQLConnection.printExceptions(e);
+	    }
+		return false;
+						
+	}
+	
 }

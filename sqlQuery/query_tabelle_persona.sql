@@ -51,6 +51,7 @@ account_id VARCHAR (20) NOT NULL,
 numero VARCHAR (16) PRIMARY KEY NOT NULL,
 scadenza DATE NOT NULL,
 cvv VARCHAR(3) NOT NULL,
+isBlocked BOOLEAN DEFAULT false,
 FOREIGN KEY (account_id) REFERENCES account(account_id) ON DELETE CASCADE,
 FOREIGN KEY (conto) REFERENCES conto_corrente(iban) ON DELETE CASCADE
 );
@@ -61,11 +62,12 @@ credito_Residuo DECIMAL(6,2) NOT NULL,
 numero VARCHAR (16) PRIMARY KEY NOT NULL,
 scadenza DATE NOT NULL,
 cvv VARCHAR(3) NOT NULL,
+isBlocked BOOLEAN DEFAULT false,
 FOREIGN KEY (account_id) REFERENCES account(account_id) ON DELETE CASCADE
 );
 
 CREATE TABLE movimenti_conto(
-numero_transazione INT NOT NULL PRIMARY KEY,
+numero_transazione INTEGER AUTO_INCREMENT NOT NULL PRIMARY KEY,
 data_transazione DATE NOT NULL,
 orario_transazione TIME NOT NULL,
 iban VARCHAR(25) NOT NULL,
@@ -75,7 +77,7 @@ is_accredito BOOLEAN NOT NULL,
 FOREIGN KEY (iban) REFERENCES conto_corrente(iban) ON DELETE CASCADE
 );
 CREATE TABLE movimenti_carta_prepagata(
-numero_transazione INT NOT NULL PRIMARY KEY,
+numero_transazione INTEGER AUTO_INCREMENT NOT NULL PRIMARY KEY,
 data_transazione DATE NOT NULL,
 orario_transazione TIME NOT NULL,
 numero VARCHAR(16) NOT NULL,
@@ -92,3 +94,9 @@ orario_transazione TIME NOT NULL,
 generated_token VARCHAR(6) NOT NULL,
 FOREIGN KEY (account_id) REFERENCES account(account_id) ON DELETE CASCADE
 );
+
+INSERT INTO account (account_id, persona_id) VALUES ('1111111111','1111111111');
+INSERT INTO conto_corrente (iban, account_id, saldo_disponibile, saldo_contabile) VALUES ('asdf1234qwer5678', '1111111111', '1000','1000');
+INSERT INTO carta_di_credito (conto, account_id, numero, scadenza, cvv) VALUES ('asdf1234qwer5678','1111111111','2839176403921784','2020-07-07','123');
+INSERT INTO carta_prepagata VALUES ('1111111111','1000','8671204139373831','2020-09-09','779');
+INSERT INTO token VALUES ('1111111111', '2020/06/18','09:45:00','123456');

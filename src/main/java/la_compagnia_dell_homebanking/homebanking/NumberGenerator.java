@@ -50,11 +50,13 @@ public class NumberGenerator {
         return s.toString();
     }
     
-    /**
-     * the method generates a card number of 16 digits
-     * @return	The String of the card number
-     */
+
     public static String generateCardNumber() {
-    	return generateRandom((long)1e+16,(long)9e+16);
+    	return generateRandom ((long)1e+15, (long)9e+15);
+    }
+    
+    public static String generateCvvNumber() {
+    	return generateRandom ((long)1e+2, (long)9e+2);
+
     }
 }

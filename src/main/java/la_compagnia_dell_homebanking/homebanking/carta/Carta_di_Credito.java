@@ -1,5 +1,6 @@
 package la_compagnia_dell_homebanking.homebanking.carta;
 
+import la_compagnia_dell_homebanking.homebanking.NumberGenerator;
 import la_compagnia_dell_homebanking.homebanking.TokenServlet;
 import la_compagnia_dell_homebanking.homebanking.Transazione;
 import la_compagnia_dell_homebanking.homebanking.db.MySQLConnection;
@@ -15,13 +16,12 @@ public class Carta_di_Credito implements CartaI {
 	private LocalDate dataScadenza;
 	
 	
-	public Carta_di_Credito(String accountId, String numeroCarta, String cvv, String conto_corrente,
-			LocalDate dataScadenza) {
+	public Carta_di_Credito(String accountId, String conto_corrente) {
 		this.accountId = accountId;
-		this.numeroCarta = numeroCarta;
-		this.cvv = cvv;
+		this.numeroCarta = NumberGenerator.generateCardNumber();
+		this.cvv = NumberGenerator.generateCvvNumber();
 		this.conto_corrente = conto_corrente;
-		this.dataScadenza = dataScadenza;
+		this.dataScadenza = LocalDate.now().plusYears(4);
 	}
 
 	public Carta_di_Credito(String iban) throws SQLException {

@@ -1,25 +1,17 @@
 package la_compagnia_dell_homebanking.homebanking.routes;
 
-import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.concurrent.ExecutionException;
-
-import javax.inject.Singleton;
-import javax.json.bind.Jsonb;
-import javax.json.bind.JsonbBuilder;
-import javax.ws.rs.Consumes;
-import javax.ws.rs.GET;
-import javax.ws.rs.POST;
-import javax.ws.rs.PUT;
-import javax.ws.rs.Path;
-import javax.ws.rs.PathParam;
-import javax.ws.rs.Produces;
-import javax.ws.rs.core.MediaType;
-
 import la_compagnia_dell_homebanking.homebanking.TokenService;
 import la_compagnia_dell_homebanking.homebanking.Transazione;
 import la_compagnia_dell_homebanking.homebanking.carta.Carta_Prepagata;
 import la_compagnia_dell_homebanking.homebanking.dao.CartaPrepagataDao;
+
+import javax.inject.Singleton;
+import javax.json.bind.Jsonb;
+import javax.json.bind.JsonbBuilder;
+import javax.ws.rs.*;
+import javax.ws.rs.core.MediaType;
+import java.sql.SQLException;
+import java.util.ArrayList;
 
 @Singleton
 @Path("/carta_prepagata")
@@ -27,11 +19,10 @@ public class CartaPrepagataResources {
 	
     @GET
     @Path("/{accountId}/{numeroCarta}")
-    @Produces(MediaType.TEXT_PLAIN)
-    public void getCartaPrepagata(@PathParam("numeroCarta") String numeroCarta) throws SQLException {
-        
-    	CartaPrepagataDao.readCarta(numeroCarta);
-    	
+    @Produces(MediaType.APPLICATION_JSON)
+    public String getCartaPrepagata(@PathParam("numeroCarta") String numeroCarta) throws SQLException {
+        Jsonb jsonb = JsonbBuilder.create();
+    	return jsonb.toJson(CartaPrepagataDao.readCarta(numeroCarta));
     }
     
     @GET
@@ -65,7 +56,8 @@ public class CartaPrepagataResources {
         
     }
     
-    @POST
+    
+    @PUT
     @Path("/{accountId}/{numeroCarta}/blocca_prepagata")
     @Produces(MediaType.TEXT_PLAIN)
     public String bloccaCarta(@PathParam("numeroCarta") String numeroCarta) {
@@ -76,8 +68,11 @@ public class CartaPrepagataResources {
     		return "Non è stato possibile bloccare la carta";
     }
     
+    
     @PUT
     @Path("/{accountId}/{numeroCarta}/paga/{amount}/{code}")
+    @Produces(MediaType.APPLICATION_JSON)
+    @Consumes(MediaType.APPLICATION_JSON)
     public String pay
     (@PathParam("numeroCarta") String numeroCarta,
     @PathParam("accountId") String accountId,
@@ -85,6 +80,7 @@ public class CartaPrepagataResources {
     @PathParam("code") String code) {
     	String res=null;
     	try {
+    		if(CartaPrepagataDao.isblocked(numeroCarta)) res="La carta è bloccata!";
 			if(TokenService.chiedi_codice(accountId, code)) {
 				if(CartaPrepagataDao.pagaConCarta(amount, numeroCarta)) {
 					res="Hai pagato "+amount+"€ con la carta "+numeroCarta;
@@ -94,7 +90,7 @@ public class CartaPrepagataResources {
 			else res="Codice errato, non è stato possibile effettuare il pagamento!";
 			
 		} catch (SQLException e) {
-			// TODO Auto-generated catch block
+
 			e.printStackTrace();
 		}
     	return res;
@@ -102,6 +98,8 @@ public class CartaPrepagataResources {
     
     @PUT
     @Path("/{accountId}/{numeroCarta}/ricarica/{amount}/{code}")
+    @Produces(MediaType.APPLICATION_JSON)
+    @Consumes(MediaType.APPLICATION_JSON)
     public String ricarica
     (@PathParam("numeroCarta") String numeroCarta,
     @PathParam("accountId") String accountId,
@@ -109,19 +107,53 @@ public class CartaPrepagataResources {
     @PathParam("code") String code) {
     	String res=null;
     	try {
+    		if(CartaPrepagataDao.isblocked(numeroCarta)) res="La carta è bloccata!";
 			if(TokenService.chiedi_codice(accountId, code)) {
 				if(CartaPrepagataDao.ricaricaCarta(amount, numeroCarta)) {
-					res="Hai pagato "+amount+"€ con la carta "+numeroCarta;
+					res="Hai ricaricato "+amount+"€ sulla carta "+numeroCarta;
 				}
-				else res="Non è stato possibile effettuare il pagamento";
+				else res="Non è stato possibile effettuare la ricarica";
 			}
-			else res="Codice errato, non è stato possibile effettuare il pagamento!";
+			else res="Codice errato, non è stato possibile effettuare la ricarica!";
 			
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
     	return res;
+    }
+    
+    @POST
+    @Path("/{accountId}/add_carta")
+    @Produces(MediaType.APPLICATION_JSON)
+    public String add_carta_prepagata(@PathParam("accountId") String accountId) {
+    	
+    	Carta_Prepagata nuova= new Carta_Prepagata(accountId);
+    	try {
+            if (CartaPrepagataDao.inserisciCartaToDb(nuova)) {
+                return "La carta " + nuova.getNumeroCarta() + " è stata aggiunta.";
+            }
+
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+    	return "Errore. La carta " + nuova.getNumeroCarta() + " non è stata aggiunta.";
+    }
+    
+    @DELETE
+    @Path("/{accountId}/{numeroCarta}/remove_carta")
+    @Produces(MediaType.APPLICATION_JSON)
+    public String delete_carta(@PathParam("numeroCarta") String numeroCarta) {
+
+        try {
+            if (CartaPrepagataDao.eliminaCartaFromDb(numeroCarta)) {
+                return "La carta " + numeroCarta + " è stata eleminata.";
+            }
+
+        } catch (SQLException e) {
+			e.printStackTrace();
+		}
+        return "Errere. La carta " + numeroCarta + " non è stata eliminata.";
     }
 
 }

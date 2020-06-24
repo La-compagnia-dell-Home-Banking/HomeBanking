@@ -33,11 +33,13 @@ public class TokenServlet extends HttpServlet{
 		LocalTime orario_ultimo = null;
 		String codice_attuale = null;
 		try {
-			Connection connection = new MySQLConnection().getMyConnection();
+			Connection connection = new MySQLConnection(true).getMyConnection();
 			PreparedStatement pstmt = connection.prepareStatement("SELECT * FROM token WHERE account_id=?");
 			pstmt.setString(1, account_id);
 			ResultSet rs = pstmt.executeQuery();
-
+			
+			
+			
 			rs.next();
 			data_ultimo=rs.getDate("data_transazione").toLocalDate();
 			orario_ultimo=rs.getTime("orario_transazione").toLocalTime();
@@ -47,6 +49,7 @@ public class TokenServlet extends HttpServlet{
 			e.printStackTrace();
 		}
 		long t=-(ChronoUnit.SECONDS.between(LocalTime.now(), orario_ultimo));
+		System.out.println(LocalDate.now()+" "+LocalTime.now()+" "+t);
 		if(t>=60) t=-1;
 		
 		//se è passato un minuto o più dall'ultima generazione del codice token, ne genero uno nuovo e lo salvo sul database per

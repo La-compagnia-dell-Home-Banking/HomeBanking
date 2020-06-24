@@ -42,7 +42,8 @@ public class Account {
 		accountID = AccountDao.controlAccount_id() + 1;
 		this.persona = persona;
 		this.setPassword();
-		AccountDao.insertAccountToDb(persona, accountID);
+		if(persona instanceof PersFisica) AccountDao.insertAccountToDb(persona.getPersona_id(), true, Integer.toString(accountID));
+		else AccountDao.insertAccountToDb(persona.getPersona_id(), false, Integer.toString(accountID));
 		lista_conti = ContoCorrenteDao.readConti(Integer.toString(accountID));
 		lista_carte = CartaPrepagataDao.readCarte(Integer.toString(accountID));
 	}
