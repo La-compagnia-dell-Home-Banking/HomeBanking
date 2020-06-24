@@ -42,7 +42,7 @@ public class NumberGenerator {
      * @return
      */
 
-    private static String addZeros(String num,int length) {
+    public static String addZeros(String num,int length) {
         int numlength=num.length(); //1
         StringBuilder s= new StringBuilder(num);//1
         for(int i=0; i< length-numlength; i++)
