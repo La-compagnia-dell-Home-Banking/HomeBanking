@@ -15,10 +15,10 @@ import la_compagnia_dell_homebanking.homebanking.db.MySQLConnection;
 public class TransazioneDao {
 
 	/**
-	 * @author Gianmarco Polichetti
-	 * @param query: la query lanciata dai metodi per creare una transazione in entrata o in uscita
-	 * @version 0.0.1
-	 * Prende in input una query e genera una transazione che viene salvata nel DB*/
+	* @author Gianmarco Polichetti
+	* @param query: the query launched by the methods to create an incoming or outgoing transaction
+	* @version 0.0.1
+	* Takes as input a query and generates a transaction which is saved in the DB */
 	public static void creaTransazione(Transazione t, String query) throws SQLException {
 		
 		Connection connection = new MySQLConnection().getMyConnection();
@@ -36,6 +36,12 @@ public class TransazioneDao {
 		
 	}
 	
+	
+	/**
+	* @author Gianmarco Polichetti
+	* @Param query: query to create a bank statement of a prepaid card	
+	* @version 0.0.1
+	* Takes a query as input and generates a list of transactions */
 	public static ArrayList<Transazione> estrattoContoCarta(String query) throws SQLException{
 		
 		ArrayList<Transazione> transazioni=new ArrayList<Transazione>();
@@ -53,6 +59,11 @@ public class TransazioneDao {
 		return transazioni;
 	}
 	
+	/**
+	* @author Gianmarco Polichetti
+	* @Param query: query to create a bank statement of a checking account	
+	* @version 0.0.1
+	* Takes a query as input and generates a list of transactions */
 	public static ArrayList<Transazione> estrattoConto(String query) throws SQLException{
 		
 		ArrayList<Transazione> transazioni=new ArrayList<Transazione>();

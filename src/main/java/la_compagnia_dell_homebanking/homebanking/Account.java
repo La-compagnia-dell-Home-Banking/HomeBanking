@@ -31,7 +31,13 @@ public class Account {
 	private boolean richiestaChiusura=false;
 	private boolean chiuso=false;
 	private String password = "";
+	private boolean isAdmin=false;
 
+	
+	public Account(int adminId, boolean isAdmin) {
+		this.accountID=adminId;
+		this.persona = PersonaDao.getPersonaById(Integer.toString(adminId));
+	}
 	/**
 	 * Class constructor which takes in input a Persona and initializes all the attributes
 	 * @param persona	The person which owns the account
@@ -114,6 +120,7 @@ public class Account {
 	 * @throws SQLException
 	 */
 	public boolean aggiungiConto(ContoCorrente conto) throws SQLException {
+		if(isAdmin) return false;
 		if (lista_conti.contains(conto))
 			return false;
 		if (!this.equals(conto.getAccount()))
@@ -146,6 +153,10 @@ public class Account {
 	public void setChiuso(boolean chiuso) {
 		this.chiuso = chiuso;
 	}
+	public boolean isAdmin() {
+		return isAdmin;
+	}
+	
 	
 	
 	}

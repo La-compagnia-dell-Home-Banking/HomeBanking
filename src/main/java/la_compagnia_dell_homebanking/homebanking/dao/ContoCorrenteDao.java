@@ -22,16 +22,17 @@ import la_compagnia_dell_homebanking.homebanking.carta.Carta_di_Credito;
 import la_compagnia_dell_homebanking.homebanking.cliente.PersFisica;
 import la_compagnia_dell_homebanking.homebanking.db.MySQLConnection;
 import la_compagnia_dell_homebanking.homebanking.exceptions.ContoNotFoundException;
+import la_compagnia_dell_homebanking.homebanking.exceptions.CreditExceedException;
 import la_compagnia_dell_homebanking.homebanking.exceptions.CreditNotAvailableException;
 import la_compagnia_dell_homebanking.homebanking.exceptions.WrongPasswordException;
 
 public class ContoCorrenteDao {
 
 	private static boolean insertCCToDb(ContoCorrente c) throws SQLException {
-		MySQLConnection connection = new MySQLConnection();
+		Connection connection = new MySQLConnection().getMyConnection();
 		String query = "INSERT INTO account VALUES (?,?,?)";
 
-		PreparedStatement prstmt = connection.getMyConnection().prepareStatement(query);
+		PreparedStatement prstmt = connection.prepareStatement(query);
 		prstmt.setString(1, c.getIBAN());
 		prstmt.setString(2, Integer.toString(c.getAccount().getAccountID()));
 		prstmt.setDouble(3, c.getSaldo_disponibile());
@@ -39,7 +40,7 @@ public class ContoCorrenteDao {
 
 		Boolean status = prstmt.execute();
 		prstmt.close();
-		connection.getMyConnection().close();
+		connection.close();
 		return status;
 	}
 
@@ -75,11 +76,11 @@ public class ContoCorrenteDao {
 
 	/**
 	 * @author Gianmarco Polichetti
-	 * @param amount: La somma da pagare
+	 * @param amount: the amount to be paid
+	 * @param iban the iban of the checking account from which the transaction starts
 	 * @version 0.0.1
-	 * Metodo per pagare con una carta prepagata, dopo aver richiesto il codice token generato, se il codice è corretto,
-	 *  il saldo sulla carta viene aggiornato e viene creata una nuova transazione in uscita*/
-	public static boolean pagaConContoCorrente(double amount, String iban) throws SQLException {
+	 * Generate an outcoming transaction*/
+	public static boolean pagaConBonifico(double amount, String iban) throws SQLException {
 		
 		//connetto al DB
 		Connection connection = new MySQLConnection().getMyConnection();
@@ -120,9 +121,53 @@ public class ContoCorrenteDao {
 		
 	}
 	
+	/**
+	 * @author Gianmarco Polichetti
+	 * @param amount: the amount of movement
+	 * @param iban the iban of the checking account that receives a transaction
+	 * @version 0.0.1
+	 * Generate an incoming transaction*/
+	public static boolean entrataConto(double amount, String iban) throws SQLException {
+
+		//connetto al DB
+		Connection connection = new MySQLConnection().getMyConnection();
+		
+		//cerco la carta sul DB
+		PreparedStatement pstmt = connection.prepareStatement("SELECT FROM conto_corrente WHERE iban=?");
+		pstmt.setString(1, iban);
+		ResultSet rs = pstmt.executeQuery();
+		rs.next();		
+		
+		double disponibile=rs.getDouble("saldo_disponibile");
+				
+		//calcolo il nuovo saldo
+		double nuovo_credito=disponibile+amount;
+		
+		//aggiorno la carta con il nuovo saldo
+		pstmt = connection.prepareStatement("UPDATE conto_corrente SET saldo_disponibile=?, saldo_contabile=? WHERE iban=?");
+		pstmt.setDouble(1, nuovo_credito);
+		pstmt.setDouble(2, nuovo_credito);
+		pstmt.setString(3, iban);
+		Boolean status = pstmt.execute();
+		
+		//creo la nuova transazione in uscita sul DB
+		String query=("INSERT INTO movimenti_carta_prepagata(data_transazione, orario_transazione, numero, nuovo_saldo, somma, is_accredito) VALUES(?, ?, ?, ?, ?, ?)");
+		Transazione t=new Transazione(LocalDate.now(), LocalTime.now(), iban, nuovo_credito, +amount, true);
+		TransazioneDao.creaTransazione(t, query);
+		
+		//chiudo le connessioni al DB
+		rs.close();
+		pstmt.close();
+		connection.close();
+		
+		return !status;
+		
+	}
+	
 
 	/**
 	 * @author Gianmarco Polichetti
+	 * @param iban the iban of the checking account to be analyzed
 	 * @version 0.0.1
 	 * Metodo che salva tutti i movimenti di un conto corrente su di un ArrayList "transazioni"*/
 	public static ArrayList<Transazione> transazioniConto(String iban) throws SQLException {
@@ -133,6 +178,7 @@ public class ContoCorrenteDao {
 	
 	/**
 	 * @author Gianmarco Polichetti
+	 * @param iban the iban of the checking account to be analyzed
 	 * @version 0.0.1
 	 * Metodo che scrive e restituisce un file contenente l'estratto conto di un conto corrente*/
 	public static File getEstrattoConto(String iban) throws SQLException {		
@@ -156,6 +202,7 @@ public class ContoCorrenteDao {
 	
 	/**
 	 * @author Gianmarco Polichetti
+	 * @param iban the iban of the checking account to be analyzed
 	 * @version 0.0.1
 	 * Metodo che scrive e restituisce un file contenente le entrate di un conto corrente*/
 	public static File getEntrate(String iban) throws SQLException {
@@ -178,8 +225,9 @@ public class ContoCorrenteDao {
 	
 	/**
 	 * @author Gianmarco Polichetti
+	 * @param iban the iban of the checking account to be analyzed
 	 * @version 0.0.1
-	 * Metodo che scrive e restituisce un file contenente le uscite di un conto corrente*/
+	 * Writes and returns a file containing the issues of a checking account*/
 	public static File getUscite(String iban) throws SQLException {
 		ArrayList<Transazione> transazioni=transazioniConto(iban);
 		
@@ -234,14 +282,14 @@ public class ContoCorrenteDao {
 			//connetto al DB
 			Connection connection = new MySQLConnection().getMyConnection();
 			
-			//cerco la carta nel DB per eliminarla
+			//cerco il conto nel DB per eliminarlo
 			PreparedStatement pstmt = connection.prepareStatement("DELETE FROM account WHERE account_id=?");
 			pstmt.setString(1, Integer.toString(account.getAccountID()));
 			
 			//eseguo la query e salvo il risultato dell'operazione in una boolean
 			boolean flag=pstmt.execute();
 			
-			//chiudo le connessioni al DB
+			//chiudo le connessioni al DB e restituisco il risultato
 			connection.close();
 			pstmt.close();
 			account.setChiuso(flag);

@@ -10,6 +10,14 @@ import java.time.temporal.ChronoUnit;
 
 public class TokenService {
 
+	/**
+	 * @author Gianmarco Polichetti
+	 * @param code the code to be saved
+	 * @param account_id the id that generates the code
+	 * @param data 
+	 * @param orario
+	 * @version 0.0.1
+	 * Save a usable token code to the database*/
 	public static void save_code(int code, String account_id, String data, String orario) throws SQLException {
 
 		Connection connection = new MySQLConnection(true).getMyConnection();
@@ -25,6 +33,12 @@ public class TokenService {
 
 	}
 
+	/**
+	 * @author Gianmarco Polichetti
+	 * @param codice_inserito the code to be compared
+	 * @param account_id the id that needs to compare
+	 * @version 0.0.1
+	 * Asks for the current code and compares it. If more than 60 seconds have passed, the current code changes.*/
 	public static boolean chiedi_codice(String account_id, String codice_inserito) throws SQLException {
 		Connection connection = new MySQLConnection(true).getMyConnection();
 		PreparedStatement pstmt = null;
@@ -61,6 +75,7 @@ public class TokenService {
 		if(!codice_inserito.equals(gen)) return false;
 		return true;
 	}
+	
 	
 	public static void generate(String account_id) throws SQLException {
 
