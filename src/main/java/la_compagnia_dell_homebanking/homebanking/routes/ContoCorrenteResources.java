@@ -65,8 +65,8 @@ public class ContoCorrenteResources {
             if(ContoCorrenteDao.pagaConBonifico(amount, ibanOut) && ContoCorrenteDao.entrataConto(amount, ibanIn)) {
                 return "Operazione è andata a buon fine.";
             }
-        } catch (SQLException e) {
-            MySQLConnection.printExceptions(e);
+        } catch (SQLException | RuntimeException e) {
+            e.printStackTrace();
         }
         return "Error. Operazione è fallita.";
     }
@@ -127,5 +127,41 @@ public class ContoCorrenteResources {
         }
         return "Error. La lista è vuota.";
     }
-    
+
+    /**
+     * @author Gianmarco
+     * @param iban
+     * @return
+     */
+
+    @PUT
+    @Path("/{iban}/richiedi_chiusura")
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.APPLICATION_JSON)
+    public String richiediChiusura(@PathParam("iban")String iban){
+
+        try {
+            if(ContoCorrenteDao.richiestaChiusuraConto(iban))
+                return "Hai richiesto di chiudere il conto " + iban;
+        } catch (RuntimeException e) {
+            e.printStackTrace();
+        }
+        return "Errore. Non puoi richiedere la chiusura del conto " + iban;
+    }
+
+    /**
+     * @author Gianmarco
+     * @param iban
+     * @return
+     */
+    @PUT
+    @Path("/{iban}/chiusura_conto")
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.APPLICATION_JSON)
+    public String chiusuraConto(@PathParam("iban")String iban){
+        if(ContoCorrenteDao.chiusuraConto(iban)) {
+            return "Hai chiuso il conto " + iban;
+        }
+        return "Errore. Non puoi chiudere il conto " + iban;
+    }
 }

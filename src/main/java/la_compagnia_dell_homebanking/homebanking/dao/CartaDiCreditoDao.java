@@ -14,7 +14,6 @@ public class CartaDiCreditoDao {
 
 	/**
 	 * @author Gianmarco Polichetti
-	 * @param account_id: l'iban del conto del quale si vuole conoscere la carta di credito collegata
 	 * @version 0.0.1
 	 * @return carta: la carta collegata al conto
 	 * Legge la carta di credito collegata al conto dal DB e la restituisce*/
@@ -47,11 +46,13 @@ public class CartaDiCreditoDao {
 	 * Metodo per pagare con una carta prepagata, dopo aver richiesto il codice token generato, se il codice è corretto,
 	 *  il saldo sulla carta viene aggiornato e viene creata una nuova transazione in uscita*/
 	public static boolean pagaConCarta(double amount, String iban) throws SQLException {
-		
+		if(CartaDiCreditoDao.isblocked(iban)) {
+			throw new RuntimeException("La carta è bloccata, non puoi effettuare i pagamenti.");
+		}
 		
 		//connetto al DB
 		Connection connection = new MySQLConnection().getMyConnection();
-		
+
 		//cerco la carta sul DB
 		PreparedStatement pstmt = connection.prepareStatement("SELECT * FROM conto_corrente WHERE iban=?");
 		pstmt.setString(1, iban);
@@ -175,6 +176,9 @@ public class CartaDiCreditoDao {
 	 * This method blocks a credit card.
 	 */
 	public static boolean bloccaCarta(String iban) {
+		if(CartaDiCreditoDao.isblocked(iban)) {
+			throw new RuntimeException("La carta è già bloccata.");
+		}
 		MySQLConnection connection = new MySQLConnection();
 		String query = "UPDATE carta_di_credito SET isBlocked=true WHERE conto =?";
 		try {
@@ -202,9 +206,8 @@ public class CartaDiCreditoDao {
 	 * This method check if a credit card is blocked.
 	 */
 	public static boolean isblocked(String iban) {
-		
 		MySQLConnection connection = new MySQLConnection();
-		String query = "SELECT FROM carta_di_credito WHERE iban=?";
+		String query = "SELECT * FROM carta_di_credito WHERE iban=?";
 		try {
 			PreparedStatement prstmt = connection.getMyConnection().prepareStatement(query);
 			prstmt.setString(1, iban);

@@ -25,36 +25,7 @@ public class PersGiuridica extends Persona {
 		this.getDocs().setP_iva(p_iva);
 	}
 
-	private void insertPersonToDb(PersGiuridica persona) {
-		Boolean status = null;
-		MySQLConnection connection = new MySQLConnection();
-		String query = "INSERT INTO persona_giuridica VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
-		try {
-			PreparedStatement prstmt = connection.getMyConnection().prepareStatement(query);
-			prstmt.setString(1, persona.getPersona_id());
-			prstmt.setString(2, persona.getRagione_sociale());
-			prstmt.setString(3, persona.getDocs().getP_iva());
-			prstmt.setString(4, persona.getNomeRappresentante());
-			prstmt.setString(5, persona.getCognomeRappresentante());
-			prstmt.setString(6, persona.getSedeLegale());
-			prstmt.setString(7, persona.getIndirizzo());
-			prstmt.setString(8, persona.getCap());
-			prstmt.setString(9, persona.getEmail());
-			prstmt.setString(10, persona.getTelefono());
-			prstmt.setString(11, persona.getDocs().getDocument());
-			status = prstmt.execute();
-		} catch (SQLException e) {
-			PersonaDaoI.printexceptions(e);
-		} finally {
-			try {
-				connection.getMyConnection().close();
-			} catch (SQLException e) {
-				PersonaDaoI.printexceptions(e);
-			}
-		}
-		System.out.println(new StringBuilder().append("Success. ").append(persona.toString()).
-					append(" was created.").toString());
-	}
+
 
 	public String getNomeRappresentante() {
 		return nomeRappresentante;

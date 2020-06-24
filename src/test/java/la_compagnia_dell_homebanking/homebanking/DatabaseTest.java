@@ -88,19 +88,7 @@ public class DatabaseTest {
      * and bolean to indicate if the company has been already inserted into the DB previously.
      * Also it tests getPersonaById() method.
      */
-    @Test
-    @DisplayName("Company was created.")
-    void test_insertPersonaGiuridicaToDb() {
-        //given
-        PersGiuridica persGiuridica = new PersGiuridica("1234567", "azienda@mail.com", "Pippo spa", "911",
-                "via del Pippo", "dsf23124", "02345", "Edgar",
-                "Alan Po", "USA", "1111111111");
-        //then
-        boolean isTheSameCompany = PersonaDao.getPersonaById("1111111111").equals(persGiuridica);
-        //expect
-        boolean expected = true;
-        assertEquals(expected, isTheSameCompany, "company should be the same.");
-    }
+
 
     /**
      * This test makes sure that we can get an ArrayList of Persons with the same lastname from DB.
@@ -180,7 +168,7 @@ public class DatabaseTest {
         //given
         PersGiuridica persGiuridica = new PersGiuridica("321413124", "azienda@mail.com", "Pippo&Partners", "131415113",
                 "via del Pippo", "ASDFASD123", "02345", "Edgar",
-                "Alan Po", "USA", "2222222222");
+                "Alan Po", "USA", "3333333333");
 
         String actual = PersonaDao.removeCompanyById("1231325231");
         //expect

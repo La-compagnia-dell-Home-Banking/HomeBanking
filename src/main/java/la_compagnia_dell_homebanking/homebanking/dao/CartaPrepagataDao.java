@@ -78,8 +78,11 @@ public class CartaPrepagataDao {
 	 * @version 0.0.1
 	 * Metodo per pagare con una carta prepagata, dopo aver richiesto il codice token generato, se il codice è corretto,
 	 *  il saldo sulla carta viene aggiornato e viene creata una nuova transazione in uscita*/
-	public static boolean pagaConCarta(double amount, String numeroCarta) throws SQLException {
-		
+	public static boolean pagaConCarta(double amount, String numeroCarta) throws SQLException, RuntimeException  {
+			if(CartaPrepagataDao.isblocked(numeroCarta)) {
+				throw new RuntimeException("La carta è bloccata, non puoi effettuare i pagamenti.");
+			}
+
 		//connetto al DB
 		Connection connection = new MySQLConnection().getMyConnection();
 		
@@ -124,7 +127,9 @@ public class CartaPrepagataDao {
 	 * Metodo per ricaricare una carta prepagata, dopo aver richiesto il codice token generato, se il codice è corretto,
 	 *  il saldo sulla carta viene aggiornato e viene creata una nuova transazione in entrata*/
 	public static boolean ricaricaCarta(double amount, String numeroCarta) throws SQLException {
-
+		if(CartaPrepagataDao.isblocked(numeroCarta)) {
+			throw new RuntimeException("La carta è bloccata, non puoi effettuare la ricarica.");
+		}
 		//connetto al DB
 		Connection connection = new MySQLConnection().getMyConnection();
 		
@@ -347,14 +352,13 @@ public class CartaPrepagataDao {
 	
 	/**
 	 * @author Gianmarco Polichetti
-	 * @param iban the iban of the account linked to the card
 	 * @return boolean - true if card is blocked, false if wasn't.
 	 * This method check if a credit card is blocked.
 	 */
 	public static boolean isblocked(String numeroCarta) {
 		
 		MySQLConnection connection = new MySQLConnection();
-		String query = "SELECT FROM carta_prepagata WHERE numero=?";
+		String query = "SELECT * FROM carta_prepagata WHERE numero=?";
 		try {
 			PreparedStatement prstmt = connection.getMyConnection().prepareStatement(query);
 			prstmt.setString(1, numeroCarta);
@@ -372,7 +376,5 @@ public class CartaPrepagataDao {
 		MySQLConnection.printExceptions(e);
 	    }
 		return false;
-			
-			
 	}
 }
