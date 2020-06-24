@@ -50,7 +50,7 @@ public class CartaDiCreditoResources {
     	String res=null;
 
     	try {
-    		if(CartaPrepagataDao.isblocked(iban)) res="La carta è bloccata!";
+    		if(CartaDiCreditoDao.isblocked(iban)) res="La carta è bloccata!";
 			if(TokenService.chiedi_codice(accountId, code)) {
 				if(CartaDiCreditoDao.pagaConCarta(amount, iban)) {
 					res="Hai pagato "+amount+"€ con la carta collegata al conto "+iban;
