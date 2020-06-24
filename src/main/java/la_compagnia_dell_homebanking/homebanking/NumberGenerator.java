@@ -42,7 +42,7 @@ public class NumberGenerator {
      * @return
      */
 
-    private static String addZeros(String num,int length) {
+    public static String addZeros(String num,int length) {
         int numlength=num.length(); //1
         StringBuilder s= new StringBuilder(num);//1
         for(int i=0; i< length-numlength; i++)
@@ -50,11 +50,18 @@ public class NumberGenerator {
         return s.toString();
     }
     
-
+	/**
+	 * @author Giuseppe Alessio D'inverno
+	 * @version 0.0.1
+	 * Genera il numero di una carta*/
     public static String generateCardNumber() {
     	return generateRandom ((long)1e+15, (long)9e+15);
     }
     
+	/**
+	 * @author Giuseppe Alessio D'inverno
+	 * @version 0.0.1
+	 * Genera il cvv di una carta*/
     public static String generateCvvNumber() {
     	return generateRandom ((long)1e+2, (long)9e+2);
 

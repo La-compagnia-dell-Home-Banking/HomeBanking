@@ -68,5 +68,17 @@ public class AccountResources {
     	
     }
     
+    @POST
+    @Path("/{accountId}/add_token")
+    @Produces(MediaType.APPLICATION_JSON)
+    public String add_token(@PathParam("accountId") String accountId ) throws SQLException {
+    	 
+    	if(AccountDao.addToken(accountId)) {
+			return "Generatore token attivato con successo!";
+		}
+    	return "Non è stato possibile attivare il generatore di token, contatta un amministratore";
+    	
+    }
+    
 
 }

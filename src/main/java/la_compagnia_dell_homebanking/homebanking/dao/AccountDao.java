@@ -1,8 +1,13 @@
 package la_compagnia_dell_homebanking.homebanking.dao;
 
+import java.sql.Connection;
+import java.sql.Date;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Time;
+import java.time.LocalDate;
+import java.time.LocalTime;
 
 import la_compagnia_dell_homebanking.homebanking.Account;
 import la_compagnia_dell_homebanking.homebanking.cliente.PersFisica;
@@ -60,6 +65,37 @@ public class AccountDao {
 		connection.getMyConnection().close();
 		return id;
 
+	}
+	
+	
+	/**
+	 * @author Gianmarco Polichetti
+	 * @param account_id: The account that requires a token generator
+	 * @version 0.0.1
+	 * That create a unique token generator for an account. This can be used for make all the operation.*/
+	public static boolean addToken(String account_id) {
+		
+
+		try {
+			Connection connection = new MySQLConnection().getMyConnection();
+			
+			String query = "INSERT INTO token VALUES(?, ?, ?, ?)";
+			PreparedStatement prstmt = connection.prepareStatement(query);
+			prstmt.setString(1, account_id);
+			prstmt.setDate(2, Date.valueOf(LocalDate.now()));
+			prstmt.setTime(3, Time.valueOf(LocalTime.now()));
+			prstmt.setInt(4, (int)(((Math.random())*999999)+1));
+			Boolean status = prstmt.execute();
+			connection.close();
+			return status;
+			
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		return false;
+		
 	}
 	
 	

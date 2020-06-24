@@ -31,7 +31,7 @@ public class CartaDiCreditoDao {
 
 			while (rs.next()) { // Leggiamo i risultati
 
-				carta = new Carta_di_Credito(rs.getString("conto"));
+				carta = new Carta_di_Credito(rs.getString("account_id"), rs.getString("conto"));
 
 			}
 			rs.close();
@@ -93,13 +93,13 @@ public class CartaDiCreditoDao {
 	 * @param iban: l'iban del conto collegato alla carta
 	 * @version 0.0.1
 	 * Metodo per rinnovare una carta di credito, la nuova carta cambiera il numero, la data di scadenza e il cvv*/
-	public static boolean rinnovaCarta(String iban) {
+	public static boolean rinnovaCarta(String iban, String account_id) {
 		
 		Carta_di_Credito rinnovata = null;
 		Carta_di_Credito vecchia = null;
 
 		try {
-			vecchia = new Carta_di_Credito(iban);
+			vecchia = new Carta_di_Credito(account_id, iban);
 			rinnovata = new Carta_di_Credito(vecchia.getAccountId(), vecchia.getConto_corrente());
 
 			if(CartaDiCreditoDao.inserisciCartaToDb(rinnovata)&&CartaDiCreditoDao.eliminaCartaFromDb(vecchia.getNumeroCarta()))
@@ -194,6 +194,13 @@ public class CartaDiCreditoDao {
 		return false;
 	}
 	
+	
+	/**
+	 * @author Gianmarco Polichetti
+	 * @param iban the iban of the account linked to the card
+	 * @return boolean - true if card is blocked, false if wasn't.
+	 * This method check if a credit card is blocked.
+	 */
 	public static boolean isblocked(String iban) {
 		
 		MySQLConnection connection = new MySQLConnection();

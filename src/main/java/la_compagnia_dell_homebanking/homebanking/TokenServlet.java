@@ -17,7 +17,8 @@ import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
 
-
+/**@author Gianmarco Polichetti
+ * Servlet del generatore di token*/
 
 @WebServlet(urlPatterns = {"/token"})
 public class TokenServlet extends HttpServlet{

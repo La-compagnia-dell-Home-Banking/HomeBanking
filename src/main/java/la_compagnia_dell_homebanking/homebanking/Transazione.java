@@ -7,6 +7,9 @@ import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.ArrayList;
 
+/**@author Gianmarco Polichetti
+ * Classe che definisce un movimento di denaro (transazione)*/
+
 public class Transazione {
 
 	private LocalDate data;

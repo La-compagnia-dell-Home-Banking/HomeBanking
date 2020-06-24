@@ -8,7 +8,8 @@ import la_compagnia_dell_homebanking.homebanking.db.MySQLConnection;
 import java.sql.*;
 import java.time.LocalDate;
 import java.time.LocalTime;
-
+/**@author Gianmarco Polichetti
+ * Classe che definisce l'oggetto carta di credito*/
 
 public class Carta_di_Credito implements CartaI {
 
@@ -24,22 +25,6 @@ public class Carta_di_Credito implements CartaI {
 		this.dataScadenza = LocalDate.now().plusYears(4);
 	}
 
-	public Carta_di_Credito(String iban) throws SQLException {
-		
-		Connection connection=new MySQLConnection().getMyConnection();
-		Statement stmt = connection.createStatement();
-		ResultSet rs = stmt.executeQuery("SELECT * FROM carta_di_credito WHERE conto='"+iban+"'");
-		rs.next();
-		accountId=rs.getString("account_id");
-		numeroCarta=rs.getString("numero");
-		cvv=rs.getString("cvv");
-		this.conto_corrente=iban;
-		dataScadenza=rs.getDate("scadenza").toLocalDate();
-		stmt.close();
-		rs.close();
-		connection.close();
-		
-	}
 	
 	/**
 	 * @author Gianmarco Polichetti

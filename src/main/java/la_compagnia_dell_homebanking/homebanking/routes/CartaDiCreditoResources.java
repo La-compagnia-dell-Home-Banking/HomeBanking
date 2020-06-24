@@ -68,11 +68,11 @@ public class CartaDiCreditoResources {
     @Path("/{accountId}/{iban}/rinnova")
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes(MediaType.APPLICATION_JSON)
-    public String rinnova_carta_di_credito(@PathParam("iban") String iban) {
+    public String rinnova_carta_di_credito(@PathParam("iban") String iban, @PathParam("accountId") String accountId) {
     	
     	String res=null;
     	
-    	if(CartaDiCreditoDao.rinnovaCarta(iban))
+    	if(CartaDiCreditoDao.rinnovaCarta(iban, accountId))
     		res="Carta rinnovata";
     	else res="Impossibile rinnovare la carta";
     	
