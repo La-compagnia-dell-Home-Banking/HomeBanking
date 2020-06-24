@@ -35,7 +35,7 @@ public class ContoCorrenteDao {
 
 	private static boolean insertCCToDb(ContoCorrente c) throws SQLException {
 		Connection connection = new MySQLConnection().getMyConnection();
-		String query = "INSERT INTO account VALUES (?,?,?)";
+		String query = "INSERT INTO conto_corrente VALUES (?,?,?,?)";
 
 		PreparedStatement prstmt = connection.prepareStatement(query);
 		prstmt.setString(1, c.getIBAN());
