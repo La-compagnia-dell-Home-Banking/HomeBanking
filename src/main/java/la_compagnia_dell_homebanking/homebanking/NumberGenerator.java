@@ -42,7 +42,7 @@ public class NumberGenerator {
      * @return
      */
 
-    private static String addZeros(String num,int length) {
+    public static String addZeros(String num,int length) {
         int numlength=num.length(); //1
         StringBuilder s= new StringBuilder(num);//1
         for(int i=0; i< length-numlength; i++)
@@ -50,7 +50,10 @@ public class NumberGenerator {
         return s.toString();
     }
     
-    
+    /**
+     * the method generates a card number of 16 digits
+     * @return	The String of the card number
+     */
     public static String generateCardNumber() {
     	return generateRandom((long)1e+16,(long)9e+16);
     }
